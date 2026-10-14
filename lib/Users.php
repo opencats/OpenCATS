@@ -51,6 +51,315 @@ class Users
     }
 
 
+    /** Stage 4H is a Settings operation, not a generic bulk administration API. */
+    public static function getHandoverCategories()
+    {
+        return array(
+            'task' => array('label' => 'Task assignee', 'module' => 'tasks', 'table' => 'task', 'id' => 'task_id', 'key' => 'taskID', 'field' => 'assignedTo', 'column' => 'assigned_to', 'type' => DATA_ITEM_TASK, 'model' => 'Tasks'),
+            'candidate' => array('label' => 'Candidate owner', 'module' => 'candidates', 'table' => 'candidate', 'id' => 'candidate_id', 'key' => 'candidateID', 'field' => 'owner', 'column' => 'owner', 'type' => DATA_ITEM_CANDIDATE, 'model' => 'Candidates'),
+            'contact' => array('label' => 'Contact owner', 'module' => 'contacts', 'table' => 'contact', 'id' => 'contact_id', 'key' => 'contactID', 'field' => 'owner', 'column' => 'owner', 'type' => DATA_ITEM_CONTACT, 'model' => 'Contacts'),
+            'company' => array('label' => 'Company owner', 'module' => 'companies', 'table' => 'company', 'id' => 'company_id', 'key' => 'companyID', 'field' => 'owner', 'column' => 'owner', 'type' => DATA_ITEM_COMPANY, 'model' => 'Companies'),
+            'jobOwner' => array('label' => 'Job Order owner', 'module' => 'joborders', 'table' => 'joborder', 'id' => 'joborder_id', 'key' => 'jobOrderID', 'field' => 'owner', 'column' => 'owner', 'type' => DATA_ITEM_JOBORDER, 'model' => 'JobOrders'),
+            'jobRecruiter' => array('label' => 'Job Order recruiter', 'module' => 'joborders', 'table' => 'joborder', 'id' => 'joborder_id', 'key' => 'jobOrderID', 'field' => 'recruiter', 'column' => 'recruiter', 'type' => DATA_ITEM_JOBORDER, 'model' => 'JobOrders')
+        );
+    }
+
+    public function assertHandoverAdministrator()
+    {
+        $session = $_SESSION['CATS'] ?? null;
+        if (!$session || !$session->isLoggedIn() || $session->getUserID() <= 0 ||
+            $session->getRealAccessLevel() < ACCESS_LEVEL_SA ||
+            $session->getAccessLevel('settings.handover') < ACCESS_LEVEL_SA ||
+            $session->getAccessLevel('settings.manageUsers') < ACCESS_LEVEL_SA)
+            throw new RuntimeException('Administrator access required.');
+        $actor = $this->get($session->getUserID());
+        if (!$actor || $actor['accessLevel'] < ACCESS_LEVEL_SA)
+            throw new RuntimeException('Administrator access required.');
+    }
+
+    private function handoverID($value)
+    {
+        if ((!is_int($value) && !is_string($value)) ||
+            !preg_match('/^[1-9][0-9]*$/D', (string) $value) || (float) $value > 2147483647)
+            throw new InvalidArgumentException('Invalid handover user or record ID.');
+        return (int) $value;
+    }
+
+    /** Use native ACL evaluation for the recipient, including associated hidden records. */
+    public function validateHandoverRecipient($id, $category, $record = array(), $lock = false)
+    {
+        $id = $this->handoverID($id);
+        $definition = self::getHandoverCategories()[$category] ?? null;
+        if (!$definition) throw new InvalidArgumentException('Invalid handover category.');
+        $user = $this->get($id, $lock);
+        if (!$user || $user['accessLevel'] <= ACCESS_LEVEL_DISABLED)
+            throw new InvalidArgumentException('Choose an active replacement user.');
+        $access = fn($action) => ACL::getAccessLevel($action, explode(',', (string) $user['categories']), $user['accessLevel']);
+        $module = $definition['module'];
+        if ($access($module . '.show') < ACCESS_LEVEL_READ || $access($module . '.edit') < ACCESS_LEVEL_EDIT)
+            throw new InvalidArgumentException('Replacement user cannot manage this category.');
+        if (($record['isAdminHidden'] ?? 0) == 1 && $access($module . '.hidden') < ACCESS_LEVEL_SA)
+            throw new InvalidArgumentException('Replacement user cannot access this record.');
+        if ($category === 'task' && $record)
+        {
+            $parents = array(DATA_ITEM_COMPANY => 'Companies', DATA_ITEM_CONTACT => 'Contacts',
+                DATA_ITEM_CANDIDATE => 'Candidates', DATA_ITEM_JOBORDER => 'JobOrders');
+            $associations = array();
+            if ($record['dataItemType'] !== null)
+            {
+                $model = $parents[$record['dataItemType']] ?? null;
+                if (!$model) throw new RuntimeException('Task association unavailable.');
+                $associations[] = array($model, $record['dataItemID']);
+            }
+            if ($record['candidateJobOrderID'] !== null)
+            {
+                $pipeline = $this->_db->getAssoc('SELECT candidate_id, joborder_id FROM candidate_joborder WHERE candidate_joborder_id = ' . (int) $record['candidateJobOrderID']);
+                if (!$pipeline) throw new RuntimeException('Task association unavailable.');
+                $associations[] = array('Candidates', $pipeline['candidate_id']);
+                $associations[] = array('JobOrders', $pipeline['joborder_id']);
+            }
+            foreach ($associations as [$model, $parentID])
+            {
+                $parent = (new $model())->get($parentID);
+                $module = strtolower($model);
+                if (!$parent || $access($module . '.show') < ACCESS_LEVEL_READ ||
+                    (($parent['isAdminHidden'] ?? 0) == 1 && $access($module . '.hidden') < ACCESS_LEVEL_SA))
+                    throw new InvalidArgumentException('Replacement user cannot access this Task association.');
+            }
+        }
+        return $user;
+    }
+
+    private function handoverCanRead($definition, $record)
+    {
+        if (!$record || $_SESSION['CATS']->getAccessLevel($definition['module'] . '.show') < ACCESS_LEVEL_READ) return false;
+        if ($definition['type'] === DATA_ITEM_CANDIDATE) return CandidateAuthorization::canAccessCandidateRecord($record);
+        return ($record['isAdminHidden'] ?? 0) != 1 ||
+            $_SESSION['CATS']->getAccessLevel($definition['module'] . '.hidden') >= ACCESS_LEVEL_SA;
+    }
+
+    private function handoverExclusion($category, $record)
+    {
+        switch ($category)
+        {
+            case 'task': return in_array($record['status'], array('open', 'in_progress'), true) ? '' : 'Completed/cancelled Task';
+            case 'candidate': return $record['isActive'] == 1 ? '' : 'Inactive Candidate';
+            case 'contact': return $record['leftCompany'] == 0 ? '' : 'Contact has left Company';
+            // Companies have no archive flag. Conservatively exclude existing dormant/lost lifecycles.
+            case 'company': return in_array($record['relationshipStatus'] ?? null, array('Dormant', 'Lost'), true) ? 'Dormant/Lost Company' : '';
+            default: return JobOrderStatuses::isActionable($record['status']) ? '' : 'Job Order is not actionable Active';
+        }
+    }
+
+    /** Preview one bounded page per selected category; no writes or global unscoped counts. */
+    public function previewHandover($from, $default, $categories, $overrides = array(), $after = array())
+    {
+        $this->assertHandoverAdministrator();
+        $from = $this->handoverID($from);
+        $default = $this->handoverID($default);
+        $defaultUser = $this->get($default);
+        if (!$defaultUser || $defaultUser['accessLevel'] <= ACCESS_LEVEL_DISABLED) throw new InvalidArgumentException('Choose an active default replacement.');
+        if (!$this->get($from) || $from === $default) throw new InvalidArgumentException('Choose different departing and replacement users.');
+        $definitions = self::getHandoverCategories();
+        if (!is_array($categories) || !$categories || count($categories) > 6 ||
+            !is_array($overrides) || !is_array($after)) throw new InvalidArgumentException('Select valid handover categories.');
+        $seen = array();
+        foreach ($categories as $category)
+        {
+            if (!is_string($category) || !isset($definitions[$category]) || isset($seen[$category]))
+                throw new InvalidArgumentException('Invalid handover category.');
+            $seen[$category] = true;
+        }
+        foreach ($overrides as $value)
+            if ($value !== '' && $this->handoverID($value) === $from)
+                throw new InvalidArgumentException('Replacement must differ from departing user.');
+        foreach (array_merge(array_keys($overrides), array_keys($after)) as $key)
+            if (!isset($definitions[$key])) throw new InvalidArgumentException('Invalid handover category.');
+        $result = array('from' => $from, 'default' => $default, 'categories' => array());
+        foreach ($categories as $category)
+        {
+            if (!is_string($category) || !isset($definitions[$category]) || isset($result['categories'][$category]))
+                throw new InvalidArgumentException('Invalid handover category.');
+            $d = $definitions[$category];
+            if ($_SESSION['CATS']->getAccessLevel($d['module'] . '.list') < ACCESS_LEVEL_READ ||
+                $_SESSION['CATS']->getAccessLevel($d['module'] . '.show') < ACCESS_LEVEL_READ)
+                throw new RuntimeException('Category access denied.');
+            $to = ($overrides[$category] ?? '') === '' ? $default : $this->handoverID($overrides[$category]);
+            if ($to === $from) throw new InvalidArgumentException('Replacement must differ from departing user.');
+            $recipient = $this->validateHandoverRecipient($to, $category);
+            $cursor = ($after[$category] ?? 0) === 0 ? 0 : $this->handoverID($after[$category]);
+            $model = new $d['model']();
+            if ($category === 'task') $rows = $model->getHandoverPage($from, $cursor);
+            else
+            {
+                $hidden = in_array($category, array('candidate', 'jobOwner', 'jobRecruiter'), true) &&
+                    $_SESSION['CATS']->getAccessLevel($d['module'] . '.hidden') < ACCESS_LEVEL_SA ?
+                    ' AND (is_admin_hidden IS NULL OR is_admin_hidden <> 1)' : '';
+                $ids = $this->_db->getAllAssoc('SELECT ' . $d['id'] . ' AS id FROM ' . $d['table'] .
+                    ' WHERE ' . $d['column'] . ' = ' . $from . ' AND ' . $d['id'] . ' > ' . $cursor . $hidden .
+                    ' ORDER BY ' . $d['id'] . ' LIMIT 51');
+                $rows = array();
+                foreach ($ids as $id)
+                {
+                    $record = $model->get($id['id']);
+                    if ($this->handoverCanRead($d, $record)) $rows[] = $record;
+                }
+            }
+            $page = array('to' => $to, 'recipient' => $recipient['fullName'], 'rows' => array(), 'more' => count($rows) > 50, 'after' => $cursor,
+                'eligible' => 0, 'excluded' => 0, 'blocked' => 0);
+            foreach (array_slice($rows, 0, 50) as $record)
+            {
+                $id = (int) $record[$d['key']];
+                $page['after'] = $id;
+                $reason = $this->handoverExclusion($category, $record);
+                $state = $reason === '' ? 'eligible' : 'excluded';
+                if ($reason === '')
+                {
+                    if ($_SESSION['CATS']->getAccessLevel($d['module'] . '.edit') < ACCESS_LEVEL_EDIT ||
+                        ($category === 'task' && !$model->getActionPermissions($id)['manage']))
+                    {
+                        $state = 'blocked'; $reason = 'Assignment update denied.';
+                    }
+                    else try { $this->validateHandoverRecipient($to, $category, $record); }
+                    catch (Throwable $e) { $state = 'blocked'; $reason = 'Replacement cannot access this record or association.'; }
+                }
+                $page[$state]++;
+                $label = $record['title'] ?? $record['name'] ?? trim(($record['firstName'] ?? '') . ' ' . ($record['lastName'] ?? ''));
+                $page['rows'][] = array('id' => $id, 'label' => $label, 'state' => $state, 'reason' => $reason);
+            }
+            $result['categories'][$category] = $page;
+        }
+        return $result;
+    }
+
+    /** Each record is independent. Retries skip changed owners; failures expose no raw SQL/metadata. */
+    public function executeHandover($preview, $csrfToken)
+    {
+        $this->assertHandoverAdministrator();
+        if (!$_SESSION['CATS']->isCSRFTokenValid($csrfToken)) throw new RuntimeException('Invalid CSRF token.');
+        if (!is_array($preview) || !is_array($preview['categories'] ?? null) ||
+            !$preview['categories'] || count($preview['categories']) > 6)
+            throw new InvalidArgumentException('Invalid handover preview.');
+        $from = $this->handoverID($preview['from'] ?? null);
+        $definitions = self::getHandoverCategories();
+        foreach ($preview['categories'] as $category => $page)
+        {
+            if (!isset($definitions[$category]) || !is_array($page) ||
+                !is_array($page['rows'] ?? null) || count($page['rows']) > 50 ||
+                $this->handoverID($page['to'] ?? null) === $from)
+                throw new InvalidArgumentException('Invalid handover preview.');
+        }
+        $results = array();
+        foreach ($preview['categories'] as $category => $page)
+        {
+            $d = $definitions[$category];
+            $model = new $d['model']();
+            $outcomes = array();
+            foreach ($page['rows'] as $row)
+            {
+                if ($row['state'] !== 'eligible')
+                {
+                    $outcomes[] = array('id' => null, 'state' => 'skipped', 'reason' => 'Excluded or blocked in preview; no update requested.');
+                    continue;
+                }
+                $id = $this->handoverID($row['id']);
+                $transaction = false;
+                $failureReason = 'Administrator or category update permission changed.';
+                try
+                {
+                    $this->assertHandoverAdministrator();
+                    if ($_SESSION['CATS']->getAccessLevel($d['module'] . '.edit') < ACCESS_LEVEL_EDIT)
+                        throw new RuntimeException('Update denied.');
+                    if ($category !== 'task')
+                    {
+                        $failureReason = 'Unable to start record transaction.';
+                        if (!$this->_db->beginTransaction()) throw new RuntimeException('Transaction unavailable.');
+                        $transaction = true;
+                        $failureReason = 'Record unavailable for update.';
+                        if (!$this->_db->getAssoc('SELECT ' . $d['id'] . ' FROM ' . $d['table'] . ' WHERE ' . $d['id'] . ' = ' . $id . ' FOR UPDATE'))
+                            throw new RuntimeException('Record unavailable.');
+                    }
+                    // Read the record before any consistent user read creates an older snapshot.
+                    $before = $model->get($id);
+                    $visible = $category === 'task' ? !empty($before) : $this->handoverCanRead($d, $before);
+                    if (!$visible || $before[$d['field']] != $from || $this->handoverExclusion($category, $before) !== '')
+                    {
+                        if ($transaction) $this->_db->rollbackTransaction();
+                        $outcomes[] = array('id' => $visible ? $id : null, 'state' => 'skipped', 'reason' => 'Unavailable, assignment changed or no longer eligible.');
+                        continue;
+                    }
+                    $failureReason = 'Replacement cannot access this record or association.';
+                    $this->validateHandoverRecipient($page['to'], $category, $before, $category !== 'task');
+                    $failureReason = 'Assignment write or audit failed; preview again before retrying.';
+                    if ($category === 'task')
+                    {
+                        if (!$model->update($id, array('assignedTo' => $page['to']), $from)) throw new RuntimeException('Write failed.');
+                    }
+                    else
+                    {
+                        $updated = $model instanceof JobOrders ?
+                            $model->updateHandoverAssignment($id, $from, $page['to'], $d['field']) :
+                            $model->updateHandoverAssignment($id, $from, $page['to']);
+                        if (!$updated) throw new RuntimeException('Write failed.');
+                        $after = $model->get($id);
+                        if ($after[$d['field']] != $page['to'] ||
+                            !(new History())->storeHistoryChanges($d['type'], $id, $before, $after))
+                            throw new RuntimeException('Assignment audit failed.');
+                        $failureReason = 'Unable to confirm the record commit; preview again before retrying.';
+                        if (!$this->_db->commitTransaction()) throw new RuntimeException('Commit failed.');
+                    }
+                    $outcomes[] = array('id' => $id, 'state' => 'transferred', 'reason' => 'Assignment updated and audited.');
+                }
+                catch (Throwable $e)
+                {
+                    if ($transaction) $this->_db->rollbackTransaction();
+                    // Only identify failed records that remain readable; never repeat stale preview labels.
+                    $failedID = null;
+                    try
+                    {
+                        $current = $model->get($id);
+                        if ($category === 'task' ? !empty($current) : $this->handoverCanRead($d, $current)) $failedID = $id;
+                    }
+                    catch (Throwable $ignored) {}
+                    $outcomes[] = array('id' => $failedID, 'state' => 'failed', 'reason' => $failureReason);
+                }
+            }
+            $results[$category] = $outcomes;
+        }
+        return $results;
+    }
+
+    /** Existing access-level disabling, independent of handover success. */
+    public function disableForHandover($id, $csrfToken)
+    {
+        $this->assertHandoverAdministrator();
+        if ($_SESSION['CATS']->getAccessLevel('settings.editUser.POST') < ACCESS_LEVEL_SA ||
+            !$_SESSION['CATS']->isCSRFTokenValid($csrfToken)) throw new RuntimeException('Account disable denied.');
+        $id = $this->handoverID($id);
+        if ($id === (int) $_SESSION['CATS']->getUserID()) throw new InvalidArgumentException('Cannot disable your own account.');
+        if (!$this->_db->beginTransaction()) throw new RuntimeException('Account transaction unavailable.');
+        try
+        {
+            if (!$this->_db->getAssoc('SELECT user_id FROM user WHERE user_id = ' . $id . ' FOR UPDATE'))
+                throw new RuntimeException('Account unavailable.');
+            $user = $this->get($id);
+            if (!$user || $user['accessLevel'] > $_SESSION['CATS']->getRealAccessLevel())
+                throw new RuntimeException('Account disable denied.');
+            if (!$this->update($id, $user['lastName'], $user['firstName'], $user['email'],
+                $user['username'], ACCESS_LEVEL_DISABLED, $user['canSeeEEOInfo']) ||
+                !(new History())->storeHistoryChanges(DATA_ITEM_USER, $id,
+                    array('accessLevel' => $user['accessLevel']), array('accessLevel' => ACCESS_LEVEL_DISABLED)))
+                throw new RuntimeException('Unable to disable and audit account.');
+            if (!$this->_db->commitTransaction()) throw new RuntimeException('Unable to commit account disable.');
+            return true;
+        }
+        catch (Throwable $e)
+        {
+            $this->_db->rollbackTransaction();
+            throw $e;
+        }
+    }
+
     /**
      * Adds a user to the database.
      *
@@ -246,9 +555,10 @@ class Users
      * Returns one user.
      *
      * @param integer user ID
+     * @param boolean Current locking read inside the caller transaction (default false).
      * @return array user data
      */
-    public function get($userID)
+    public function get($userID, $forUpdate = false)
     {
         $sql = sprintf(
                 "SELECT
@@ -302,7 +612,8 @@ class Users
                 $this->_db->makeQueryInteger($userID)
                     );
 
-        return $this->_db->getAssoc($sql);
+        // Handover needs a current locking read, not a prior repeatable-read snapshot.
+        return $this->_db->getAssoc($sql . ($forUpdate ? ' FOR UPDATE' : ''));
     }
 
     /**

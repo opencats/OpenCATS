@@ -9,6 +9,12 @@
                 <h1 class="h5 fw-semibold mb-0">Settings: User Management</h1>
             </header>
 
+            <?php if ($_SESSION['CATS']->getRealAccessLevel() >= ACCESS_LEVEL_SA &&
+                $_SESSION['CATS']->getAccessLevel('settings.handover') >= ACCESS_LEVEL_SA &&
+                $_SESSION['CATS']->getAccessLevel('settings.manageUsers') >= ACCESS_LEVEL_SA): ?>
+            <p><a class="btn btn-outline-primary btn-sm" href="<?php echo Template::escapeAttr(CATSUtility::getIndexName()); ?>?m=settings&amp;a=handover">Handover</a></p>
+            <?php endif; ?>
+
             <p class="bg-secondary-subtle rounded p-2 mb-2 fw-semibold">User Management</p>
 
             <div class="table-responsive mb-2"><table class="sortable table table-sm table-striped align-middle">

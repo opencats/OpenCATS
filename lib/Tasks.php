@@ -226,6 +226,27 @@ class Tasks
         return $result;
     }
 
+    /** Bounded visible handover page; reuse native Task visibility before exposing IDs/counts. */
+    public function getHandoverPage($from, $after = 0)
+    {
+        $from = self::normalizeID($from, false);
+        $after = $after === 0 ? 0 : self::normalizeID($after, false);
+        if (!$this->hasAccess('tasks.list', ACCESS_LEVEL_READ)) return array();
+        $result = array();
+        do
+        {
+            $rows = $this->_db->getAllAssoc($this->selectSQL() . ' WHERE assigned_to = ' . $from .
+                ' AND task_id > ' . $after . ' ORDER BY task_id LIMIT 100');
+            foreach ($rows as $row)
+            {
+                $after = (int) $row['taskID'];
+                if ($this->canRead($row)) $result[] = $row;
+                if (count($result) === 51) return $result;
+            }
+        } while (count($rows) === 100);
+        return $result;
+    }
+
     public static function getDefaults()
     {
         return array('title' => '', 'description' => null, 'dueDate' => null,
@@ -599,7 +620,7 @@ class Tasks
     }
 
     /** Patch only supplied fields. Lock the current Task so concurrent edits retain audit facts. */
-    public function update($id, $values)
+    public function update($id, $values, $handoverFrom = null)
     {
         $id = self::normalizeID($id, false);
         if (!$this->hasAccess('tasks.edit', ACCESS_LEVEL_EDIT)) throw new RuntimeException('Task update denied.');
@@ -608,20 +629,32 @@ class Tasks
         {
             $before = $this->_db->getAssoc($this->selectSQL() . ' WHERE task_id = ' . $id . ' FOR UPDATE');
             if (!$this->canRead($before)) throw new RuntimeException('Task unavailable.');
+            if ($handoverFrom !== null)
+            {
+                (new Users())->assertHandoverAdministrator();
+                if ($before['assignedTo'] != self::normalizeID($handoverFrom, false) ||
+                    !in_array($before['status'], array('open', 'in_progress'), true))
+                    throw new RuntimeException('Task assignment or eligibility changed.');
+                if (array_keys($values) !== array('assignedTo')) throw new InvalidArgumentException('Invalid handover fields.');
+                (new Users())->validateHandoverRecipient($values['assignedTo'], 'task', $before, true);
+            }
             $actor = $_SESSION['CATS']->getUserID();
             $manager = $this->canManage($before);
             if (!$manager && $before['assignedTo'] != $actor) throw new RuntimeException('Task update denied.');
-            $record = $this->validate($values, $before);
+            $record = $handoverFrom === null ? $this->validate($values, $before) :
+                array_replace($before, array('assignedTo' => self::normalizeID($values['assignedTo'], false)));
             foreach (array('assignedTo', 'dataItemType', 'dataItemID', 'candidateJobOrderID') as $field)
                 if (!$manager && $record[$field] != $before[$field]) throw new RuntimeException('Task reassignment or association change denied.');
             $parentChanged = $record['dataItemType'] != $before['dataItemType'] || $record['dataItemID'] != $before['dataItemID'];
             $this->authorizeAssociations($record, $parentChanged);
             $this->authorizeTransition($before['status'], $record['status']);
             $completion = $record['status'] === $before['status'] ? '' : $this->completionSQL($record['status']);
-            if (!$this->_db->query('UPDATE task SET ' . $this->valuesSQL($record) . $completion . ', date_modified = NOW() WHERE task_id = ' . $id)) throw new RuntimeException('Unable to update Task.');
+            $assignments = $handoverFrom === null ? $this->valuesSQL($record) . $completion :
+                'assigned_to = ' . $record['assignedTo'];
+            if (!$this->_db->query('UPDATE task SET ' . $assignments . ', date_modified = NOW() WHERE task_id = ' . $id, $handoverFrom !== null)) throw new RuntimeException('Unable to update Task.');
             $after = $this->_db->getAssoc($this->selectSQL() . ' WHERE task_id = ' . $id);
             if (!(new History())->storeHistoryChanges(DATA_ITEM_TASK, $id, $this->historySnapshot($before), $this->historySnapshot($after))) throw new RuntimeException('Unable to record Task history.');
-            $this->_db->commitTransaction();
+            if (!$this->_db->commitTransaction()) throw new RuntimeException('Unable to commit Task changes.');
             return true;
         }
         catch (Throwable $e)

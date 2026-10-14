@@ -47,6 +47,52 @@ class Calendar
     }
 
 
+    /** Read-only leaver inventory. updateEvent() has no reassignment parameter. */
+    public function getHandoverInventory($userID)
+    {
+        (new Users())->assertHandoverAdministrator();
+        if ($_SESSION['CATS']->getAccessLevel('calendar.show') < ACCESS_LEVEL_READ) return array();
+        $userID = Desks::normalizeID($userID);
+        if ($userID === null) throw new InvalidArgumentException('Invalid Calendar user.');
+        $visibility = $_SESSION['CATS']->getAccessLevel('calendar.show') >= ACCESS_LEVEL_SA ? '' :
+            ' AND (public = 1 OR entered_by = ' . (int) $_SESSION['CATS']->getUserID() . ')';
+        $result = array();
+        $after = 0;
+        do
+        {
+            $rows = $this->_db->getAllAssoc('SELECT calendar_event_id AS eventID, title, date,
+                data_item_type AS dataItemType, data_item_id AS dataItemID, joborder_id AS jobOrderID
+                FROM calendar_event WHERE entered_by = ' . $userID . ' AND date >= UTC_TIMESTAMP()' .
+                $visibility . ' AND calendar_event_id > ' . $after . ' ORDER BY calendar_event_id LIMIT 100');
+            foreach ($rows as $row)
+            {
+                $after = (int) $row['eventID'];
+                $allowed = true;
+                $parents = array(DATA_ITEM_CANDIDATE => 'Candidates', DATA_ITEM_JOBORDER => 'JobOrders',
+                    DATA_ITEM_CONTACT => 'Contacts', DATA_ITEM_COMPANY => 'Companies');
+                $associations = array();
+                if ((int) $row['dataItemID'] > 0)
+                {
+                    $model = $parents[$row['dataItemType']] ?? null;
+                    if (!$model) continue;
+                    $associations[] = array($model, $row['dataItemID']);
+                }
+                if ((int) $row['jobOrderID'] > 0) $associations[] = array('JobOrders', $row['jobOrderID']);
+                foreach ($associations as [$model, $id])
+                {
+                    if ($_SESSION['CATS']->getAccessLevel(strtolower($model) . '.show') < ACCESS_LEVEL_READ) { $allowed = false; break; }
+                    $parent = (new $model())->get($id);
+                    if (!$parent || ($model === 'Candidates' && !CandidateAuthorization::canAccessCandidateRecord($parent)) ||
+                        ($model === 'JobOrders' && $parent['isAdminHidden'] == 1 &&
+                         $_SESSION['CATS']->getAccessLevel('joborders.hidden') < ACCESS_LEVEL_SA)) { $allowed = false; break; }
+                }
+                if ($allowed) $result[] = $row;
+                if (count($result) === 51) return $result;
+            }
+        } while (count($rows) === 100);
+        return $result;
+    }
+
     /**
      * Returns an array of events in a month, keyed by each day of the month.
      * There will always be a key present for each day of the month, but if

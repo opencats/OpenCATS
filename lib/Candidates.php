@@ -29,6 +29,16 @@ class Candidates
     public $extraFields;
 
 
+    /** Field-only administrative handover; caller must authorise and lock the record. */
+    public function updateHandoverAssignment($id, $from, $to)
+    {
+        $field = 'owner';
+        return $this->_db->query('UPDATE candidate SET ' . $field . ' = ' .
+            $this->_db->makeQueryInteger($to) . ', date_modified = NOW() WHERE candidate_id = ' .
+            $this->_db->makeQueryInteger($id) . ' AND ' . $field . ' = ' .
+            $this->_db->makeQueryInteger($from), true) && $this->_db->getAffectedRows() === 1;
+    }
+
     public function __construct()
     {
         $this->_db = DatabaseConnection::getInstance();

@@ -107,6 +107,93 @@ class SettingsUI extends UserInterface
         );
     }
     
+    private function handover()
+    {
+        include_once(LEGACY_ROOT . '/lib/Tasks.php');
+        include_once(LEGACY_ROOT . '/lib/Calendar.php');
+        $users = new Users();
+        try { $users->assertHandoverAdministrator(); }
+        catch (Throwable $e) { CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Administrator access required.'); }
+        $preview = null;
+        $results = null;
+        $message = '';
+        $selection = array('from' => '', 'default' => '', 'categories' => array(), 'overrides' => array());
+        try
+        {
+            if ($this->isPostBack())
+            {
+                if (!$_SESSION['CATS']->isCSRFTokenValid($_POST['csrfToken'] ?? null))
+                    throw new RuntimeException('Invalid CSRF token.');
+                $operation = $_POST['operation'] ?? null;
+                if (!is_string($operation) || !in_array($operation, array('preview', 'execute', 'next', 'disable'), true))
+                    throw new InvalidArgumentException('Invalid handover action.');
+                if ($operation === 'execute' || $operation === 'next')
+                {
+                    $saved = $_SESSION['userHandover'] ?? null;
+                    $token = $_POST['previewToken'] ?? null;
+                    if (!$saved || !is_string($token) || !hash_equals($saved['token'], $token) ||
+                        $saved['actor'] !== $_SESSION['CATS']->getUserID())
+                        throw new RuntimeException('Preview expired. Preview the handover again.');
+                    $selection = $saved['selection'];
+                    if ($operation === 'execute')
+                    {
+                        if ($saved['executed']) throw new RuntimeException('Already confirmed. Preview remaining work again.');
+                        // Consume confirmation before processing; owner revalidation also makes interruption/retry safe.
+                        $_SESSION['userHandover']['executed'] = true;
+                        $results = $users->executeHandover($saved['preview'], $_POST['csrfToken']);
+                        $message = 'Results apply to this preview page only. Preview again for failed or remaining work.';
+                    }
+                    else
+                    {
+                        $after = array_map(fn($page) => $page['after'], $saved['preview']['categories']);
+                        $preview = $users->previewHandover($selection['from'], $selection['default'],
+                            $selection['categories'], $selection['overrides'], $after);
+                    }
+                }
+                else
+                {
+                    $selection = array('from' => $_POST['from'] ?? '', 'default' => $_POST['default'] ?? '',
+                        'categories' => $_POST['categories'] ?? array(), 'overrides' => $_POST['overrides'] ?? array());
+                    if ($operation === 'disable')
+                    {
+                        if (!$users->disableForHandover($selection['from'], $_POST['csrfToken']))
+                            throw new RuntimeException('Unable to disable account.');
+                        unset($_SESSION['userHandover']);
+                        $selection = array('from' => '', 'default' => '', 'categories' => array(), 'overrides' => array());
+                        $message = 'Account disabled. Existing identity, records and warning reviews are retained.';
+                    }
+                    else $preview = $users->previewHandover($selection['from'], $selection['default'],
+                        $selection['categories'], $selection['overrides']);
+                }
+            }
+            if ($preview !== null)
+            {
+                $_SESSION['userHandover'] = array('actor' => $_SESSION['CATS']->getUserID(),
+                    'token' => bin2hex(random_bytes(32)), 'preview' => $preview, 'selection' => $selection, 'executed' => false);
+            }
+        }
+        catch (Throwable $e)
+        {
+            // Fixed validation messages only; model/database exceptions must not disclose records or SQL.
+            $message = $e instanceof InvalidArgumentException ? $e->getMessage() : 'Handover request unavailable or denied. Preview again.';
+            $selection = array('from' => '', 'default' => '', 'categories' => array(), 'overrides' => array());
+            unset($_SESSION['userHandover']);
+        }
+        $calendar = $preview ? (new Calendar())->getHandoverInventory($preview['from']) : array();
+        $this->_template->assign('active', $this);
+        $this->_template->assign('subActive', '');
+        $this->_template->assign('users', $users->getAll());
+        $this->_template->assign('replacements', $users->getSelectList());
+        $this->_template->assign('categories', Users::getHandoverCategories());
+        $this->_template->assign('selection', $selection);
+        $this->_template->assign('preview', $preview);
+        $this->_template->assign('results', $results);
+        $this->_template->assign('message', $message);
+        $this->_template->assign('calendar', $calendar);
+        $this->_template->assign('savedPreview', $_SESSION['userHandover'] ?? null);
+        $this->_template->display('./modules/settings/Handover.tpl');
+    }
+
     private function desks($sector = false)
     {
         include_once(LEGACY_ROOT . '/lib/Sectors.php');
@@ -309,6 +396,13 @@ class SettingsUI extends UserInterface
 
         switch ($action)
         {
+            case 'handover':
+                if ($this->_realAccessLevel < ACCESS_LEVEL_SA ||
+                    $this->getUserAccessLevel('settings.handover') < ACCESS_LEVEL_SA ||
+                    $this->getUserAccessLevel('settings.manageUsers') < ACCESS_LEVEL_SA)
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Administrator access required.');
+                $this->handover();
+                break;
             case 'relationshipAttention':
                 if ($this->_realAccessLevel < ACCESS_LEVEL_SA ||
                     $this->getUserAccessLevel('settings.relationshipAttention') < ACCESS_LEVEL_SA)
