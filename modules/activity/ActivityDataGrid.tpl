@@ -1,62 +1,44 @@
 <?php TemplateUtility::printHeader('Activities', array('js/highlightrows.js', 'js/sweetTitles.js', 'js/dataGrid.js', 'js/dataGridFilters.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
-        <div id="contents"<?php echo !$this->numActivities ? ' style="background-color: #E6EEFF; padding: 0px;"' : ''; ?>>
+<?php TemplateUtility::printQuickSearch(); ?>
+<main id="main" class="container-fluid py-2">
+    <div id="contents">
+        <section class="oc-page-header d-flex flex-wrap align-items-center gap-2 mb-2">
+            <h1 class="h5 fw-semibold mb-0">Activities</h1>
             <?php if ($this->numActivities): ?>
-            <table width="100%">
-                <tr>
-                    <td width="3%">
-                        <img src="images/activities.gif" width="24" height="24" alt="Activities" style="border: none; margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Activities</h2></td>
-                    <td align="right">
-                        <?php $this->dataGrid->printNavigation(false); ?>&nbsp;&nbsp;<?php echo($this->quickLinks); ?>
-                    </td>
-                </tr>
-            </table>
-
-            <p class="note">
-                <span style="float:left;">Activities - Page <?php echo($this->dataGrid->getCurrentPageHTML()); ?></span>
-                <span style="float:right;">
-                    <?php $this->dataGrid->drawRowsPerPageSelector(); ?>
-                    <?php $this->dataGrid->drawShowFilterControl(); ?>
-                </span>&nbsp;
-            </p>
-
-            <?php $this->dataGrid->drawFilterArea(); ?>
-            <?php $this->dataGrid->draw();  ?>
-
-            <div style="display:block;">
-                <span style="float:left;">
-                    <?php $this->dataGrid->printActionArea(); ?>
-                </span>
-                <span style="float:right;">
-                    <?php $this->dataGrid->printNavigation(true); ?>
-                </span>&nbsp;
+            <div class="d-flex flex-wrap align-items-center gap-2 ms-auto small">
+                <div class="oc-datagrid-navigation"><?php $this->dataGrid->printNavigation(false); ?></div>
+                <nav aria-label="Activity date ranges"><?php echo($this->quickLinks); ?></nav>
             </div>
-
-            <?php else: ?>
-
-            <br /><br /><br /><br />
-            <div style="height: 95px; background: #E6EEFF url(images/nodata/activitiesTop.jpg);">
-                &nbsp;
-            </div>
-            <br /><br />
-            <table cellpadding="0" cellspacing="0" border="0" width="956">
-                <tr>
-                <td style="padding-left: 62px;" align="center" valign="center">
-
-                    <div style="text-align: center; width: 700px; line-height: 22px; font-size: 18px; font-weight: bold; color: #666666; padding-bottom: 20px;">
-                    Activities are automatically recorded based on actions you perform.
-                    </div>
-                </td>
-
-                </tr>
-            </table>
-
             <?php endif; ?>
-        </div>
+        </section>
+
+        <?php if ($this->numActivities): ?>
+        <section class="card">
+            <div class="card-header bg-body d-flex flex-wrap align-items-center justify-content-between gap-2 py-1 px-2 small">
+                <span>Activities - Page <?php echo($this->dataGrid->getCurrentPageHTML()); ?></span>
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <div class="oc-datagrid-rows-per-page"><?php $this->dataGrid->drawRowsPerPageSelector(); ?></div>
+                    <div class="oc-datagrid-filter-control"><?php $this->dataGrid->drawShowFilterControl(); ?></div>
+                </div>
+            </div>
+            <div class="card-body p-2">
+                <?php $this->dataGrid->drawFilterArea(); ?>
+                <?php $this->dataGrid->draw(); ?>
+            </div>
+            <div class="card-footer bg-body py-1 px-2 d-flex flex-wrap align-items-center justify-content-between gap-2 small">
+                <div><?php $this->dataGrid->printActionArea(); ?></div>
+                <div><?php $this->dataGrid->printNavigation(true); ?></div>
+            </div>
+        </section>
+        <?php else: ?>
+        <section class="card">
+            <div class="card-body p-3">
+                <p class="text-body-secondary mb-0">Activities are automatically recorded based on actions you perform.</p>
+            </div>
+        </section>
+        <?php endif; ?>
     </div>
+</main>
 <?php TemplateUtility::printFooter(); ?>

@@ -1,24 +1,19 @@
 <?php TemplateUtility::printHeader('Settings'); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
+    <?php TemplateUtility::printQuickSearch(); ?>
+<main id="main" class="container-fluid py-2">
 
         <div id="contents">
-            <table>
-                <tr>
-                    <td width="3%">
-                        <img src="images/settings.gif" width="24" height="24" border="0" alt="Settings" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Settings: Error</h2></td>
-                </tr>
-            </table>
+            <header class="oc-page-header mb-2">
+                <h1 class="h5 fw-semibold mb-0">Settings: Error</h1>
+            </header>
 
-            <p class="fatalError">
+            <p class="alert alert-danger">
                 A fatal error has occurred.<br />
                 <br />
                 <?php echo($this->errorMessage); ?>
             </p>
         </div>
-    </div>
+    </main>
 <?php TemplateUtility::printFooter(); ?>

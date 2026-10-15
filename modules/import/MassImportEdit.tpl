@@ -1,288 +1,119 @@
 <?php TemplateUtility::printHeader('Settings', array('js/massImport.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
-<script src='http://resfly.com/js/resumeParserValidation.js' type='text/javascript' language='javascript'></script>
 <link rel="stylesheet" type="text/css" href="<?php echo TemplateUtility::getVersionedAssetURL('modules/import/MassImport.css'); ?>" />
-    <div id="main">
+    <main id="main" class="container-fluid py-2">
         <div id="contents">
-            <div style="width: 910px; padding: 20px 5px 0 5px;">
-                <div id="mainContainer" style="padding-left: 15px; padding-right: 15px;">
-                    <div class="infoBar">
-                        <table cellpadding="0" cellspacing="0" border="0" width="100%">
-                            <tr>
-                                <td align="left" valign="middle" class="infoBarText">
-                                    Candidate Details
-                                </td>
-                                <td align="right" valign="middle" class="infoFileText">
-                                    &nbsp;
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-
+            <header class="oc-page-header mb-3"><h1 class="h5 fw-semibold mb-0">Candidate Details</h1></header>
+            <div class="card card-body p-3">
+                <div id="mainContainer">
                     <form method="post" action="?m=import&a=massImportEdit&postback=1&documentID=<?php echo $this->documentID; ?>" name="verifyForm">
 
-                    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="padding-top: 10px;">
-                        <tr>
-                            <td style="font-size: 14px; padding-top: 10px;">
-                                <b>* - Fields that are required for this document to be converted into a candidate.</b>
-                            </td>
-                            <td align="right" valign="bottom">
-                                <input type="submit" value="Save ->" style="cursor: pointer;" />
-                            </td>
-                        </tr>
-                    </table>
-
-                    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="padding-top: 15px;">
-                        <tr>
-                            <td align="left" valign="top">
-                                <div class="parsedData">
-                                    <table cellpadding="0" cellpadding="0">
-                                        <tr>
-                                            <td class="fieldCell fieldTitle">First Name:</td>
-                                            <td class="fieldCell">
-                                                <table cellpadding="0" cellspacing="0" border="0">
-                                                    <tr>
-                                                        <td valign="middle" align="left" style="padding-right: 5px;">
-                                                            <input type="text" class="inputField firstName" id="firstName" name="firstName" value="<?php echo isset($this->document['firstName']) ? $this->document['firstName'] : ''; ?>" maxlength="30" onchange="validation();" />
-                                                        </td>
-                                                        <td id="firstNameCopy" valign="middle" align="left">
-                                                            <div id="firstNameCopyBlock" onclick="fieldCopy('firstName');">
-                                                                &nbsp;&lt;&lt;
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fieldCell fieldTitle">Last Name: *</td>
-                                            <td class="fieldCell">
-                                                <table cellpadding="0" cellspacing="0" border="0">
-                                                    <tr>
-                                                        <td valign="middle" align="left" style="padding-right: 5px;">
-                                                            <input type="text" class="inputField lastName" id="lastName" name="lastName" value="<?php echo isset($this->document['lastName']) ? $this->document['lastName'] : ''; ?>" maxlength="30" onchange="validation();" />
-                                                        </td>
-                                                        <td id="lastNameCopy" valign="middle" align="left">
-                                                            <div id="lastNameCopyBlock" onclick="fieldCopy('lastName');">
-                                                                &nbsp;
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fieldCell fieldTitle">Address:</td>
-                                            <td class="fieldCell">
-                                                <table cellpadding="0" cellspacing="0" border="0">
-                                                    <tr>
-                                                        <td valign="middle" align="left" style="padding-right: 5px;">
-                                                            <input type="text" class="inputField address" id="address" name="address" value="<?php echo isset($this->document['address']) ? $this->document['address'] : ''; ?>" maxlength="30" onchange="validation();" />
-                                                        </td>
-                                                        <td id="addressCopy" valign="middle" align="left">
-                                                            <div id="addressCopyBlock" onclick="fieldCopy('address');">
-                                                                &nbsp;
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fieldCell fieldTitle">City:</td>
-                                            <td class="fieldCell">
-                                                <table cellpadding="0" cellspacing="0" border="0">
-                                                    <tr>
-                                                        <td valign="middle" align="left" style="padding-right: 5px;">
-                                                            <input type="text" class="inputField city" id="city" name="city" value="<?php echo isset($this->document['city']) ? $this->document['city'] : ''; ?>" maxlength="30" onchange="validation();" />
-                                                        </td>
-                                                        <td id="cityCopy" valign="middle" align="left">
-                                                            <div id="cityCopyBlock" onclick="fieldCopy('city');">
-                                                                &nbsp;
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fieldCell fieldTitle">State:</td>
-                                            <td class="fieldCell">
-                                                <table cellpadding="0" cellspacing="0" border="0">
-                                                    <tr>
-                                                        <td valign="middle" align="left" style="padding-right: 5px;">
-                                                            <input type="text" class="inputField state" id="state" name="state" value="<?php echo isset($this->document['state']) ? $this->document['state'] : ''; ?>" maxlength="30" onchange="validation();" />
-                                                        </td>
-                                                        <td id="stateCopy" valign="middle" align="left">
-                                                            <div id="stateCopyBlock" onclick="fieldCopy('state');">
-                                                                &nbsp;
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fieldCell fieldTitle">Zip Code:</td>
-                                            <td class="fieldCell">
-                                                <table cellpadding="0" cellspacing="0" border="0">
-                                                    <tr>
-                                                        <td valign="middle" align="left" style="padding-right: 5px;">
-                                                            <input type="text" class="inputField zipCode" id="zipCode" name="zipCode" value="<?php echo isset($this->document['zipCode']) ? $this->document['zipCode'] : ''; ?>" maxlength="30" onchange="validation();" />
-                                                        </td>
-                                                        <td id="zipCodeCopy" valign="middle" align="left">
-                                                            <div id="zipCodeCopyBlock" onclick="fieldCopy('zipCode');">
-                                                                &nbsp;
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fieldCell fieldTitle">E-mail: *</td>
-                                            <td class="fieldCell">
-                                                <table cellpadding="0" cellspacing="0" border="0">
-                                                    <tr>
-                                                        <td valign="middle" align="left" style="padding-right: 5px;">
-                                                            <input type="text" class="inputField email" id="email" name="email" value="<?php echo isset($this->document['email']) ? $this->document['email'] : ''; ?>" maxlength="30" onchange="validation();" />
-                                                        </td>
-                                                        <td id="emailCopy" valign="middle" align="left">
-                                                            <div id="emailCopyBlock" onclick="fieldCopy('email');">
-                                                                &nbsp;
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fieldCell fieldTitle">Phone:</td>
-                                            <td class="fieldCell">
-                                                <table cellpadding="0" cellspacing="0" border="0">
-                                                    <tr>
-                                                        <td valign="middle" align="left" style="padding-right: 5px;">
-                                                            <input type="text" class="inputField homePhone" id="homePhone" name="homePhone" value="<?php echo isset($this->document['phone']) ? $this->document['phone'] : ''; ?>" maxlength="30" onchange="validation();" />
-                                                        </td>
-                                                        <td id="homePhoneCopy" valign="middle" align="left">
-                                                            <div id="homePhoneCopyBlock" onclick="fieldCopy('homePhone');">
-                                                                &nbsp;
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fieldCell fieldTitle" colspan="2">
-                                                Skills:
-                                                <br />
-                                                <table cellpadding="0" cellspacing="0" border="0">
-                                                    <tr>
-                                                        <td valign="middle" align="left" style="padding-right: 5px;">
-                                                            <textarea name="skills" id="skills" class="largeInputField" maxlength="255" onchange="validation();"><?php echo isset($this->document['skills']) ? trim($this->document['skills']) : ''; ?></textarea>
-                                                        </td>
-                                                        <td id="skillsCopy" valign="middle" align="left">
-                                                            <div id="skillsCopyBlock" onclick="fieldCopy('skills');">
-                                                                &nbsp;
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fieldCell fieldTitle" colspan="2">
-                                                Education:
-                                                <br />
-                                                <table cellpadding="0" cellspacing="0" border="0">
-                                                    <tr>
-                                                        <td valign="middle" align="left" style="padding-right: 5px;">
-                                                            <textarea name="education" id="education" class="largeInputField" maxlength="255" onchange="validation();"><?php echo isset($this->document['education']) ? trim($this->document['education']) : ''; ?></textarea>
-                                                        </td>
-                                                        <td id="educationCopy" valign="middle" align="left">
-                                                            <div id="educationCopyBlock" onclick="fieldCopy('education');">
-                                                                &nbsp;
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fieldCell fieldTitle" colspan="2">
-                                                Experience:
-                                                <br />
-                                                <table cellpadding="0" cellspacing="0" border="0">
-                                                    <tr>
-                                                        <td valign="middle" align="left" style="padding-right: 5px;">
-                                                            <textarea name="experience" id="experience" class="largeInputField" maxlength="255" onchange="validation();"><?php echo isset($this->document['experience']) ? trim($this->document['experience']) : ''; ?></textarea>
-                                                        </td>
-                                                        <td id="experienceCopy" valign="middle" align="left">
-                                                            <div id="experienceCopyBlock" onclick="fieldCopy('experience');">
-                                                                &nbsp;
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </td>
-                            <td align="left" valign="top" width="600">
-                                File: <b><?php echo $this->document['realName']; ?></b> (<?php echo number_format(filesize($this->document['name'])/1024,0); ?>k)
-                                <textarea name="document" id="document" class="documentViewer" rows="25" cols="40" onmouseup="documentMouseUp(this);" readonly><?php echo $this->document['contents']; ?></textarea>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <div style="text-align: center; padding: 20px 0 20px 0">
-                        <input type="submit" value="Save Changes" style="cursor: pointer;" />
+                    <div class="d-flex flex-wrap justify-content-between gap-2 mb-3">
+                        <p class="mb-0">* - Fields that are required for this document to be converted into a candidate.</p>
+                        <input type="submit" value="Save ->" class="btn btn-sm btn-primary" />
                     </div>
-
+                    <div class="row g-3">
+                        <div class="col-12 col-lg-5">
+                            <div class="parsedData">
+                            <div class="mb-3">
+                                <label class="form-label" for="firstName">First Name:</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="flex-grow-1"><input type="text" class="form-control form-control-sm" id="firstName" name="firstName" value="<?php echo isset($this->document['firstName']) ? $this->document['firstName'] : ''; ?>" maxlength="30" onchange="validation();" /></div>
+                                    <div id="firstNameCopy"><button type="button" class="btn btn-sm btn-outline-secondary" id="firstNameCopyBlock" onclick="fieldCopy('firstName');" aria-label="Copy selected resume text to First Name"></button></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="lastName">Last Name: *</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="flex-grow-1"><input type="text" class="form-control form-control-sm" id="lastName" name="lastName" value="<?php echo isset($this->document['lastName']) ? $this->document['lastName'] : ''; ?>" maxlength="30" onchange="validation();" /></div>
+                                    <div id="lastNameCopy"><button type="button" class="btn btn-sm btn-outline-secondary" id="lastNameCopyBlock" onclick="fieldCopy('lastName');" aria-label="Copy selected resume text to Last Name"></button></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="address">Address:</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="flex-grow-1"><input type="text" class="form-control form-control-sm" id="address" name="address" value="<?php echo isset($this->document['address']) ? $this->document['address'] : ''; ?>" maxlength="30" onchange="validation();" /></div>
+                                    <div id="addressCopy"><button type="button" class="btn btn-sm btn-outline-secondary" id="addressCopyBlock" onclick="fieldCopy('address');" aria-label="Copy selected resume text to Address"></button></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="city">City:</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="flex-grow-1"><input type="text" class="form-control form-control-sm" id="city" name="city" value="<?php echo isset($this->document['city']) ? $this->document['city'] : ''; ?>" maxlength="30" onchange="validation();" /></div>
+                                    <div id="cityCopy"><button type="button" class="btn btn-sm btn-outline-secondary" id="cityCopyBlock" onclick="fieldCopy('city');" aria-label="Copy selected resume text to City"></button></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="state">State:</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="flex-grow-1"><input type="text" class="form-control form-control-sm" id="state" name="state" value="<?php echo isset($this->document['state']) ? $this->document['state'] : ''; ?>" maxlength="30" onchange="validation();" /></div>
+                                    <div id="stateCopy"><button type="button" class="btn btn-sm btn-outline-secondary" id="stateCopyBlock" onclick="fieldCopy('state');" aria-label="Copy selected resume text to State"></button></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="zipCode">Zip Code:</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="flex-grow-1"><input type="text" class="form-control form-control-sm" id="zipCode" name="zipCode" value="<?php echo isset($this->document['zipCode']) ? $this->document['zipCode'] : ''; ?>" maxlength="30" onchange="validation();" /></div>
+                                    <div id="zipCodeCopy"><button type="button" class="btn btn-sm btn-outline-secondary" id="zipCodeCopyBlock" onclick="fieldCopy('zipCode');" aria-label="Copy selected resume text to Zip Code"></button></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="email">E-mail: *</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="flex-grow-1"><input type="text" class="form-control form-control-sm" id="email" name="email" value="<?php echo isset($this->document['email']) ? $this->document['email'] : ''; ?>" maxlength="30" onchange="validation();" /></div>
+                                    <div id="emailCopy"><button type="button" class="btn btn-sm btn-outline-secondary" id="emailCopyBlock" onclick="fieldCopy('email');" aria-label="Copy selected resume text to E-mail"></button></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="homePhone">Phone:</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="flex-grow-1"><input type="text" class="form-control form-control-sm" id="homePhone" name="homePhone" value="<?php echo isset($this->document['phone']) ? $this->document['phone'] : ''; ?>" maxlength="30" onchange="validation();" /></div>
+                                    <div id="homePhoneCopy"><button type="button" class="btn btn-sm btn-outline-secondary" id="homePhoneCopyBlock" onclick="fieldCopy('homePhone');" aria-label="Copy selected resume text to Phone"></button></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="skills">Skills:</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="flex-grow-1"><textarea rows="5" name="skills" id="skills" class="form-control form-control-sm" maxlength="255" onchange="validation();"><?php echo isset($this->document['skills']) ? trim($this->document['skills']) : ''; ?></textarea></div>
+                                    <div id="skillsCopy"><button type="button" class="btn btn-sm btn-outline-secondary" id="skillsCopyBlock" onclick="fieldCopy('skills');" aria-label="Copy selected resume text to Skills"></button></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="education">Education:</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="flex-grow-1"><textarea rows="5" name="education" id="education" class="form-control form-control-sm" maxlength="255" onchange="validation();"><?php echo isset($this->document['education']) ? trim($this->document['education']) : ''; ?></textarea></div>
+                                    <div id="educationCopy"><button type="button" class="btn btn-sm btn-outline-secondary" id="educationCopyBlock" onclick="fieldCopy('education');" aria-label="Copy selected resume text to Education"></button></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="experience">Experience:</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="flex-grow-1"><textarea rows="5" name="experience" id="experience" class="form-control form-control-sm" maxlength="255" onchange="validation();"><?php echo isset($this->document['experience']) ? trim($this->document['experience']) : ''; ?></textarea></div>
+                                    <div id="experienceCopy"><button type="button" class="btn btn-sm btn-outline-secondary" id="experienceCopyBlock" onclick="fieldCopy('experience');" aria-label="Copy selected resume text to Experience"></button></div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-7">
+                            <label for="document" class="form-label text-break">File: <b><?php echo $this->document['realName']; ?></b> (<?php echo number_format(filesize($this->document['name'])/1024,0); ?>k)</label>
+                            <textarea name="document" id="document" class="documentViewer form-control form-control-sm" rows="25" cols="40" onmouseup="documentMouseUp(this);" readonly><?php echo $this->document['contents']; ?></textarea>
+                        </div>
+                    </div>
+                    <div class="text-end mt-3"><input type="submit" value="Save Changes" class="btn btn-sm btn-primary" /></div>
                     </form>
                 </div>
 
-                <div id="copyBlockGrey" style="display: none;">
-                    <table id="copyBlockGreyTable" cellpadding="0" cellspacing="0" border="0" style="height: 150px; cursor: pointer;">
-                        <tr><td align="left" width="17" height="2" valign="bottom"><img src="images/copyTop-d.jpg" border="0" /></td></tr>
-                        <tr><td align="left" width="17" valign="bottom" style="background: #ffffff url(images/copyBg-d.jpg);">&nbsp;</td></tr>
-                        <tr><td align="left" width="17" height="11" valign="bottom"><img src="images/copyArrow-d.jpg" border="0" /></td></tr>
-                        <tr><td align="left" width="17" valign="bottom" style="background: #ffffff url(images/copyBg-d.jpg);">&nbsp;</td></tr>
-                        <tr><td align="left" width="17" height="2" valign="bottom"><img src="images/copyBottom-d.jpg" border="0" /></td></tr>
-                    </table>
-                </div>
+                <div id="copyBlockGrey" style="display: none;"><span class="text-body-secondary" aria-hidden="true">&larr;</span></div>
 
-                <div id="copyBlockActive" style="display: none;">
-                    <table id="copyBlockActiveTable" cellpadding="0" cellspacing="0" border="0" style="height: 150px; cursor: pointer;">
-                        <tr><td align="left" width="17" height="2" valign="bottom"><img src="images/copyTop.jpg" border="0" /></td></tr>
-                        <tr><td align="left" width="17" valign="bottom" style="background: #ffffff url(images/copyBg.jpg);">&nbsp;</td></tr>
-                        <tr><td align="left" width="17" height="11" valign="bottom"><img src="images/copyArrow.jpg" border="0" /></td></tr>
-                        <tr><td align="left" width="17" valign="bottom" style="background: #ffffff url(images/copyBg.jpg);">&nbsp;</td></tr>
-                        <tr><td align="left" width="17" height="2" valign="bottom"><img src="images/copyBottom.jpg" border="0" /></td></tr>
-                    </table>
-                </div>
+                <div id="copyBlockActive" style="display: none;"><span class="text-primary" aria-hidden="true">&larr;</span></div>
 
-                <div id="copyBlockGreyMini" style="display: none;">
-                    <table id="copyBlockGreyTableMini" cellpadding="0" cellspacing="0" border="0" style="height: 15px; cursor: pointer;">
-                        <tr><td align="left" width="17" height="2" valign="bottom"><img src="images/copyTop-d.jpg" border="0" /></td></tr>
-                        <tr><td align="left" width="17" height="11" valign="bottom"><img src="images/copyArrow-d.jpg" border="0" /></td></tr>
-                        <tr><td align="left" width="17" height="2" valign="bottom"><img src="images/copyBottom-d.jpg" border="0" /></td></tr>
-                    </table>
-                </div>
+                <div id="copyBlockGreyMini" style="display: none;"><span class="text-body-secondary" aria-hidden="true">&larr;</span></div>
 
-                <div id="copyBlockActiveMini" style="display: none;">
-                    <table id="copyBlockActiveTableMini" cellpadding="0" cellspacing="0" border="0" style="height: 15px; cursor: pointer;">
-                        <tr><td align="left" width="17" height="2" valign="bottom"><img src="images/copyTop.jpg" border="0" /></td></tr>
-                        <tr><td align="left" width="17" height="11" valign="bottom"><img src="images/copyArrow.jpg" border="0" /></td></tr>
-                        <tr><td align="left" width="17" height="2" valign="bottom"><img src="images/copyBottom.jpg" border="0" /></td></tr>
-                    </table>
-                </div>
+                <div id="copyBlockActiveMini" style="display: none;"><span class="text-primary" aria-hidden="true">&larr;</span></div>
             </div>
         </div>
-    </div>
+    </main>
     <script>
     validation();
 

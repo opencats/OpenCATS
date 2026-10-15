@@ -1,82 +1,89 @@
 <?php TemplateUtility::printHeader('Job Orders', array('modules/joborders/validator.js', 'js/company.js', 'js/sweetTitles.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
+<?php TemplateUtility::printQuickSearch(); ?>
+<main id="main" class="container-fluid py-2">
 
         <div id="contents">
-            <table>
-                <tr>
-                    <td width="3%">
-                        <img src="images/job_orders.gif" width="24" height="24" border="0" alt="Job Orders" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Reports: Job Order Report</h2></td>
-                </tr>
-            </table>
+            <header class="oc-page-header mb-2">
+                <h1 class="h5 fw-semibold mb-0">Reports: Job Order Report</h1>
+            </header>
 
-            <p class="note">Generate a job order report.</p>
+            <p class="small text-body-secondary mb-2">Generate a job order report.</p>
 
             <form name="jobOrderReportForm" id="jobOrderReportForm" action="<?php echo(CATSUtility::getIndexName()); ?>" method="get">
                 <input type="hidden" name="m" value="reports">
                 <input type="hidden" name="a" value="generateJobOrderReportPDF">
 
-                <table class="editTable" width="700">
-                    <tr>
-                        <td class="tdVertical" style="width: 140px;">
-                            <label id="siteNameLabel" for="siteName">Company Name:</label>
-                        </td>
-                        <td class="tdData">
-                            <input type="text" class="inputbox" name="siteName" id="siteName" value="<?php $this->_($this->reportParameters['siteName']); ?>" style="width: 250px;" />&nbsp;*
-                        </td>
-                    </tr>
+                <div class="card card-body p-2 mb-2">
+                    <div class="row g-2 align-items-center mb-2">
+                        <div class="col-sm-4 col-lg-3">
+                            <label class="form-label small mb-0" id="siteNameLabel" for="siteName">Company Name:</label>
+                        </div>
+                        <div class="col-sm-8 col-lg-9">
+                            <div class="d-flex align-items-center gap-1">
+                                <input type="text" class="form-control form-control-sm" name="siteName" id="siteName" value="<?php $this->_($this->reportParameters['siteName']); ?>" /><span class="text-danger" title="Required">*</span>
+                            </div>
+                        </div>
+                    </div>
 
-                    <tr>
-                        <td class="tdVertical">
-                            <label id="companyNameLabel" for="companyName">Company:</label>
-                        </td>
-                        <td class="tdData">
-                            <input type="text" class="inputbox" name="companyName" id="companyName" value="<?php $this->_($this->reportParameters['companyName']); ?>" style="width: 250px;" />&nbsp;*
-                        </td>
-                    </tr>
+                    <div class="row g-2 align-items-center mb-2">
+                        <div class="col-sm-4 col-lg-3">
+                            <label class="form-label small mb-0" id="companyNameLabel" for="companyName">Company:</label>
+                        </div>
+                        <div class="col-sm-8 col-lg-9">
+                            <div class="d-flex align-items-center gap-1">
+                                <input type="text" class="form-control form-control-sm" name="companyName" id="companyName" value="<?php $this->_($this->reportParameters['companyName']); ?>" /><span class="text-danger" title="Required">*</span>
+                            </div>
+                        </div>
+                    </div>
 
-                    <tr>
-                        <td class="tdVertical">
-                            <label id="jobOrderNameLabel" for="jobOrderName">Position (Title):</label>
-                        </td>
-                        <td class="tdData">
-                            <input type="text" class="inputbox" name="jobOrderName" id="jobOrderName" value="<?php $this->_($this->reportParameters['jobOrderName']); ?>" style="width: 250px;" />&nbsp;*
-                        </td>
-                    </tr>
+                    <div class="row g-2 align-items-center mb-2">
+                        <div class="col-sm-4 col-lg-3">
+                            <label class="form-label small mb-0" id="jobOrderNameLabel" for="jobOrderName">Position (Title):</label>
+                        </div>
+                        <div class="col-sm-8 col-lg-9">
+                            <div class="d-flex align-items-center gap-1">
+                                <input type="text" class="form-control form-control-sm" name="jobOrderName" id="jobOrderName" value="<?php $this->_($this->reportParameters['jobOrderName']); ?>" /><span class="text-danger" title="Required">*</span>
+                            </div>
+                        </div>
+                    </div>
 
-                    <tr>
-                        <td class="tdVertical">
-                            <label id="periodLineLabel" for="periodLine">Job Order Period:</label>
-                        </td>
-                        <td class="tdData">
-                            <input type="text" class="inputbox" name="periodLine" id="periodLine" value="<?php $this->_($this->reportParameters['periodLine']); ?>" style="width: 250px;" />&nbsp;*
-                        </td>
-                    </tr>
+                    <div class="row g-2 align-items-center mb-2">
+                        <div class="col-sm-4 col-lg-3">
+                            <label class="form-label small mb-0" id="periodLineLabel" for="periodLine">Job Order Period:</label>
+                        </div>
+                        <div class="col-sm-8 col-lg-9">
+                            <div class="d-flex align-items-center gap-1">
+                                <input type="text" class="form-control form-control-sm" name="periodLine" id="periodLine" value="<?php $this->_($this->reportParameters['periodLine']); ?>" /><span class="text-danger" title="Required">*</span>
+                            </div>
+                        </div>
+                    </div>
 
-                    <tr>
-                        <td class="tdVertical">
-                            <label id="accountManagerLabel" for="accountManager">Account Manager:</label>
-                        </td>
-                        <td class="tdData">
-                            <input type="text" class="inputbox" name="accountManager" id="accountManager" value="<?php $this->_($this->reportParameters['accountManager']); ?>" style="width: 250px;" />&nbsp;*
-                        </td>
-                    </tr>
+                    <div class="row g-2 align-items-center mb-2">
+                        <div class="col-sm-4 col-lg-3">
+                            <label class="form-label small mb-0" id="accountManagerLabel" for="accountManager">Account Manager:</label>
+                        </div>
+                        <div class="col-sm-8 col-lg-9">
+                            <div class="d-flex align-items-center gap-1">
+                                <input type="text" class="form-control form-control-sm" name="accountManager" id="accountManager" value="<?php $this->_($this->reportParameters['accountManager']); ?>" /><span class="text-danger" title="Required">*</span>
+                            </div>
+                        </div>
+                    </div>
 
-                    <tr>
-                        <td class="tdVertical">
-                            <label id="recruiterLabel" for="recruiter">Recruiter:</label>
-                        </td>
-                        <td class="tdData">
-                            <input type="text" class="inputbox" name="recruiter" id="recruiter" value="<?php $this->_($this->reportParameters['recruiter']); ?>" style="width: 250px;" />&nbsp;*
-                        </td>
-                    </tr>
-                </table>
+                    <div class="row g-2 align-items-center mb-2">
+                        <div class="col-sm-4 col-lg-3">
+                            <label class="form-label small mb-0" id="recruiterLabel" for="recruiter">Recruiter:</label>
+                        </div>
+                        <div class="col-sm-8 col-lg-9">
+                            <div class="d-flex align-items-center gap-1">
+                                <input type="text" class="form-control form-control-sm" name="recruiter" id="recruiter" value="<?php $this->_($this->reportParameters['recruiter']); ?>" /><span class="text-danger" title="Required">*</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                <table class="editTable" width="700">
+                <div class="card card-body p-2 mb-2">
                     <input type="hidden" name="dataSet" id="dataSet" value="0,0,0,0">
                     <script type="text/javascript">
                         function setDataSet()
@@ -89,58 +96,68 @@
                         }
                     </script>
 
-                    <tr>
-                        <td class="tdVertical" style="width: 140px;">
-                            <label id="dataSet1Label"for="dataSet1">Candidates Screened:</label>
-                        </td>
-                        <td class="tdData">
-                            <input type="text" class="inputbox" name="dataSet1" id="dataSet1" value="<?php $this->_($this->reportParameters['dataSet1']); ?>" style="width: 75px;" onchange="setDataSet();" />&nbsp;*
-                        </td>
-                    </tr>
+                    <div class="row g-2 align-items-center mb-2">
+                        <div class="col-sm-4 col-lg-3">
+                            <label class="form-label small mb-0" id="dataSet1Label" for="dataSet1">Candidates Screened:</label>
+                        </div>
+                        <div class="col-sm-8 col-lg-9">
+                            <div class="d-flex align-items-center gap-1">
+                                <input type="text" class="form-control form-control-sm" name="dataSet1" id="dataSet1" value="<?php $this->_($this->reportParameters['dataSet1']); ?>" onchange="setDataSet();" /><span class="text-danger" title="Required">*</span>
+                            </div>
+                        </div>
+                    </div>
 
-                    <tr>
-                        <td class="tdVertical">
-                            <label id="dataSet2Label"for="dataSet2">Candidates Submitted:</label>
-                        </td>
-                        <td class="tdData">
-                            <input type="text" class="inputbox" name="dataSet2" id="dataSet2" value="<?php $this->_($this->reportParameters['dataSet2']); ?>" style="width: 75px;" onchange="setDataSet();" />&nbsp;*
-                        </td>
-                    </tr>
+                    <div class="row g-2 align-items-center mb-2">
+                        <div class="col-sm-4 col-lg-3">
+                            <label class="form-label small mb-0" id="dataSet2Label" for="dataSet2">Candidates Submitted:</label>
+                        </div>
+                        <div class="col-sm-8 col-lg-9">
+                            <div class="d-flex align-items-center gap-1">
+                                <input type="text" class="form-control form-control-sm" name="dataSet2" id="dataSet2" value="<?php $this->_($this->reportParameters['dataSet2']); ?>" onchange="setDataSet();" /><span class="text-danger" title="Required">*</span>
+                            </div>
+                        </div>
+                    </div>
 
-                    <tr>
-                        <td class="tdVertical">
-                            <label id="dataSet3Label"for="dataSet3">Candidates Interviewed:</label>
-                        </td>
-                        <td class="tdData">
-                            <input type="text" class="inputbox" name="dataSet3" id="dataSet3" value="<?php $this->_($this->reportParameters['dataSet3']); ?>" style="width: 75px;" onchange="setDataSet();" />&nbsp;*
-                        </td>
-                    </tr>
+                    <div class="row g-2 align-items-center mb-2">
+                        <div class="col-sm-4 col-lg-3">
+                            <label class="form-label small mb-0" id="dataSet3Label" for="dataSet3">Candidates Interviewed:</label>
+                        </div>
+                        <div class="col-sm-8 col-lg-9">
+                            <div class="d-flex align-items-center gap-1">
+                                <input type="text" class="form-control form-control-sm" name="dataSet3" id="dataSet3" value="<?php $this->_($this->reportParameters['dataSet3']); ?>" onchange="setDataSet();" /><span class="text-danger" title="Required">*</span>
+                            </div>
+                        </div>
+                    </div>
 
-                    <tr>
-                        <td class="tdVertical">
-                            <label id="dataSet4Label"for="dataSet4">Candidates Placed:</label>
-                        </td>
-                        <td class="tdData">
-                            <input type="text" class="inputbox" name="dataSet4" id="dataSet4" value="<?php $this->_($this->reportParameters['dataSet4']); ?>" style="width: 75px;" onchange="setDataSet();" />&nbsp;*
-                        </td>
-                    </tr>
-                </table>
+                    <div class="row g-2 align-items-center mb-2">
+                        <div class="col-sm-4 col-lg-3">
+                            <label class="form-label small mb-0" id="dataSet4Label" for="dataSet4">Candidates Placed:</label>
+                        </div>
+                        <div class="col-sm-8 col-lg-9">
+                            <div class="d-flex align-items-center gap-1">
+                                <input type="text" class="form-control form-control-sm" name="dataSet4" id="dataSet4" value="<?php $this->_($this->reportParameters['dataSet4']); ?>" onchange="setDataSet();" /><span class="text-danger" title="Required">*</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <script type="text/javascript">setDataSet();</script>
 
-                <table class="editTable" width="700">
-                    <tr>
-                        <td class="tdVertical" style="width: 140px;">
-                            <label id="notesLabel" for="notes">Misc. Notes:</label>
-                        </td>
-                        <td class="tdData">
-                            <textarea class="inputbox" name="notes" id="notes" rows="5" style="width: 400px;" /></textarea>
-                        </td>
-                    </tr>
-                </table>
+                <div class="card card-body p-2 mb-2">
+                    <div class="row g-2 align-items-center mb-2">
+                        <div class="col-sm-4 col-lg-3">
+                            <label class="form-label small mb-0" id="notesLabel" for="notes">Misc. Notes:</label>
+                        </div>
+                        <div class="col-sm-8 col-lg-9">
+                            <div class="d-flex align-items-center gap-1">
+                                <textarea class="form-control form-control-sm" name="notes" id="notes" rows="5"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                <input type="submit" class="button" name="submit" value="Generate Report" />&nbsp;
-                <input type="reset"  class="button" name="reset"  value="Reset" />&nbsp;
+                <input type="submit" class="btn btn-primary btn-sm" name="submit" value="Generate Report" />
+                <input type="reset"  class="btn btn-secondary btn-sm" name="reset"  value="Reset" />
                 
                 <!-- IE PDF Hack -->
                 <input type="hidden" name="ext" value=".pdf" />
@@ -150,5 +167,5 @@
                 document.jobOrderReportForm.siteName.focus();
             </script>
         </div>
-    </div>
+</main>
 <?php TemplateUtility::printFooter(); ?>

@@ -14,7 +14,6 @@ include_once(LEGACY_ROOT . '/lib/NewVersionCheck.php');
 include_once(LEGACY_ROOT . '/lib/Candidates.php');
 include_once(LEGACY_ROOT . '/lib/Companies.php');
 include_once(LEGACY_ROOT . '/lib/Contacts.php');
-include_once(LEGACY_ROOT . '/lib/Graphs.php');
 include_once(LEGACY_ROOT . '/lib/Site.php');
 include_once(LEGACY_ROOT . '/lib/ListEditor.php');
 include_once(LEGACY_ROOT . '/lib/SystemUtility.php');
@@ -208,14 +207,16 @@ class SettingsUI extends UserInterface
 
         if (!eval(Hooks::get('SETTINGS_HANDLE_REQUEST'))) return;
 
+        if (in_array($action, array('tags', 'ajax_tags_add', 'ajax_tags_del', 'ajax_tags_upd'), true) &&
+            $this->getUserAccessLevel('settings.tags') < ACCESS_LEVEL_SA &&
+            !$_SESSION['CATS']->hasUserCategory('careerportal'))
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'You are not allowed to edit tags.');
+        }
+
         switch ($action)
         {
             case 'tags':
-                /* Bail out if the user is demo. */
-                if ($this->getUserAccessLevel('settings.tags') < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-                {
-                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'You are not allowed to edit tags.');
-                }
                 if ($this->isPostBack())
                 {
                     $this->onChangeTags();
@@ -3215,9 +3216,13 @@ class SettingsUI extends UserInterface
     {
         if (!isset($_SESSION['CATS_QUESTIONNAIRE']) || empty($_SESSION['CATS_QUESTIONNAIRE']))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, 'Please return to your careers website '
+            CommonErrors::fatal(
+                COMMONERROR_BADINDEX,
+                $this,
+                'Please return to your careers website '
                 . 'and load the questionnaire a second time as your session has '
-                . 'expired.');
+                . 'expired.'
+            );
         }
 
         // Get the title

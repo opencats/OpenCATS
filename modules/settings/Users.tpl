@@ -1,59 +1,54 @@
 <?php TemplateUtility::printHeader('Settings', 'js/sorttable.js'); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
+    <?php TemplateUtility::printQuickSearch(); ?>
+<main id="main" class="container-fluid py-2">
 
         <div id="contents">
-            <table>
-                <tr>
-                    <td width="3%">
-                        <img src="images/settings.gif" width="24" height="24" alt="Settings" style="border: none; margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Settings: User Management</h2></td>
-                </tr>
-            </table>
+            <header class="oc-page-header mb-2">
+                <h1 class="h5 fw-semibold mb-0">Settings: User Management</h1>
+            </header>
 
-            <p class="note">User Management</p>
+            <p class="bg-secondary-subtle rounded p-2 mb-2 fw-semibold">User Management</p>
 
-            <table class="sortable">
+            <div class="table-responsive mb-2"><table class="sortable table table-sm table-striped align-middle">
                 <thead>
                     <tr>
-                        <th align="left" nowrap="nowrap">First Name</th>
-                        <th align="left" nowrap="nowrap">Last Name</th>
-                        <th align="left">Username</th>
-                        <th align="left" nowrap="nowrap">Access Level</th>
-                        <th align="left" nowrap="nowrap">Last Success</th>
-                        <th align="left" nowrap="nowrap">Last Fail</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Username</th>
+                        <th>Access Level</th>
+                        <th>Last Success</th>
+                        <th>Last Fail</th>
                     </tr>
                 </thead>
 
                 <?php if (!empty($this->rs)): ?>
                     <?php foreach ($this->rs as $rowNumber => $data): ?>
                         <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
-                            <td valign="top" align="left">
+                            <td>
                                 <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=showUser&amp;userID=<?php $this->_($data['userID']); ?>">
                                     <?php $this->_($data['firstName']); ?>
                                 </a>
                             </td>
-                            <td valign="top" align="left">
+                            <td>
                                 <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=showUser&amp;userID=<?php $this->_($data['userID']); ?>">
                                     <?php $this->_($data['lastName']); ?>
                                 </a>
                             </td>
-                            <td valign="top" align="left"><?php $this->_($data['username']); ?></td>
-                            <td valign="top" align="left"><?php $this->_($data['accessLevelDescription']); ?></td>
-                            <td valign="top" align="left"><?php $this->_($data['successfulDate']); ?></td>
-                            <td valign="top" align="left"><?php $this->_($data['unsuccessfulDate']); ?></td>
+                            <td><?php $this->_($data['username']); ?></td>
+                            <td><?php $this->_($data['accessLevelDescription']); ?></td>
+                            <td><?php $this->_($data['successfulDate']); ?></td>
+                            <td><?php $this->_($data['unsuccessfulDate']); ?></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>
-            </table>
+            </table></div>
             <?php if (AUTH_MODE != "ldap"): ?>
-                <a id="add_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=addUser" title="You have <?php $this->_($this->license['diff']); ?> user accounts remaining.">
-                    <img src="images/candidate_inline.gif" width="16" height="16" class="absmiddle" alt="add" style="border: none;" />&nbsp;Add User
+                <a class="btn btn-primary btn-sm" id="add_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=addUser" title="You have <?php $this->_($this->license['diff']); ?> user accounts remaining.">
+                    <img src="images/candidate_inline.gif" class="absmiddle" alt="add" style="border: none;" />&nbsp;Add User
                 </a>
             <?php endif; ?>
         </div>
-    </div>
+    </main>
 <?php TemplateUtility::printFooter(); ?>

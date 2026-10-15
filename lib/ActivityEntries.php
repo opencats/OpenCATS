@@ -383,6 +383,7 @@ class ActivityEntries
             "SELECT
                 activity.activity_id AS activityID,
                 activity.data_item_id AS dataItemID,
+                activity.data_item_type AS dataItemType,
                 activity.joborder_id AS jobOrderID,
                 activity.type AS type,
                 activity_type.short_description AS typeDescription,
@@ -415,6 +416,52 @@ class ActivityEntries
         );
 
         return $this->_db->getAssoc($sql);
+    }
+
+    /**
+     * Apply the parent module's existing activity permissions, not authorship.
+     */
+    public function canModify($activity, $delete = false)
+    {
+        if (empty($activity) || empty($activity['dataItemID']))
+        {
+            return false;
+        }
+
+        switch ($activity['dataItemType'])
+        {
+            case DATA_ITEM_CANDIDATE:
+                $module = 'candidates';
+                $permission = $delete ? 'candidates.delete' : 'candidates.edit';
+                $requiredLevel = $delete ? ACCESS_LEVEL_DELETE : ACCESS_LEVEL_EDIT;
+                break;
+
+            case DATA_ITEM_CONTACT:
+                $module = 'contacts';
+                $permission = $delete ? 'contacts.deleteActivity' : 'contacts.editActivity';
+                $requiredLevel = ACCESS_LEVEL_EDIT;
+                break;
+
+            default:
+                // Normal activity UI supports candidates and contacts only.
+                // The company page aggregates its contacts' activities.
+                return false;
+        }
+
+        if ($_SESSION['CATS']->getAccessLevel($permission) < $requiredLevel ||
+            $_SESSION['CATS']->getAccessLevel($module . '.show') < ACCESS_LEVEL_READ)
+        {
+            return false;
+        }
+
+        if ($activity['dataItemType'] == DATA_ITEM_CANDIDATE)
+        {
+            include_once(LEGACY_ROOT . '/lib/CandidateAuthorization.php');
+            return CandidateAuthorization::canAccessCandidate($activity['dataItemID']);
+        }
+
+        $contacts = new Contacts();
+        return !empty($contacts->get($activity['dataItemID']));
     }
 
     /**

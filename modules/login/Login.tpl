@@ -1,106 +1,146 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-    <head>
-        <title>opencats - Login</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=<?php echo(HTML_ENCODING); ?>" />
-        <style type="text/css" media="all">@import "<?php echo TemplateUtility::getVersionedAssetURL('modules/login/login.css'); ?>";</style>
-        <script type="text/javascript" src="<?php echo TemplateUtility::getVersionedAssetURL('js/lib.js'); ?>"></script>
-        <script type="text/javascript" src="<?php echo TemplateUtility::getVersionedAssetURL('modules/login/validator.js'); ?>"></script>
-        <script type="text/javascript" src="<?php echo TemplateUtility::getVersionedAssetURL('js/submodal/subModal.js'); ?>"></script>
-    </head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="<?php echo(HTML_ENCODING); ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <body>
+    <title>OpenCATS - Login</title>
+
+    <link
+        rel="stylesheet"
+        href="<?php echo TemplateUtility::getVersionedAssetURL('vendor/twbs/bootstrap/dist/css/bootstrap.min.css'); ?>"
+    >
+    <link
+        rel="stylesheet"
+        href="<?php echo TemplateUtility::getVersionedAssetURL('modules/login/login.css'); ?>"
+    >
+
+    <script src="<?php echo TemplateUtility::getVersionedAssetURL('js/lib.js'); ?>"></script>
+    <script src="<?php echo TemplateUtility::getVersionedAssetURL('modules/login/validator.js'); ?>"></script>
+    <script src="<?php echo TemplateUtility::getVersionedAssetURL('js/submodal/subModal.js'); ?>"></script>
+</head>
+
+<body class="bg-body-tertiary">
     <!-- CATS_LOGIN -->
     <?php TemplateUtility::printPopupContainer(); ?>
-<!--       <div id="headerBlock"> 
-            <span id="mainLogo">opencats</span><br /> 
-             <span id="subMainLogo">Applicant Tracking System</span> 
-       </div> -->
-<p>
-	&nbsp;</p>
-<p>
-	&nbsp;</p>
-<p>
-	&nbsp;</p>
 
+    <main class="container">
+        <div class="row justify-content-center align-items-center min-vh-100 py-5">
+            <div class="col-12 col-sm-10 col-md-7 col-lg-5 col-xl-4">
 
-        <div id="contents">
-            <div id="login">
-                <div id="loginText">
-                    <div class="ctr">
-                    </div>
-                    <br />
+                <div class="card login-card shadow">
+                    <div class="card-body p-4 p-md-5">
 
-                    <?php if (ENABLE_DEMO_MODE): ?>
-                        <br /><br />
-                        <a href="javascript:void(0);" onclick="demoLogin(); return false;">Login to Demo Account</a><br />
-                    <?php endif; ?>
-                </div>
-
-                <div id="formBlock">
-                    <img src="images/CATS-sig.gif" alt="Login" hspace="10" vspace="10" />
-                    <br />
-                    <form name="loginForm" id="loginForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=login&amp;a=attemptLogin<?php if ($this->reloginVars != ''): ?>&amp;reloginVars=<?php echo($this->reloginVars); ?><?php endif; ?>" method="post" onsubmit="return checkLoginForm(document.loginForm);" autocomplete="off">
-                        <div id="subFormBlock">
-                            <label id="usernameLabel" for="username">Username</label><br />
-                            <input name="username" id="username" class="login-input-box" value="<?php if (isset($this->username)) $this->_($this->username); ?>" />
-                            <br />
-
-                            <label id="passwordLabel" for="password">Password</label><br />
-                            <input type="password" name="password" id="password" class="login-input-box" />
-                            <br />
-
-                            <input type="submit" class="button" value="Login" />
-                            <input type="reset"  id="reset" name="reset"  class="button" value="Reset" />
-                            <br /><br />
+                        <div class="text-center mb-4">
+                            <img
+                                src="<?php echo TemplateUtility::getVersionedAssetURL('images/logo_and_project_name.svg'); ?>"
+                                alt="OpenCATS"
+                                class="login-logo"
+                            >
                         </div>
-                    </form>
-                
-                    <span style="line-height: 30px;font-size: 10px;padding-LEFT: 10px;">Version <?php echo(CATSUtility::getVersion()); ?></span>
-                </div>
-                <div style="clear: both;"></div>
-            </div>
-            <br />
 
-            <script type="text/javascript">
-                document.loginForm.username.focus();
-
-                function demoLogin()
-                {
-                    document.getElementById('username').value = '<?php echo(DEMO_LOGIN); ?>';
-                    document.getElementById('password').value = '<?php echo(DEMO_PASSWORD); ?>';
-                    document.getElementById('loginForm').submit();
-                }
-            </script>
-
-          <p>
-	&nbsp;</p>  
-<p>
-	&nbsp;</p>  
-
-	<span style="font-size: 12px;"><a href="http://forums.opencats.org ">opencats support forum</a></span>
-	           <div id="login">
-                <?php if (!empty($this->message)): ?>
-                    <div>
-                        <?php if ($this->messageSuccess): ?>
-                            <p class="success"><?php $this->_($this->message); ?><br /></p>
-                        <?php else: ?>
-                            <p class="failure"><?php $this->_($this->message); ?><br /></p>
+                        <?php if (!empty($this->message)): ?>
+                            <?php if ($this->messageSuccess): ?>
+                                <div class="alert alert-success" role="alert">
+                                    <?php $this->_($this->message); ?>
+                                </div>
+                            <?php else: ?>
+                                <div class="alert alert-danger" role="alert">
+                                    <?php $this->_($this->message); ?>
+                                </div>
+                            <?php endif; ?>
                         <?php endif; ?>
+
+                        <div class="login-form-panel">
+                            <form
+                                name="loginForm"
+                                id="loginForm"
+                                action="<?php echo(CATSUtility::getIndexName()); ?>?m=login&amp;a=attemptLogin<?php if ($this->reloginVars != ''): ?>&amp;reloginVars=<?php echo($this->reloginVars); ?><?php endif; ?>"
+                                method="post"
+                                onsubmit="return checkLoginForm(document.loginForm);"
+                                autocomplete="off"
+                            >
+                                <div class="mb-3">
+                                    <label
+                                        id="usernameLabel"
+                                        for="username"
+                                        class="form-label fw-semibold"
+                                    >
+                                        Username
+                                    </label>
+
+                                    <input
+                                        name="username"
+                                        id="username"
+                                        class="form-control"
+                                        value="<?php if (isset($this->username)) $this->_($this->username); ?>"
+                                        autocomplete="username"
+                                    >
+                                </div>
+
+                                <div class="mb-3">
+                                    <label
+                                        id="passwordLabel"
+                                        for="password"
+                                        class="form-label fw-semibold"
+                                    >
+                                        Password
+                                    </label>
+
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        id="password"
+                                        class="form-control"
+                                        autocomplete="current-password"
+                                    >
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-success w-100"
+                                >
+                                    Login
+                                </button>
+                            </form>
+
+                            <?php if (ENABLE_DEMO_MODE): ?>
+                                <div class="mt-3">
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-secondary w-100"
+                                        onclick="demoLogin();"
+                                    >
+                                        Login to Demo Account
+                                    </button>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="small mt-4">
+                            Version <?php echo(CATSUtility::getVersion()); ?>
+                        </div>
+
                     </div>
-                <?php endif; ?>
-	</div>
-	  <div id="footerBlock">
-                <span class="footerCopyright"><?php echo(COPYRIGHT_HTML); ?></span>
-                Based upon original work and Powered by <a href="http://www.opencats.org" target="_blank">OpenCATS</a>.</div>
+                </div>
+
             </div>
         </div>
+    </main>
 
+    <script>
+        document.loginForm.username.focus();
 
-        <script type="text/javascript">
-            initPopUp();
-        </script>
-        <?php TemplateUtility::printCookieTester(); ?>
-    </body>
+        function demoLogin()
+        {
+            document.getElementById('username').value = '<?php echo(DEMO_LOGIN); ?>';
+            document.getElementById('password').value = '<?php echo(DEMO_PASSWORD); ?>';
+            document.getElementById('loginForm').submit();
+        }
+
+        initPopUp();
+    </script>
+
+    <?php TemplateUtility::printCookieTester(); ?>
+</body>
 </html>

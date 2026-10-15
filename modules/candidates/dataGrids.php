@@ -1,6 +1,13 @@
 <?php
-
-//TODO: License
+/*
+ * OpenCATS
+ *
+ * Portions Copyright (C) 2005-2007 Cognizo Technologies, Inc.
+ * Originally released as part of CATS Standard Edition under the
+ * CATS Public License 1.1a.
+ *
+ * See LICENSE.md.
+ */
 
 include_once(LEGACY_ROOT . '/lib/Candidates.php');
 include_once(LEGACY_ROOT . '/lib/Width.php');
@@ -64,7 +71,10 @@ class candidatesListByViewDataGrid extends CandidatesDataGrid
         {
             $html .= $this->getInnerActionAreaItem('Send E-Mail', CATSUtility::getIndexName().'?m=candidates&amp;a=emailCandidates');
         }
-        $html .= $this->getInnerActionAreaItem('Export', CATSUtility::getIndexName().'?m=export&amp;a=exportByDataGrid');
+        if ($_SESSION['CATS']->getAccessLevel('export') >= ACCESS_LEVEL_SA)
+        {
+            $html .= $this->getInnerActionAreaItem('Export', CATSUtility::getIndexName().'?m=export&amp;a=exportByDataGrid');
+        }
 
         $html .= parent::getInnerActionArea();
 
@@ -124,7 +134,10 @@ class candidatesSavedListByViewDataGrid extends CandidatesDataGrid
         {
             $html .= $this->getInnerActionAreaItem('Send E-Mail', CATSUtility::getIndexName().'?m=candidates&amp;a=emailCandidates');
         }
-        $html .= $this->getInnerActionAreaItem('Export', CATSUtility::getIndexName().'?m=export&amp;a=exportByDataGrid');
+        if ($_SESSION['CATS']->getAccessLevel('export') >= ACCESS_LEVEL_SA)
+        {
+            $html .= $this->getInnerActionAreaItem('Export', CATSUtility::getIndexName().'?m=export&amp;a=exportByDataGrid');
+        }
 
         $html .= parent::getInnerActionArea();
 

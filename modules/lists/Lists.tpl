@@ -1,79 +1,41 @@
-<?php TemplateUtility::printHeader('Lists', array( 'js/highlightrows.js', 'js/sweetTitles.js', 'js/export.js', 'js/dataGrid.js', 'js/dataGridFilters.js')); ?>
+<?php TemplateUtility::printHeader('Lists', array('js/highlightrows.js', 'js/sweetTitles.js', 'js/export.js', 'js/dataGrid.js', 'js/dataGridFilters.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
-
-        <div id="contents"<?php echo !$this->dataGrid->getNumberOfRows() ? ' style="background-color: #E6EEFF; padding: 0px;"' : ''; ?>>
+<?php TemplateUtility::printQuickSearch(); ?>
+<main id="main" class="container-fluid py-2">
+    <div id="contents">
+        <section class="oc-page-header d-flex flex-wrap align-items-center gap-2 mb-2">
+            <h1 class="h5 fw-semibold mb-0">Lists: Home</h1>
             <?php if ($this->dataGrid->getNumberOfRows()): ?>
-            <table width="100%">
-                <tr>
-                    <td width="3%">
-                        <img src="images/job_orders.gif" width="24" height="24" border="0" alt="Job Orders" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Lists: Home</h2></td>
-                    <td align="right">
-                        <form name="jobOrdersViewSelectorForm" id="jobOrdersViewSelectorForm" action="<?php echo(CATSUtility::getIndexName()); ?>" method="get">
-                            <input type="hidden" name="m" value="joborders" />
-                            <input type="hidden" name="a" value="list" />
-
-                            <table class="viewSelector">
-                                <tr>
-                                    <td>
-                                    </td>
-                                 </tr>
-                            </table>
-                        </form>
-                    </td>
-                </tr>
-            </table>
-
-            <p class="note">
-                <span style="float:left;">Lists  -
-                    Page <?php echo($this->dataGrid->getCurrentPageHTML()); ?> (<?php echo($this->dataGrid->getNumberOfRows()); ?> Items)
-                </span>
-                <span style="float:right;">
-                    <?php $this->dataGrid->drawRowsPerPageSelector(); ?>
-                </span>&nbsp;
-            </p>
-
-            <?php $this->dataGrid->drawFilterArea(); ?>
-            <?php $this->dataGrid->draw();  ?>
-
-            <div style="display:block;">
-                <span style="float:left;">
-
-                </span>
-                <span style="float:right;">
-                    <?php $this->dataGrid->printNavigation(true); ?>
-                </span>&nbsp;
+            <div class="d-flex flex-wrap align-items-center gap-2 small ms-auto">
+                <div class="oc-datagrid-rows-per-page"><?php $this->dataGrid->drawRowsPerPageSelector(); ?></div>
             </div>
-            <?php else: ?>
-
-            <br /><br /><br /><br />
-            <div style="height: 95px; background: #E6EEFF url(images/nodata/listsTop.jpg);">
-                &nbsp;
-            </div>
-            <br /><br />
-            <table cellpadding="0" cellspacing="0" border="0" width="956">
-                <tr>
-                <td style="padding-left: 62px;" align="center" valign="center">
-
-                    <div style="text-align: center; width: 600px; line-height: 22px; font-size: 18px; font-weight: bold; color: #666666; padding-bottom: 20px;">
-                    Create lists to group candidates, job orders, companies and contacts and perform actions on them quickly.
-                    <br /><br />
-                    <span style="font-size: 14px; font-weight: normal;">
-                    Create lists from the <b>job orders, candidates, companies </b>or<b> contacts</b> tab.
-                    </span>
-                    </div>
-                </td>
-
-                </tr>
-            </table>
-
             <?php endif; ?>
+        </section>
 
-        </div>
+        <?php if ($this->dataGrid->getNumberOfRows()): ?>
+        <section class="card">
+            <div class="card-header bg-secondary-subtle py-1 px-2 small">
+                Lists - Page <?php echo($this->dataGrid->getCurrentPageHTML()); ?>
+                (<?php echo($this->dataGrid->getNumberOfRows()); ?> Items)
+            </div>
+            <div class="card-body p-2">
+                <?php $this->dataGrid->drawFilterArea(); ?>
+                <?php $this->dataGrid->draw(); ?>
+            </div>
+            <div class="card-footer bg-body py-1 px-2 d-flex flex-wrap justify-content-end gap-2 small">
+                <div class="mw-100"><?php $this->dataGrid->printNavigation(true); ?></div>
+            </div>
+        </section>
+        <?php else: ?>
+        <section class="card">
+            <div class="card-body p-3">
+                <h2 class="h6">No lists to display</h2>
+                <p>Create lists to group candidates, job orders, companies and contacts and perform actions on them quickly.</p>
+                <p class="mb-0 text-body-secondary">Create lists from the <strong>job orders, candidates, companies</strong> or <strong>contacts</strong> tab.</p>
+            </div>
+        </section>
+        <?php endif; ?>
     </div>
-
+</main>
 <?php TemplateUtility::printFooter(); ?>

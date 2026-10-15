@@ -40,7 +40,7 @@ addcommas()
 	sed -e ':a' -e 's/\(.*[0-9]\)\([0-9]\{3\}\)/\1,\2/;ta'
 }
 
-PHPFILES=$(find . -name '*.php' -print | grep -vE 'website|artichow|fpdf|phpmailer|site_backup.php|zip/')
+PHPFILES=$(find . -name '*.php' -print | grep -vE 'website|fpdf|phpmailer|site_backup.php|zip/')
 CSSFILES=$(find . -name '*.css' -print | grep -vE 'website|fpdf')
 JSFILES=$(find . -name '*.js' -print | grep -vE 'website|calendarDate|sweetTitles.js')
 

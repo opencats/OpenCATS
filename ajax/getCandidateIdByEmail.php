@@ -13,7 +13,7 @@ include_once(__DIR__ . '/bootstrap.php');
 
 $interface = new SecureAJAXInterface();
 
-include (LEGACY_ROOT . '/lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/CandidateAuthorization.php');
 
 if (!isset($_REQUEST['email']))
 {
@@ -28,7 +28,7 @@ $output = "<data>\n";
 
 $candidateID = $candidates->getIDByEmail($email);
 
-if ($candidateID == -1)
+if ($candidateID == -1 || !CandidateAuthorization::canAccessCandidate($candidateID, $candidateRS))
 {
     $output .=
         "    <candidate>\n" .
@@ -37,8 +37,6 @@ if ($candidateID == -1)
 }
 else
 {
-    $candidateRS = $candidates->get($candidateID);
-    
     $output .=
         "    <candidate>\n" .
         "        <id>"         . $candidateID . "</id>\n" .

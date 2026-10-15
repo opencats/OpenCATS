@@ -148,13 +148,6 @@ function focusFirstField()
 function enableFormFields(tf)
 {
     var inputs = document.getElementsByTagName("input");
-    var rememberMe = document.getElementById("rememberMe");
-
-    if (rememberMe)
-    {
-        rememberMe.disabled = !tf;
-    }
-
     for (var i = 0; i < inputs.length; i++)
     {
         if (inputs[i].id != "email" && inputs[i].type == "text")

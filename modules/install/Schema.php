@@ -2311,6 +2311,27 @@ class CATSSchema
                     );
             ',
 
+            '394' => 'PHP:
+                $templateName = "OpenCATS Bootstrap 5.3";
+                $existing = $db->getAllAssoc("SELECT career_portal_name FROM career_portal_template WHERE career_portal_name = " . $db->makeQueryString($templateName));
+                $custom = $db->getAllAssoc("SELECT career_portal_name FROM career_portal_template_site WHERE career_portal_name = " . $db->makeQueryString($templateName));
+                // Never replace an existing definition or administrator-created template.
+                if (empty($existing) && empty($custom))
+                {
+                    $defaults = include LEGACY_ROOT . "/modules/careers/DefaultTemplate.php";
+                    foreach ($defaults as $setting => $value)
+                    {
+                        $db->query("INSERT INTO career_portal_template (career_portal_name, setting, value) VALUES ("
+                            . $db->makeQueryString($templateName) . ", " . $db->makeQueryString($setting) . ", " . $db->makeQueryString($value) . ")");
+                    }
+                }
+            ',
+
+            '395' => '
+                CREATE INDEX `idx_cjosh_candidate_status` ON `candidate_joborder_status_history` (`candidate_id`,`status_to`);
+                CREATE INDEX `idx_cjosh_joborder_status` ON `candidate_joborder_status_history` (`joborder_id`,`status_to`);
+            ',
+
         );
     }
 }

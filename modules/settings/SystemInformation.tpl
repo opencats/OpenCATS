@@ -1,84 +1,79 @@
 <?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
+    <?php TemplateUtility::printQuickSearch(); ?>
+<main id="main" class="container-fluid py-2">
 
         <div id="contents">
-            <table>
-                <tr>
-                    <td width="3%">
-                        <img src="images/settings.gif" width="24" height="24" alt="Settings" style="border: none; margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Settings: Administration</h2></td>
-                </tr>
-            </table>
+            <header class="oc-page-header mb-2">
+                <h1 class="h5 fw-semibold mb-0">Settings: Administration</h1>
+            </header>
 
-            <p class="note">System Information</p>
+            <p class="bg-secondary-subtle rounded p-2 mb-2 fw-semibold">System Information</p>
 
-            <table class="editTable" width="700">
-                    <tr>
-                        <td class="tdVertical" colspan="2"><span style="font-weight: bold;">General Information</span></td>
-                    </tr>
-                    <tr>
-                        <td class="tdVertical" style="width:250px;">
+            <div class="card card-body p-2 mb-2">
+                    <div class="row g-2 mb-2">
+                        <div class="col-12"><span class="fw-semibold">General Information</span></div>
+                    </div>
+                    <div class="row g-2 mb-2">
+                        <div class="col-sm-4 col-lg-3">
                             Operating System:
-                        </td>
-                        <td class="tdData">
+                        </div>
+                        <div class="col-12 col-sm">
                             <?php echo(php_uname()); ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="tdVertical" style="width:250px;">
+                        </div>
+                    </div>
+                    <div class="row g-2 mb-2">
+                        <div class="col-sm-4 col-lg-3">
                             Operating System Type:
-                        </td>
-                        <td class="tdData">
+                        </div>
+                        <div class="col-12 col-sm">
                             CATS thinks your operating system is <span class="bold"><?php $this->_($this->OSType); ?>.</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="tdVertical" style="width:250px;">
+                        </div>
+                    </div>
+                    <div class="row g-2 mb-2">
+                        <div class="col-sm-4 col-lg-3">
                             PHP Version:
-                        </td>
-                        <td class="tdData">
+                        </div>
+                        <div class="col-12 col-sm">
                             <?php echo(PHP_VERSION); ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="tdVertical" style="width:250px;">
+                        </div>
+                    </div>
+                    <div class="row g-2 mb-2">
+                        <div class="col-sm-4 col-lg-3">
                             Database Version:
-                        </td>
-                        <td class="tdData">
+                        </div>
+                        <div class="col-12 col-sm">
                             <?php $this->_($this->databaseVersion); ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="tdVertical" style="width:250px;">
+                        </div>
+                    </div>
+                    <div class="row g-2 mb-2">
+                        <div class="col-sm-4 col-lg-3">
                             Installation Directory:
-                        </td>
-                        <td class="tdData">
+                        </div>
+                        <div class="col-12 col-sm">
                             <?php $this->_($this->installationDirectory); ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="tdVertical" colspan="2">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td class="tdVertical" colspan="2"><span style="font-weight: bold;">Module Schema Version Information</span></td>
-                    </tr>
+                        </div>
+                    </div>
+                    <div class="row g-2 mb-2">
+                        <div class="col-12">&nbsp;</div>
+                    </div>
+                    <div class="row g-2 mb-2">
+                        <div class="col-12"><span class="fw-semibold">Module Schema Version Information</span></div>
+                    </div>
                     <?php foreach ($this->schemaVersions as $rowIndex => $row): ?>
-                    <tr>
-                        <td class="tdVertical" style="width:250px;">
+                    <div class="row g-2 mb-2">
+                        <div class="col-sm-4 col-lg-3">
                             <?php $this->_($row['name']); ?>
-                        </td>
-                        <td class="tdData">
+                        </div>
+                        <div class="col-12 col-sm">
                             <?php echo($row['version']); ?>
-                        </td>
-                    </tr>
+                        </div>
+                    </div>
                     <?php endforeach; ?>
-            </table>
-            <input type="button" name="back" class="button" value="Back" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=administration';" />
+            </div>
+            <input type="button" name="back" value="Back" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=administration';"  class="btn btn-sm btn-outline-secondary" />
 
         </div>
-    </div>
+    </main>
 <?php TemplateUtility::printFooter(); ?>

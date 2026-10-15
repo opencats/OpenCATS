@@ -638,9 +638,10 @@ class Calendar
      *
      * @param integer Maximum number of events to return.
      * @param flag Type / format of upcoming events to return.
+     * @param bool $includeHeading Whether to include the legacy heading.
      * @return string Upcoming events HTML.
      */
-    public function getUpcomingEventsHTML($limit, $flag = UPCOMING_FOR_CALENDAR)
+    public function getUpcomingEventsHTML($limit, $flag = UPCOMING_FOR_CALENDAR, $includeHeading = true)
     {
         switch ($flag)
         {
@@ -661,6 +662,11 @@ class Calendar
                 $style = 'font-size:11px;';
                 $criteria = 'AND TYPE = 100';
                 break;
+        }
+
+        if (!$includeHeading)
+        {
+            $HTML = '';
         }
 
         /* Get today's events. */

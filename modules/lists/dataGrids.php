@@ -155,6 +155,11 @@ class ListsDataGrid extends DataGrid
     public function getInnerActionArea()
     {
         $html = parent::getInnerActionArea();
+        if ($_SESSION['CATS']->getAccessLevel('export') < ACCESS_LEVEL_SA)
+        {
+            return $html;
+        }
+
         
         $newParameterArray = $this->_parameters;
         

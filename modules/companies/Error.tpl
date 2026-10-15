@@ -1,24 +1,17 @@
 <?php TemplateUtility::printHeader('Companies'); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
+<?php TemplateUtility::printQuickSearch(); ?>
 
-        <div id="contents">
-            <table>
-                <tr>
-                    <td width="3%">
-                        <img src="images/companies.gif" width="24" height="24" border="0" alt="Companies" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Companies: Error</h2></td>
-                </tr>
-            </table>
+<main id="main" class="container-fluid py-2 oc-company-error-page">
+<div id="contents">
+<h1 class="h5 fw-semibold mb-2">Companies: Error</h1>
 
-            <p class="fatalError">
-                A fatal error has occurred.<br />
-                <br />
-                <?php echo($this->errorMessage); ?>
-            </p>
-        </div>
-    </div>
+<div class="alert alert-danger mb-0" role="alert">
+<div class="fw-semibold mb-1">A fatal error has occurred.</div>
+<?php echo $this->errorMessage; ?>
+</div>
+</div>
+</main>
+
 <?php TemplateUtility::printFooter(); ?>

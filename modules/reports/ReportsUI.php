@@ -10,6 +10,7 @@
  */
 
 include_once(LEGACY_ROOT . '/lib/Statistics.php');
+include_once(LEGACY_ROOT . '/lib/Charts.php');
 include_once(LEGACY_ROOT . '/lib/DateUtility.php');
 include_once(LEGACY_ROOT . '/lib/Candidates.php');
 include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
@@ -186,14 +187,18 @@ class ReportsUI extends UserInterface
 
     private function graphView()
     {
-        if (isset($_GET['theImage']))
+        if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
-            $this->_template->assign('theImage', $_GET['theImage']);
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
         }
-        else
+        $statistics = new Statistics();
+        $graph = Charts::pipeline($statistics->getPipelineData((int) $_GET['jobOrderID']));
+        $pipelineGraph = '';
+        if (eval(Hooks::get('GRAPH_MINI_PIPELINE')))
         {
-            $this->_template->assign('theImage', '');
+            $pipelineGraph = Charts::render('expanded-pipeline', $graph);
         }
+        $this->_template->assign('pipelineGraph', $pipelineGraph);
 
         if (!eval(Hooks::get('REPORTS_GRAPH'))) return;
 
@@ -482,22 +487,12 @@ class ReportsUI extends UserInterface
         $pdf->SetX(25);
         $pdf->Write(5, 'Recruiter: ' . $recruiter . "\n");
 
-        /* Note that the server is not logged in when getting this file from
-         * itself.
-         */
-        // FIXME: Pass session cookie in URL? Use cURL and send a cookie? I
-        //        really don't like this... There has to be a way.
-        // FIXME: In some environments this graph URL can trigger an FPDF
-        //        "could not make seekable" warning.
-        $URI = CATSUtility::getAbsoluteURI(
-            CATSUtility::getIndexName()
-            . '?m=graphs&a=jobOrderReportGraph&data='
-            . urlencode(implode(',', $dataSet))
-        );
+        // The four labelled values below contain all information from the old image.
+        $graph = Charts::comparison('Recruiting Summary',
+            array('Screened', 'Submitted', 'Interviewed', 'Placed'), $dataSet);
+        if (!eval(Hooks::get('GRAPH_JOB_ORDER_REPORT'))) return;
 
-        $pdf->Image($URI, 70, 95, 80, 80, 'jpg');
-
-        $pdf->SetXY(25,180);
+        $pdf->SetXY(25, 100);
         $pdf->SetFont($fontFace, '', 10);
         $pdf->Write(5, 'Total Candidates ');
         $pdf->SetTextColor(255, 0, 0);
@@ -544,7 +539,7 @@ class ReportsUI extends UserInterface
             $pdf->Write(5, $notes . "\n");
         }
 
-        $pdf->SetXY(165, 180);
+        $pdf->SetXY(165, 100);
         $pdf->SetFont($fontFace, 'B', 10);
         $pdf->Write(5, $dataSet[0] . "\n\n");
         $pdf->SetX(165);
@@ -602,115 +597,33 @@ class ReportsUI extends UserInterface
                 break;
         }
 
-        /* Produce the URL to the ethic statistics graph. */
-        $labels = array();
-        $data = array();
-
-        $rsEthnicStatistics = $EEOReportStatistics['rsEthnicStatistics'];
-
-        foreach ($rsEthnicStatistics as $index => $line)
+        $charts = array();
+        foreach (array('Ethnic' => 'Ethnic Type', 'Veteran' => 'Veteran Status') as $key => $title)
         {
-            $labels[] = $line['EEOEthnicType'];
-            $data[] = $line['numberOfCandidates'];
+            $rows = $EEOReportStatistics['rs' . $key . 'Statistics'];
+            $labels = array_column($rows, 'EEO' . $key . 'Type');
+            $data = array_column($rows, 'numberOfCandidates');
+            $graph = Charts::comparison('Number of Candidates' . $labelStatus . ' by ' . $title . $labelPeriod,
+                $labels, $data);
+            $charts[$key] = eval(Hooks::get('GRAPH_GENERIC')) ? Charts::render('eeo-' . strtolower($key), $graph, true) : '';
         }
-
-        $urlEthnicGraph = CATSUtility::getAbsoluteURI(
-            sprintf("%s?m=graphs&a=generic&title=%s&labels=%s&data=%s&width=%s&height=%s",
-                CATSUtility::getIndexName(),
-                urlencode('Number of Candidates'.$labelStatus.' by Ethnic Type'.$labelPeriod),
-                urlencode(implode(',', $labels)),
-                urlencode(implode(',', $data)),
-                400,
-                240
-            ));
-
-
-        /* Produce the URL to the veteran status statistics graph. */
-        $labels = array();
-        $data = array();
-
-        $rsVeteranStatistics = $EEOReportStatistics['rsVeteranStatistics'];
-
-        foreach ($rsVeteranStatistics as $index => $line)
+        $gender = $EEOReportStatistics['rsGenderStatistics'];
+        $disability = $EEOReportStatistics['rsDisabledStatistics'];
+        foreach (array(
+            'Gender' => array('Male' => $gender['numberOfCandidatesMale'] ?? 0, 'Female' => $gender['numberOfCandidatesFemale'] ?? 0),
+            'Disability' => array('Disabled' => $disability['numberOfCandidatesDisabled'] ?? 0, 'Non Disabled' => $disability['numberOfCandidatesNonDisabled'] ?? 0)
+        ) as $key => $values)
         {
-            $labels[] = $line['EEOVeteranType'];
-            $data[] = $line['numberOfCandidates'];
-        }
-
-        $urlVeteranGraph = CATSUtility::getAbsoluteURI(
-            sprintf("%s?m=graphs&a=generic&title=%s&labels=%s&data=%s&width=%s&height=%s",
-                CATSUtility::getIndexName(),
-                urlencode('Number of Candidates'.$labelStatus.' by Veteran Status'.$labelPeriod),
-                urlencode(implode(',', $labels)),
-                urlencode(implode(',', $data)),
-                400,
-                240
-            ));
-
-        /* Produce the URL to the gender statistics graph. */
-        $labels = array();
-        $data = array();
-
-        $rsGenderStatistics = $EEOReportStatistics['rsGenderStatistics'];
-
-        $labels[] = 'Male ('.$rsGenderStatistics['numberOfCandidatesMale'].')';
-        $data[] = $rsGenderStatistics['numberOfCandidatesMale'];
-
-        $labels[] = 'Female ('.$rsGenderStatistics['numberOfCandidatesFemale'].')';
-        $data[] = $rsGenderStatistics['numberOfCandidatesFemale'];
-
-        $urlGenderGraph = CATSUtility::getAbsoluteURI(
-            sprintf("%s?m=graphs&a=genericPie&title=%s&labels=%s&data=%s&width=%s&height=%s&legendOffset=%s",
-                CATSUtility::getIndexName(),
-                urlencode('Number of Candidates by Gender'),
-                urlencode(implode(',', $labels)),
-                urlencode(implode(',', $data)),
-                320,
-                300,
-                1.575
-            ));
-
-        if ($rsGenderStatistics['numberOfCandidatesMale'] == 0 && $rsGenderStatistics['numberOfCandidatesFemale'] == 0)
-        {
-            $urlGenderGraph = "images/noDataByGender.png";
-        }
-
-        /* Produce the URL to the disability statistics graph. */
-        $labels = array();
-        $data = array();
-
-        $rsDisabledStatistics = $EEOReportStatistics['rsDisabledStatistics'];
-
-        $labels[] = 'Disabled ('.$rsDisabledStatistics['numberOfCandidatesDisabled'].')';
-        $data[] = $rsDisabledStatistics['numberOfCandidatesDisabled'];
-
-        $labels[] = 'Non Disabled ('.$rsDisabledStatistics['numberOfCandidatesNonDisabled'].')';
-        $data[] = $rsDisabledStatistics['numberOfCandidatesNonDisabled'];
-
-        $urlDisabilityGraph = CATSUtility::getAbsoluteURI(
-            sprintf("%s?m=graphs&a=genericPie&title=%s&labels=%s&data=%s&width=%s&height=%s&legendOffset=%s",
-                CATSUtility::getIndexName(),
-                urlencode('Number of Candidates by Disability Status'),
-                urlencode(implode(',', $labels)),
-                urlencode(implode(',', $data)),
-                320,
-                300,
-                1.575
-            ));
-
-        if ($rsDisabledStatistics['numberOfCandidatesNonDisabled'] == 0 && $rsDisabledStatistics['numberOfCandidatesDisabled'] == 0)
-        {
-            $urlDisabilityGraph = "images/noDataByDisability.png";
+            $graph = Charts::distribution('Number of Candidates by ' . $key, array_keys($values), array_values($values),
+                'Recorded categories only; candidates without a recorded value are not included.');
+            $charts[$key] = eval(Hooks::get('GRAPH_GENERIC_PIE')) ? Charts::render('eeo-' . strtolower($key), $graph) : '';
         }
 
         $EEOSettings = new EEOSettings();
         $EEOSettingsRS = $EEOSettings->getAll();
 
         $this->_template->assign('EEOReportStatistics', $EEOReportStatistics);
-        $this->_template->assign('urlEthnicGraph', $urlEthnicGraph);
-        $this->_template->assign('urlVeteranGraph', $urlVeteranGraph);
-        $this->_template->assign('urlGenderGraph', $urlGenderGraph);
-        $this->_template->assign('urlDisabilityGraph', $urlDisabilityGraph);
+        $this->_template->assign('charts', $charts);
         $this->_template->assign('modePeriod', $modePeriod);
         $this->_template->assign('modeStatus', $modeStatus);
         $this->_template->assign('EEOSettingsRS', $EEOSettingsRS);

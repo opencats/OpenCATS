@@ -538,6 +538,7 @@ class Pipelines
                 IF(old_candidate_id, 1, 0) AS isDuplicateCandidate,
                 candidate.candidate_id AS candidateID,
                 candidate.first_name AS firstName,
+                candidate.is_admin_hidden AS isAdminHidden,
                 candidate.last_name AS lastName,
                 candidate.state As state,
                 candidate.email1 AS candidateEmail,
@@ -625,7 +626,51 @@ class Pipelines
             $orderBy
         );
 
-        return $this->_db->getAllAssoc($sql);
+        include_once(LEGACY_ROOT . '/lib/CandidateAuthorization.php');
+        $visibleRows = array();
+        foreach ($this->_db->getAllAssoc($sql) as $row)
+        {
+            if (!empty($row['candidateID']) && CandidateAuthorization::canAccessCandidateRecord($row))
+            {
+                $visibleRows[] = $row;
+            }
+        }
+
+        return $visibleRows;
+    }
+
+    /**
+     * Check both parent objects before accepting a pipeline row ID from a request.
+     */
+    public function canAccess($candidateJobOrderID)
+    {
+        if ($_SESSION['CATS']->getAccessLevel('candidates.show') < ACCESS_LEVEL_READ ||
+            $_SESSION['CATS']->getAccessLevel('joborders.show') < ACCESS_LEVEL_READ)
+        {
+            return false;
+        }
+
+        include_once(LEGACY_ROOT . '/lib/CandidateAuthorization.php');
+        $sql = sprintf(
+            "SELECT
+                candidate.candidate_id AS candidateID,
+                candidate.is_admin_hidden AS isAdminHidden,
+                joborder.is_admin_hidden AS isJobOrderAdminHidden
+            FROM
+                candidate_joborder
+            INNER JOIN candidate
+                ON candidate.candidate_id = candidate_joborder.candidate_id
+            INNER JOIN joborder
+                ON joborder.joborder_id = candidate_joborder.joborder_id
+            WHERE
+                candidate_joborder.candidate_joborder_id = %s",
+            $this->_db->makeQueryInteger($candidateJobOrderID)
+        );
+        $record = $this->_db->getAssoc($sql);
+
+        return CandidateAuthorization::canAccessCandidateRecord($record) &&
+            ($record['isJobOrderAdminHidden'] != 1 ||
+             $_SESSION['CATS']->getAccessLevel('joborders.hidden') >= ACCESS_LEVEL_SA);
     }
 
     // FIXME: Document me.
@@ -674,6 +719,11 @@ class Pipelines
     //FIXME: Document me.
     public function getPipelineDetails($candidateJobOrderID)
     {
+        if (!$this->canAccess($candidateJobOrderID))
+        {
+            return array();
+        }
+
         $sql = sprintf(
             "SELECT
                 candidate.first_name AS firstName,

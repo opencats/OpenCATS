@@ -647,17 +647,27 @@ class DataGrid
      * @param javascript object or string ('1', or this.value, etc)
      * @return string javascript
      */
-    public function getJSAddRemoveFilterFromCheckbox($columnName, $operator, $value)
+    public function getJSAddRemoveFilterFromCheckbox(
+        $columnName,
+        $operator,
+        $value
+    )
     {
-        return 'if (this.checked) { '.
-                   'addColumnToFilter(\'filterArea'.md5($this->_instanceName).'\', urlDecode(\''.urlencode($columnName).'\'), \''.$operator.'\', '.$value.'); '.
-                   'submitFilter'. md5($this->_instanceName) .'(true); '.
-                '} '.
-                'else '.
-                '{ '.
-                    'removeColumnFromFilter(\'filterArea'.md5($this->_instanceName).'\', urlDecode(\''.urlencode($columnName).'\')); '.
-                    'submitFilter'. md5($this->_instanceName) .'(true);'.
-                '}';
+        return 'if (this.checked) { ' .
+        'addColumnToFilter(' .
+        '\'filterArea' . md5($this->_instanceName) . '\', ' .
+        'urlDecode(\'' . urlencode($columnName) . '\'), ' .
+        '\'' . $operator . '\', ' .
+        $value .
+        '); ' .
+        'submitFilter' . md5($this->_instanceName) . '(false); ' .
+        '} else { ' .
+        'removeColumnFromFilter(' .
+        '\'filterArea' . md5($this->_instanceName) . '\', ' .
+        'urlDecode(\'' . urlencode($columnName) . '\')' .
+        '); ' .
+        'submitFilter' . md5($this->_instanceName) . '(false); ' .
+        '}';
     }
 
     /**
@@ -681,25 +691,44 @@ class DataGrid
      */
     public function getFilterValue($columnName)
     {
-        if (isset($this->_parameters['filter']))
+        if (!isset($this->_parameters['filter']) ||
+            $this->_parameters['filter'] === '')
         {
-            $filterStrings = explode(',', $this->_parameters['filter']);
-
-            foreach ($filterStrings as $index => $data)
-            {
-                if (strpos($data, '=') === false)
-                {
-                    continue;
-                }
-
-                $dataColumnName = urldecode(substr($data, 0, strpos($data, '=')));
-
-                if ($columnName == $dataColumnName)
-                {
-                    return urldecode(substr($data, strpos($data, '=') + 2));
-                }
-            }
+            return '';
         }
+
+        foreach (explode(',', $this->_parameters['filter']) as $filter)
+        {
+            if ($filter === '')
+            {
+                continue;
+            }
+
+            $operatorPosition = strpos($filter, '=');
+
+            if ($operatorPosition === false)
+            {
+                continue;
+            }
+
+            $dataColumnName = urldecode(
+                substr($filter, 0, $operatorPosition)
+            );
+
+            if ($columnName !== $dataColumnName)
+            {
+                continue;
+            }
+
+            /*
+             * DataGrid filter operators are two characters, e.g.
+             * ==, =~, =<, =>, =# and =@.
+             */
+            return urldecode(
+                substr($filter, $operatorPosition + 2)
+            );
+        }
+
         return '';
     }
 
@@ -741,17 +770,6 @@ class DataGrid
      */
     public function drawRowsPerPageSelector()
     {
-        echo '<a href="javascript:void(0);" class="button" style="text-decoration: none;" onclick="'.
-                  'var rowsPerPageSelector = document.getElementById(\'rowsPerPageSelectorFrame', md5($this->_instanceName), '\'); '.
-                  'if(rowsPerPageSelector.style.display==\'none\') { '.
-                    'rowsPerPageSelector.style.display=\'\'; '.
-                    'rowsPerPageSelector.style.left = (docjslib_getRealLeft(this) - 20) + \'px\'; '.
-                    'rowsPerPageSelector.style.top = (docjslib_getRealTop(this) + 17) + \'px\'; '.
-                  '} else '.
-                    'rowsPerPageSelector.style.display=\'none\'; '.
-             '">Rows Per Page</a>';
-
-        echo '<span style="position: absolute; text-align:left; display:none;" id="rowsPerPageSelectorFrame', md5($this->_instanceName), '">';
         $this->_getData();
 
         $md5InstanceName = md5($this->_instanceName);
@@ -761,39 +779,40 @@ class DataGrid
         $newParameterArray['maxResults'] = '<dynamic>';
 
         $requestString = $this->_getUnrelatedRequestString();
-        $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(json_encode($newParameterArray));
+        $requestString .= '&' .
+        urlencode('parameters' . $this->_instanceName) .
+        '=' .
+        urlencode(json_encode($newParameterArray));
 
-        echo sprintf(
-            '<select id="rowsPerPageSelector%s" onchange="document.location.href=\'%s?%s&dynamicArgument%s=\' + this.value;" class="selectBox">%s',
-            $md5InstanceName,      //Select Box ID
-            CATSUtility::getIndexName(),
-            $requestString,
-            urlencode($this->_instanceName),
-            "\n"
-        );
+        echo '<label class="visually-hidden" for="rowsPerPageSelector',
+        $md5InstanceName,
+        '">Rows per page</label>';
 
-        foreach (array('15', '30', '50', '100') as $maxResults)
+        echo '<select id="rowsPerPageSelector',
+        $md5InstanceName,
+        '" class="form-select form-select-sm dataGridRowsPerPage"',
+        ' aria-label="Rows per page"',
+        ' onchange="document.location.href=\'',
+        CATSUtility::getIndexName(),
+        '?',
+        $requestString,
+        '&dynamicArgument',
+        urlencode($this->_instanceName),
+        '=\' + this.value;">';
+
+        foreach (array(15, 30, 50, 100) as $maxResults)
         {
-            if ($this->_parameters['maxResults'] == $maxResults)
-            {
-                echo sprintf(
-                    '<option selected="selected" value="%s">%s entries per page</option>',
-                    $maxResults, $maxResults
-                );
-            }
-            else
-            {
-                echo sprintf(
-                    '<option value="%s">%s entries per page</option>',
-                    $maxResults, $maxResults
-                );
+            echo '<option value="', $maxResults, '"';
 
+            if ((int) $this->_parameters['maxResults'] === $maxResults)
+            {
+                echo ' selected';
             }
+
+            echo '>', $maxResults, ' / page</option>';
         }
 
-        echo '</select>&nbsp;';
-
-        echo '</span>';
+        echo '</select>';
     }
 
     /**
@@ -803,7 +822,23 @@ class DataGrid
      */
     public function drawShowFilterControl()
     {
-        echo '<a href="javascript:void(0);" class="button" style="text-decoration: none;" onclick="var filterArea = document.getElementById(\'filterResultsArea', md5($this->_instanceName), '\'); if(filterArea.style.display==\'none\') {filterArea.style.display=\'\'; if (newFilterCounter', md5($this->_instanceName),' == 0){ showNewFilter', md5($this->_instanceName), '();}}else filterArea.style.display=\'none\';">Filter</a>';
+        $md5InstanceName = md5($this->_instanceName);
+
+        echo '<button type="button"',
+        ' class="btn btn-sm btn-outline-secondary dataGridFilterButton"',
+        ' onclick="',
+        'var filterArea=document.getElementById(\'filterResultsArea',
+        $md5InstanceName,
+        '\');',
+        'if(filterArea.style.display===\'none\'){',
+        'filterArea.style.display=\'\';',
+        'if(newFilterCounter',
+        $md5InstanceName,
+        '===0){showNewFilter',
+        $md5InstanceName,
+        '();}',
+        '}else{filterArea.style.display=\'none\';}',
+        '">More filters</button>';
     }
 
     /**
@@ -1125,8 +1160,16 @@ class DataGrid
                     continue;
                 }
 
-                /* Do not process server-side filters for non-filterable columns. */
-                if (isset($this->_classColumns[$columnName]['filterable']) && $this->_classColumns[$columnName]['filterable'] == false)
+                /*
+                 * Non-filterable columns are hidden from the generic filter builder.
+                 *
+                 * Columns with filterDescription are intentional special-purpose filters
+                 * such as "Only My" and "Only Hot", and must still be processed when
+                 * submitted by their dedicated controls.
+                 */
+                if (isset($this->_classColumns[$columnName]['filterable']) &&
+                    $this->_classColumns[$columnName]['filterable'] == false &&
+                    !isset($this->_classColumns[$columnName]['filterDescription']))
                 {
                     continue;
                 }
@@ -1613,10 +1656,17 @@ class DataGrid
             $cellIndexes[] = $index;
         }
 
-        /* Do not draw elements that exist outside of the OverflowDiv object (in the case of being called by the ajax redraw function) */
+        /*
+         * Elements outside the DataGrid table are omitted only for the AJAX
+         * redraw path.
+         */
         if (!$noOverflow)
         {
-             /* Filters */
+            /*
+             * Filter state and submit function.
+             *
+             * The existing checkbox filters and filter editor depend on these.
+             */
             if (isset($this->_parameters['filter']))
             {
                 $currentFilterString = $this->_parameters['filter'];
@@ -1626,109 +1676,263 @@ class DataGrid
                 $currentFilterString = '';
             }
 
-            echo '<input type="hidden" id="filterArea'.$md5InstanceName.'" value="', htmlspecialchars($currentFilterString), '" />';
-            echo '<script type="text/javascript">', $this->_getApplyFilterFunctionDefinition(), '</script>';
+            echo '<input type="hidden" id="filterArea',
+            $md5InstanceName,
+            '" value="',
+            Template::escapeAttr($currentFilterString),
+            '">';
 
-            /* This makes the table able to be wider then the displayable area. */
-            echo '<div id="OverflowDiv'.$md5InstanceName.'" style="overflow: auto; width: ' , ($this->getTableWidth(true)) , 'px; padding-left: 1px; overflow-y: hidden; overflow-x: none; padding-bottom: expression(this.scrollWidth > this.offsetWidth ? 14 : 4); ' . $this->globalStyle . '">', "\n";
+            echo '<script>';
+            $this->_getApplyFilterFunctionDefinition();
+            echo '</script>';
+
+            /*
+             * Responsive DataGrid container.
+             *
+             * This replaces the old fixed-width OverflowDiv and obsolete IE CSS
+             * while retaining the ID required by the existing DataGrid JavaScript.
+             */
+            echo '<div id="OverflowDiv',
+            $md5InstanceName,
+            '" class="table-responsive dataGridOverflow">', "\n";
         }
 
-        /* IE fix for floating dialog boxes not floating over controls like dropdown lists. */
-        echo '<iframe id="helpShim'.$md5InstanceName.'" src="lib/IFrameBlank.html" scrolling="no" frameborder="0" style="position:absolute; display:none;"></iframe>', "\n";
+        /*
+         * Existing popup shim retained for compatibility with the current
+         * submodal implementation.
+         */
+        echo '<iframe id="helpShim',
+        $md5InstanceName,
+        '" src="lib/IFrameBlank.html"',
+        ' scrolling="no"',
+        ' frameborder="0"',
+        ' style="position:absolute; display:none;"></iframe>',
+        "\n";
 
-        /* Definition for the cell which appears to be showing when dragging a column into a new position (not resizing). */
-        echo ('<div class="moveableCell" style="cursor: move; position:absolute; width:100px; border:1px solid gray; display:none; zIndex:10000; filter:alpha(opacity=75);-moz-opacity:.75;opacity:.75; ' . $this->globalStyle . '" id="moveColumn'.$md5InstanceName.'"></div>' . "\n");
+        /*
+         * Cell shown while dragging a column into a new position.
+         */
+        echo '<div class="moveableCell"',
+        ' style="cursor:move;',
+        ' position:absolute;',
+        ' width:100px;',
+        ' border:1px solid gray;',
+        ' display:none;',
+        ' z-index:10000;',
+        ' opacity:.75; ',
+        $this->globalStyle,
+        '" id="moveColumn',
+        $md5InstanceName,
+        '"></div>',
+        "\n";
 
-        /* Actuall definition for the table. */
+        /* Actual definition for the table. */
+        $tableClass =
+        'sortable table table-sm table-striped table-hover align-middle mb-0';
+
         if (isset($this->listStyle) && $this->listStyle == true)
         {
-            echo ('<table class="sortable" width="'. $this->getTableWidth(true) .'" onmouseover="javascript:trackTableHighlight(event)" id="table'.$md5InstanceName.'" style="border:none;">' . "\n");
-            echo ('<thead style="-moz-user-select:none; -khtml-user-select:none; user-select:none; display:none; ' . $this->globalStyle . '">' . "\n");
+            echo '<table class="',
+            $tableClass,
+            '" width="',
+            $this->getTableWidth(true),
+            '" onmouseover="javascript:trackTableHighlight(event)"',
+            ' id="table',
+            $md5InstanceName,
+            '" style="border:none;">',
+            "\n";
+
+            echo '<thead style="',
+            '-moz-user-select:none;',
+            '-khtml-user-select:none;',
+            'user-select:none;',
+            'display:none; ',
+            $this->globalStyle,
+            '">',
+            "\n";
         }
         else
         {
-            echo ('<table class="sortable" width="'. $this->getTableWidth(true) .'" onmouseover="javascript:trackTableHighlight(event)" id="table'.$md5InstanceName.'">' . "\n");
-            echo ('<thead style="-moz-user-select:none; -khtml-user-select:none; user-select:none; ' . $this->globalStyle . '">' . "\n");
+            echo '<table class="',
+            $tableClass,
+            '" width="',
+            $this->getTableWidth(true),
+            '" onmouseover="javascript:trackTableHighlight(event)"',
+            ' id="table',
+            $md5InstanceName,
+            '">',
+            "\n";
+
+            echo '<thead style="',
+            '-moz-user-select:none;',
+            '-khtml-user-select:none;',
+            'user-select:none; ',
+            $this->globalStyle,
+            '">',
+            "\n";
         }
-        echo ('<tr>' . "\n");
+
+        echo '<tr>', "\n";
 
         if (!isset($this->showExportColumn) || $this->showExportColumn)
         {
-            /* Column selector icon */ /**/
-            echo ('<th style="width:10px; border-right:1px solid gray; ' . $this->globalStyle . '" align="center" id="cellHideShow'.$md5InstanceName.'"><div style="width:10px;">' . "\n");
+            /*
+             * Column selector.
+             */
+            echo '<th style="width:10px; border-right:1px solid gray; ',
+            $this->globalStyle,
+            '" align="center"',
+            ' id="cellHideShow',
+            $md5InstanceName,
+            '">';
 
-            /* Choose column box */
-            if (isset($this->showChooseColumnsBox) && $this->showChooseColumnsBox == true)
+        echo '<div style="width:10px;">', "\n";
+
+        /*
+         * Choose-column box.
+         */
+        if (isset($this->showChooseColumnsBox) &&
+            $this->showChooseColumnsBox == true)
+        {
+            echo '<a href="javascript:void(0);"',
+            ' id="exportBoxLink',
+            $md5InstanceName,
+            '" onclick="toggleHideShowControls(\'',
+            $md5InstanceName,
+            '\'); return false;">',
+            "\n";
+
+            echo '<img src="images/tab_add.gif" alt="">', "\n";
+            echo '</a>', "\n";
+            echo '</div>', "\n";
+
+            /*
+             * Dropdown selector for visible columns.
+             */
+            echo '<div class="ajaxSearchResults"',
+            ' id="ColumnBox',
+            $md5InstanceName,
+            '" align="left"',
+            ' onclick="toggleHideShowControls(\'',
+            $md5InstanceName,
+            '\');"',
+            ' style="width:200px; ',
+            $this->globalStyle,
+            '">',
+            "\n";
+
+            echo '<span class="fw-semibold">Show Columns:</span>',
+            '<br><br>',
+            "\n";
+
+            foreach ($this->_classColumns as $index => $data)
             {
-                echo ('<a href="javascript:void(0);" id="exportBoxLink'.$md5InstanceName.'" onclick="toggleHideShowControls(\''.$md5InstanceName.'\'); return false;">' . "\n");
-                echo ('<img src="images/tab_add.gif" border="0" alt="" />' . "\n");
-                echo ('</a></div>' . "\n");
+                $selected = false;
 
-                /* Dropdown selector to choose which columns are visible. */
-                echo ('<div class="ajaxSearchResults" id="ColumnBox'.$md5InstanceName.'" align="left" onclick="toggleHideShowControls(\''.$md5InstanceName.'\');" style="width:200px; ' . $this->globalStyle . '">' . "\n");
-                echo ('<span style="font-weight:bold; color:#000000;">Show Columns:</span><br/><br />' . "\n");
-
-                /* Contents of dropdown menu. */
-                foreach ($this->_classColumns as $index => $data)
+                foreach ($this->_currentColumns as $index2 => $data2)
                 {
-                    $selected = false;
-                    foreach ($this->_currentColumns as $index2 => $data2)
+                    if ($data2['name'] == $index)
                     {
-                        if ($data2['name'] == $index)
-                        {
-                            $selected = true;
-                        }
-                    }
-
-                    /* Add / remove columns */
-                    if (!isset($data['pagerOptional']) || $data['pagerOptional'] == true)
-                    {
-                        if ($selected)
-                        {
-                            $newParameterArray = $this->_parameters;
-                            $newParameterArray['removeColumn'] = $index;
-
-                            echo ('<span style="font-weight:normal;">' . $this->_makeControlLink($newParameterArray) . '<img src="images/checkbox.gif" border="0" alt="" />&nbsp;&nbsp;&nbsp;&nbsp;'. $index . '</a></span><br />' . "\n");
-                        }
-                        else
-                        {
-                            $newParameterArray = $this->_parameters;
-                            $newParameterArray['addColumn'] = $index;
-
-                            echo ('<span style="font-weight:normal;">' . $this->_makeControlLink($newParameterArray) . '<img src="images/checkbox_blank.gif" border="0" alt="" />&nbsp;&nbsp;&nbsp;&nbsp;'. $index . '</a></span><br />' . "\n");
-                        }
+                        $selected = true;
                     }
                 }
 
-                /* Single option to reset the column sizes / contents. */
-                echo ('<br />');
-                $newParameterArray = $this->_parameters;
-                $newParameterArray['resetColumns'] = true;
-                echo ('<span style="font-weight:bold;">' . $this->_makeControlLink($newParameterArray) . '<img src="images/checkbox_blank.gif" alt="" border="0" />&nbsp;&nbsp;&nbsp;&nbsp;Reset to Default Columns</a></span><br />' . "\n");
+                if (!isset($data['pagerOptional']) ||
+                    $data['pagerOptional'] == true)
+                {
+                    if ($selected)
+                    {
+                        $newParameterArray = $this->_parameters;
+                        $newParameterArray['removeColumn'] = $index;
 
-                echo ('</div>');
+                        echo '<span>',
+                        $this->_makeControlLink($newParameterArray),
+                        '<img src="images/checkbox.gif" alt="">',
+                        '&nbsp;&nbsp;',
+                        $index,
+                        '</a>',
+                        '</span>',
+                        '<br>',
+                        "\n";
+                    }
+                    else
+                    {
+                        $newParameterArray = $this->_parameters;
+                        $newParameterArray['addColumn'] = $index;
+
+                        echo '<span>',
+                        $this->_makeControlLink($newParameterArray),
+                        '<img src="images/checkbox_blank.gif" alt="">',
+                        '&nbsp;&nbsp;',
+                        $index,
+                        '</a>',
+                        '</span>',
+                        '<br>',
+                        "\n";
+                    }
+                }
             }
 
-            /* Ajax indicator. */
-            echo ('<span style="display:none;" id="ajaxTableIndicator'.$md5InstanceName.'"><img src="images/indicator_small.gif" alt="" /></span>');
+            $newParameterArray = $this->_parameters;
+            $newParameterArray['resetColumns'] = true;
 
-            /* Selected Export ID's Array */
-            echo ('<script type="text/javascript">exportArray'.$md5InstanceName.' = new Array();</script>');
+            echo '<br>';
 
-            echo ('</th>');
+            echo '<span class="fw-semibold">',
+            $this->_makeControlLink($newParameterArray),
+            '<img src="images/checkbox_blank.gif" alt="">',
+            '&nbsp;&nbsp;',
+            'Reset to Default Columns',
+            '</a>',
+            '</span>',
+            '<br>',
+            "\n";
+
+            echo '</div>';
         }
         else
         {
-            /* Ajax indicator. */
-            echo ('<span style="display:none;" id="ajaxTableIndicator'.$md5InstanceName.'"></span>');   
+            echo '</div>';
         }
 
-        /* Column headers */
+        /*
+         * AJAX indicator.
+         */
+        echo '<span style="display:none;"',
+        ' id="ajaxTableIndicator',
+        $md5InstanceName,
+        '">',
+        '<img src="images/indicator_small.gif" alt="">',
+        '</span>';
+
+        /*
+         * Selected export IDs.
+         */
+        echo '<script>',
+        'exportArray',
+        $md5InstanceName,
+        ' = new Array();',
+        '</script>';
+
+        echo '</th>';
+        }
+        else
+        {
+            echo '<span style="display:none;"',
+            ' id="ajaxTableIndicator',
+            $md5InstanceName,
+            '"></span>';
+        }
+
+        /*
+         * Column headers.
+         */
         foreach ($this->_currentColumns as $index => $data)
         {
-            /* Is the column sizable?  If it is, then we need to make a second column to resize that appears to be part of the first column. */
-            if ((!isset($data['data']['sizable']) || $data['data']['sizable'] == true) &&
-                (isset($this->allowResizing) && $this->allowResizing == true))
+            if ((!isset($data['data']['sizable']) ||
+                $data['data']['sizable'] == true) &&
+                isset($this->allowResizing) &&
+                $this->allowResizing == true)
             {
                 $sizable = true;
                 $this->_totalColumnWidths += $data['width'] + 1;
@@ -1739,61 +1943,91 @@ class DataGrid
                 $this->_totalColumnWidths += $data['width'];
             }
 
-           /* Opening of header cell. */
-           echo ('<th align="left" style="width:'.$data['width'].'px; border-collapse: collapse; ' . $this->globalStyle);
-           
-	   $currentColumnsKeys = array_keys($this->_currentColumns);
-           if (end($currentColumnsKeys) != $index && !$sizable)
-           {
-                   //Uncomment for gray resize bars
-                   echo 'border-right:1px solid gray;';
-           }
+            echo '<th align="left"',
+            ' style="width:',
+            $data['width'],
+            'px; border-collapse:collapse; ',
+            $this->globalStyle;
 
-           $newParameterArray = $this->_parameters;
-           $newParameterArray['reorderColumns'] = '<dynamic>';
+            $currentColumnsKeys = array_keys($this->_currentColumns);
 
-           /* If $this->allowResizing is not set, prevent moving.  Otherwise, write the code to make the cell movable. */
-           if (isset($this->allowResizing) && $this->allowResizing == true)
-           {
+            if (end($currentColumnsKeys) != $index && !$sizable)
+            {
+                echo 'border-right:1px solid gray;';
+            }
 
-                $formatString = '" id="cell%s%s" onmouseover="style.cursor = '
-                    . '\'move\'" onmousedown="startMove(\'cell%s%s\', '
-                    . '\'table%s\', \'cell%s%s\', \'%s\', \'%s\', \'%s\', '
-                    . '\'moveColumn%s\', \'OverflowDiv%s\', \'%s\', urlDecode(\'%s\'));">';
+            $newParameterArray = $this->_parameters;
+            $newParameterArray['reorderColumns'] = '<dynamic>';
+
+            /*
+             * Existing column-moving support.
+             */
+            if (isset($this->allowResizing) &&
+                $this->allowResizing == true)
+            {
+                $formatString =
+                '" id="cell%s%s"'
+                . ' onmouseover="style.cursor=\'move\'"'
+                . ' onmousedown="startMove('
+                . '\'cell%s%s\','
+                . '\'table%s\','
+                . '\'cell%s%s\','
+                . '\'%s\','
+                . '\'%s\','
+                . '\'%s\','
+                . '\'moveColumn%s\','
+                . '\'OverflowDiv%s\','
+                . '\'%s\','
+                . 'urlDecode(\'%s\')'
+                . ');">';
 
                 echo sprintf(
                     $formatString,
-                    $md5InstanceName, $index,
-                    $md5InstanceName, $index,
                     $md5InstanceName,
-                    $md5InstanceName, end($currentColumnsKeys),
-                    urlencode($this->_instanceName),
-                    $_SESSION['CATS']->getCookie(),
-                    $data['name'],
+                    $index,
+                    $md5InstanceName,
+                    $index,
                     $md5InstanceName,
                     $md5InstanceName,
-                    urlencode(json_encode($newParameterArray)),
-                    urlencode($this->_getUnrelatedRequestString())
+                    end($currentColumnsKeys),
+                             urlencode($this->_instanceName),
+                             $_SESSION['CATS']->getCookie(),
+                             $data['name'],
+                             $md5InstanceName,
+                             $md5InstanceName,
+                             urlencode(json_encode($newParameterArray)),
+                             urlencode($this->_getUnrelatedRequestString())
                 );
             }
             else
             {
-               echo '" id="cell', $md5InstanceName, $index, '">';
+                echo '" id="cell',
+                $md5InstanceName,
+                $index,
+                '">';
             }
 
-            echo ('<div id="cell'.$md5InstanceName.$index.'div" style="width:'.$data['width'].'px;">' . "\n");
+            echo '<div id="cell',
+            $md5InstanceName,
+            $index,
+            'div" style="width:',
+            $data['width'],
+            'px;">',
+            "\n";
 
-            /* Header cell contents. */
-            if (isset($data['data']['pagerNoTitle']) && $data['data']['pagerNoTitle'] == true)
+            /*
+             * Header contents.
+             */
+            if (isset($data['data']['pagerNoTitle']) &&
+                $data['data']['pagerNoTitle'] == true)
             {
-                /* Do nothing */
+                /* No title. */
             }
             else if (isset($data['data']['sortableColumn']))
             {
-                /* If this field is not the current sort-by field, or if it is and the
-                 * current sort direction is DESC, the link will use ASC sort order.
-                 */
-                if ($this->_parameters['sortBy'] !== $data['data']['sortableColumn'] || $this->_parameters['sortDirection'] === 'DESC')
+                if ($this->_parameters['sortBy'] !==
+                    $data['data']['sortableColumn'] ||
+                    $this->_parameters['sortDirection'] === 'DESC')
                 {
                     $sortDirection = 'ASC';
                 }
@@ -1802,172 +2036,266 @@ class DataGrid
                     $sortDirection = 'DESC';
                 }
 
-                if ($this->_parameters['sortBy'] == $data['data']['sortableColumn'] && $this->_parameters['sortDirection'] === 'ASC')
+                if ($this->_parameters['sortBy'] ==
+                    $data['data']['sortableColumn'] &&
+                    $this->_parameters['sortDirection'] === 'ASC')
                 {
-                    $sortImage = '&nbsp;<img src="images/downward.gif" style="border: none;" alt="" />';
+                    $sortImage =
+                    '&nbsp;<img src="images/downward.gif" alt="">';
                 }
-                else if ($this->_parameters['sortBy'] == $data['data']['sortableColumn'] && $this->_parameters['sortDirection'] === 'DESC')
+                else if ($this->_parameters['sortBy'] ==
+                    $data['data']['sortableColumn'] &&
+                    $this->_parameters['sortDirection'] === 'DESC')
                 {
-                    $sortImage = '&nbsp;<img src="images/upward.gif" style="border: none;" alt="" />';
+                    $sortImage =
+                    '&nbsp;<img src="images/upward.gif" alt="">';
                 }
                 else
                 {
-                    $sortImage = '&nbsp;<img src="images/nosort.gif" style="border: none;" alt="" />';
+                    $sortImage =
+                    '&nbsp;<img src="images/nosort.gif" alt="">';
                 }
 
-
                 $newParameterArray = $this->_parameters;
-                $newParameterArray['sortBy'] = $data['data']['sortableColumn'];
-                $newParameterArray['sortDirection'] = $sortDirection;
+                $newParameterArray['sortBy'] =
+                $data['data']['sortableColumn'];
+                $newParameterArray['sortDirection'] =
+                $sortDirection;
 
                 if (isset($newParameterArray['filterAlpha']))
                 {
                     unset($newParameterArray['filterAlpha']);
                 }
 
-                if (isset($this->allowSorting) && $this->allowSorting == false)
+                if (isset($this->allowSorting) &&
+                    $this->allowSorting == false)
                 {
-                    echo sprintf(
-                        '<nobr>%s</nobr>',
-                        (!isset($data['data']['columnHeaderText']) ?
-                            $data['name'] :
-                            $data['data']['columnHeaderText'])
-                    );
+                    echo '<span class="text-nowrap">',
+                    !isset($data['data']['columnHeaderText'])
+                    ? $data['name']
+                    : $data['data']['columnHeaderText'],
+                    '</span>';
                 }
                 else if (isset($data['data']['columnHeaderText']))
                 {
-                    echo sprintf(
-                        '%s<nobr>%s%s</nobr></a>',
-                        $this->_makeControlLink($newParameterArray),
-                        $data['data']['columnHeaderText'],
-                        $sortImage
-                    );
+                    echo $this->_makeControlLink($newParameterArray),
+                    '<span class="text-nowrap">',
+                    $data['data']['columnHeaderText'],
+                    $sortImage,
+                    '</span>',
+                    '</a>';
                 }
                 else
                 {
-                    echo sprintf(
-                        '%s<nobr>%s%s</nobr></a>',
-                        $this->_makeControlLink($newParameterArray),
-                        $data['name'],
-                        $sortImage
-                    );
+                    echo $this->_makeControlLink($newParameterArray),
+                    '<span class="text-nowrap">',
+                    $data['name'],
+                    $sortImage,
+                    '</span>',
+                    '</a>';
                 }
             }
             else
             {
-                echo '<span style="font-weight:bold;"><nobr>',
-                    $data['name'], '</nobr></span>';
+                echo '<span class="fw-semibold text-nowrap">',
+                $data['name'],
+                '</span>';
             }
 
-            /* Draw the closing part of the cell. */
             echo '</div></th>', "\n";
 
-            /* If this cell can be resized, make a cell next to it to move around. */
+            /*
+             * Resize handle.
+             */
             if ($sizable)
             {
-                $formatString = '<th align="left" class="resizeableCell" '
-                    . 'style="width:5px; border-collapse: collapse; '
-                    . '-moz-user-select: none; -khtml-user-select: none; ' . $this->globalStyle;
+                $formatString =
+                '<th align="left"'
+                . ' class="resizeableCell"'
+                . ' style="width:5px;'
+                . ' border-collapse:collapse;'
+                . ' -moz-user-select:none;'
+                . ' -khtml-user-select:none; '
+                . $this->globalStyle;
 
-				$_keys_current_columns = array_keys($this->_currentColumns);
-				if (end($_keys_current_columns) != $index)
-               {
-                   //Uncomment for gray resize bars
-                   $formatString .= 'border-right:1px solid gray;';
-               }
+                $_keys_current_columns =
+                array_keys($this->_currentColumns);
+
+                if (end($_keys_current_columns) != $index)
+                {
+                    $formatString .=
+                    'border-right:1px solid gray;';
+                }
 
                 $formatString .=
-                      'user-select: none;" onmouseover="style.cursor = '
-                    . '\'e-resize\'" onmousedown="startResize(\'cell%s%s\', '
-                    . '\'table%s\', \'cell%s%s\', \'%s\', \'%s\', \'%s\', '
-                    . '\'%s\', \'%s\', this.offsetWidth);">';
+                'user-select:none;"'
+                . ' onmouseover="style.cursor=\'e-resize\'"'
+                . ' onmousedown="startResize('
+                . '\'cell%s%s\','
+                . '\'table%s\','
+                . '\'cell%s%s\','
+                . '\'%s\','
+                . '\'%s\','
+                . '\'%s\','
+                . '\'%s\','
+                . '\'%s\','
+                . 'this.offsetWidth'
+                . ');">';
 
-                echo sprintf(
-                    $formatString,
-                    $md5InstanceName, $index,
-                    $md5InstanceName,
-                    $md5InstanceName, end($_keys_current_columns),
-                    $this->getTableWidth(),
-                    urlencode($this->_instanceName),
-                    $_SESSION['CATS']->getCookie(),
-                    $data['name'],
-                    implode(',', $cellIndexes)
-                );
+            echo sprintf(
+                $formatString,
+                $md5InstanceName,
+                $index,
+                $md5InstanceName,
+                $md5InstanceName,
+                end($_keys_current_columns),
+                         $this->getTableWidth(),
+                         urlencode($this->_instanceName),
+                         $_SESSION['CATS']->getCookie(),
+                         $data['name'],
+                         implode(',', $cellIndexes)
+            );
 
-                echo '<div class="dataGridResizeAreaInnerDiv"></div></th>', "\n";
+            echo '<div class="dataGridResizeAreaInnerDiv"></div>',
+            '</th>',
+            "\n";
             }
         }
+
         echo '</tr>', "\n";
         echo '</thead>', "\n";
 
-        /* Table Data */
+        /*
+         * Table data.
+         */
         foreach ($this->_rs as $rsIndex => $rsData)
         {
-            if (isset($this->listStyle) && $this->listStyle == true)
+            if (isset($this->listStyle) &&
+                $this->listStyle == true)
             {
-                echo ('<tr>' . "\n");
+                echo '<tr>', "\n";
             }
             else
             {
-                echo ('<tr class="' . TemplateUtility::getAlternatingRowClass($rsIndex) . '">' . "\n");
+                echo '<tr class="',
+                TemplateUtility::getAlternatingRowClass($rsIndex),
+                '">',
+                "\n";
             }
 
-            if (!isset($this->showExportColumn) || $this->showExportColumn)
+            if (!isset($this->showExportColumn) ||
+                $this->showExportColumn)
             {
-                /* Action/Export */
-                echo ('<td style="' . $this->globalStyle . '">');
-                if (isset($rsData['exportID']) && isset($this->showExportCheckboxes) && $this->showExportCheckboxes == true)
-                {
-                    echo ('<input type="checkbox" id="checked_' . $rsData['exportID'] . '" name="checked_' . $rsData['exportID'] . '" onclick="addRemoveFromExportArray(exportArray'.$md5InstanceName.', '.$rsData['exportID'].');" />');
-                }
-                echo ('</td>');
+                echo '<td style="',
+                $this->globalStyle,
+                '">';
+
+        if (isset($rsData['exportID']) &&
+            isset($this->showExportCheckboxes) &&
+            $this->showExportCheckboxes == true)
+        {
+            echo '<input type="checkbox"',
+            ' id="checked_',
+            $rsData['exportID'],
+            '" name="checked_',
+            $rsData['exportID'],
+            '" onclick="addRemoveFromExportArray(',
+            'exportArray',
+            $md5InstanceName,
+            ', ',
+            $rsData['exportID'],
+            ');">';
+        }
+
+        echo '</td>';
             }
 
-            /* 1 Column of data */
             foreach ($this->_currentColumns as $index => $data)
             {
                 if (isset($data['data']['pagerAlign']))
                 {
-                    echo ('<td valign="top" style="' . $this->globalStyle . '" align="' . $data['data']['pagerAlign'] . '"');
+                    echo '<td valign="top"',
+                    ' style="',
+                    $this->globalStyle,
+                    '" align="',
+                    $data['data']['pagerAlign'],
+                    '"';
                 }
                 else
                 {
-                    echo ('<td valign="top" style="' . $this->globalStyle . '" align="left"');
+                    echo '<td valign="top"',
+                    ' style="',
+                    $this->globalStyle,
+                    '" align="left"';
                 }
 
-                if (isset($data['data']['sizable']) && $data['data']['sizable'] == false || (!isset($this->allowResizing) || $this->allowResizing == false))
+                if ((isset($data['data']['sizable']) &&
+                    $data['data']['sizable'] == false) ||
+                    !isset($this->allowResizing) ||
+                    $this->allowResizing == false)
                 {
-                     echo ('>');
+                    echo '>';
                 }
                 else
                 {
-                    echo (' colspan="2">');
+                    echo ' colspan="2">';
                 }
 
                 if (!isset($data['data']['pagerRender']))
                 {
-                    echo ($rsData[$data['data']['sortableColumn']]);
+                    echo $rsData[$data['data']['sortableColumn']];
                 }
                 else
                 {
-                    echo (eval($data['data']['pagerRender']));
+                    echo eval($data['data']['pagerRender']);
                 }
 
-                echo ('</td>' . "\n");
+                echo '</td>', "\n";
             }
 
-            echo ('</tr>' . "\n");
+            echo '</tr>', "\n";
         }
 
-        echo ('</table>' . "\n");
+        echo '</table>', "\n";
 
-        /* If the table is smaller than the maximum width, JS will extend out the last cell so the table takes up all of its allocated space. */
-echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'", '.$this->_totalColumnWidths.', document.getElementById(\'cell'.$md5InstanceName.end($_keys_current_columns).'\'), document.getElementById(\'cell'.$md5InstanceName.end($_keys_current_columns).'div\'), \'' . $this->getTableWidth() . '\');</script>' . "\n");
+        /*
+         * Preserve existing DataGrid table-width behaviour.
+         */
+        $_keys_current_columns =
+        array_keys($this->_currentColumns);
 
-        /* Close overflowdiv */
+        if (!empty($_keys_current_columns))
+        {
+            $lastColumnIndex = end($_keys_current_columns);
+
+            echo '<script>',
+            'setTableWidth(',
+            '"table',
+            $md5InstanceName,
+            '", ',
+            $this->_totalColumnWidths,
+            ', document.getElementById(\'cell',
+            $md5InstanceName,
+            $lastColumnIndex,
+            '\'), ',
+            'document.getElementById(\'cell',
+            $md5InstanceName,
+            $lastColumnIndex,
+            'div\'), ',
+            '\'',
+            $this->getTableWidth(),
+            '\'',
+            ');',
+            '</script>',
+            "\n";
+        }
+
+        /*
+         * Close responsive DataGrid wrapper.
+         */
         if (!$noOverflow)
         {
-            echo ('</div>');
+            echo '</div>';
         }
     }
     
@@ -2267,80 +2595,120 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
 
         $md5InstanceName = md5($this->_instanceName);
 
-        /* << PREV */
-        echo sprintf(
-            '<span id="prevLink%s%s">%s</span>',
-            $ID, $md5InstanceName, $this->_getPreviousLink()
-        );
+        echo '<div class="dataGridNavigation d-flex flex-wrap align-items-center justify-content-end gap-1">';
 
-        /* Selection drop down menu. */
-        /* Because we can not change the serialized parameter array from javascript, we can
-         * set one of the fields to be a 'dynamic' field.  When the datagrid class is
-         * loading the datagrid, it will replace any field with the flag <dynamic> with
-         * the value provided in $_REQUEST['dynamicArgument'].
+        /* Previous navigation. */
+        echo '<span id="prevLink', $ID, $md5InstanceName,
+        '" class="d-inline-flex gap-1">',
+        $this->_getPreviousLink(),
+        '</span>';
+
+        /*
+         * The page number remains a dynamic parameter so existing GET / AJAX
+         * DataGrid behaviour continues to work.
          */
         $newParameterArray = $this->_parameters;
         $newParameterArray['rangeStart'] = '<dynamic>';
 
         if ($this->_totalPages > 1)
         {
-
-            if (isset($this->ajaxMode) && ($this->ajaxMode))
+            if (isset($this->ajaxMode) && $this->ajaxMode)
             {
-                echo sprintf(
-                    '<span style="%s" id="pageInputArea%s%s">Page <input id="pageSelection%s%s" style="width: 32px;" onChange="populateAjaxPager(&quot;%s&quot;, \'%s\', &quot;%s&quot;, (this.value - 1) * %s);" value="%s"/> of %s%s</span>',
-                    $this->globalStyle,
-                    $ID, $md5InstanceName,
-                    $ID, $md5InstanceName,      //Select Box ID
-                    urlencode($this->_instanceName),           //Instance name for ajax function itself
-                    urlencode(json_encode($newParameterArray)),  //New parameter array
-                    $_SESSION['CATS']->getCookie(),            //Cookie
-                    $newParameterArray['maxResults'],          //Used to help determine how many rows per page when changing pages
-                    $this->_currentPage,
-                    $this->_totalPages,
-                    "\n"
-                );  
+                echo '<span id="pageInputArea',
+                $ID, $md5InstanceName,
+                '" class="dataGridPageStatus d-inline-flex align-items-center gap-1">';
+
+                echo '<span>Page</span>';
+
+                echo '<input',
+                ' type="number"',
+                ' id="pageSelection', $ID, $md5InstanceName, '"',
+                ' class="form-control form-control-sm dataGridPageInput"',
+                ' min="1"',
+                ' max="', $this->_totalPages, '"',
+                ' value="', $this->_currentPage, '"',
+                ' aria-label="Page number"',
+                ' onchange="populateAjaxPager(&quot;',
+                urlencode($this->_instanceName),
+                '&quot;, \'',
+                urlencode(json_encode($newParameterArray)),
+                '\', &quot;',
+                $_SESSION['CATS']->getCookie(),
+                '&quot;, (this.value - 1) * ',
+                $newParameterArray['maxResults'],
+                ');">';
+
+        echo '<span>of ', $this->_totalPages, '</span>';
+
+        echo '</span>';
             }
             else
             {
                 $requestString = $this->_getUnrelatedRequestString();
-                $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(json_encode($newParameterArray));
+                $requestString .= '&' .
+                urlencode('parameters' . $this->_instanceName) .
+                '=' .
+                urlencode(json_encode($newParameterArray));
 
-                echo sprintf(
-                    '<span style="%s">Page <input id="pageSelection%s%s" style="width: 32px;" value="%s" onkeypress="document.getElementById(\'pageSelectionButton%s%s\').style.display=\'\';"/> of %s&nbsp;<input id="pageSelectionButton%s%s" type="button"  class="button" style="display:none;" value="Go" onclick="document.location.href=\'%s?%s&dynamicArgument%s=\' + ((document.getElementById(\'pageSelection%s%s\').value -1 ) * %s);">%s</span>',
-                    $this->globalStyle,
-                    $ID, $md5InstanceName,      //Select Box ID
-                    $this->_currentPage,
-                    $ID, $md5InstanceName,
-                    $this->_totalPages,
-                    $ID, $md5InstanceName,
-                    CATSUtility::getIndexName(),
-                    $requestString,
-                    urlencode($this->_instanceName),
-                    $ID, $md5InstanceName,
-                    $newParameterArray['maxResults'],
-                    "\n"
-                );
+                echo '<span class="dataGridPageStatus d-inline-flex align-items-center gap-1">';
+
+                echo '<span>Page</span>';
+
+                echo '<input',
+                ' type="number"',
+                ' id="pageSelection', $ID, $md5InstanceName, '"',
+                ' class="form-control form-control-sm dataGridPageInput"',
+                ' min="1"',
+                ' max="', $this->_totalPages, '"',
+                ' value="', $this->_currentPage, '"',
+                ' aria-label="Page number"',
+                ' oninput="document.getElementById(\'pageSelectionButton',
+                $ID, $md5InstanceName,
+                '\').classList.remove(\'d-none\');">';
+
+                echo '<span>of ', $this->_totalPages, '</span>';
+
+                echo '<button',
+                ' id="pageSelectionButton', $ID, $md5InstanceName, '"',
+                ' type="button"',
+                ' class="btn btn-sm btn-outline-secondary dataGridPageGo d-none"',
+                ' onclick="document.location.href=\'',
+                CATSUtility::getIndexName(),
+                '?',
+                $requestString,
+                '&dynamicArgument',
+                urlencode($this->_instanceName),
+                '=\' + ((document.getElementById(\'pageSelection',
+                $ID, $md5InstanceName,
+                '\').value - 1) * ',
+                $newParameterArray['maxResults'],
+                ');">',
+                'Go',
+                '</button>';
+
+                echo '</span>';
             }
         }
 
-        /* NEXT >> */
-        echo sprintf(
-            '<span id="nextLink%s%s">%s</span>',
-            $ID, $md5InstanceName, $this->_getNextLink()
-        );
+        /* Next navigation. */
+        echo '<span id="nextLink', $ID, $md5InstanceName,
+        '" class="d-inline-flex gap-1">',
+        $this->_getNextLink(),
+        '</span>';
 
-        /* A-Z list */
+        /*
+         * Alphabetical navigation.
+         */
         if ($alphaNavigation)
         {
-            if (isset($this->ajaxMode) && ($this->ajaxMode))
+            if (isset($this->ajaxMode) && $this->ajaxMode)
             {
-                die ('Alpha navigation not supported under AJAX mode.');
+                die('Alpha navigation not supported under AJAX mode.');
             }
 
-            /* Find which column is currently being sorted. */
             $validAlphabeticalSort = false;
-            foreach ($this->_classColumns as $index => $data)
+
+            foreach ($this->_classColumns as $data)
             {
                 if (isset($data['sortableColumn']) &&
                     $data['sortableColumn'] == $this->_parameters['sortBy'] &&
@@ -2351,73 +2719,83 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
                 }
             }
 
-            /* If we are not currently sorted by a column with alphabetical results,
-             * use the default column. */
             if (!$validAlphabeticalSort)
             {
-                $newParameterArray['sortBy'] = $this->_defaultAlphabeticalSortBy;
+                $newParameterArray['sortBy'] =
+                $this->_defaultAlphabeticalSortBy;
                 $newParameterArray['sortDirection'] = 'ASC';
             }
 
-            /* Draw the characters. */
+            echo '<nav class="dataGridAlphaNavigation" ',
+            'aria-label="Alphabetical navigation">';
+
             if ($newParameterArray['sortDirection'] == 'DESC')
             {
-                for ($i = ord('Z'); $i >= ord('A'); $i--)
-                {
-                    $newParameterArray['filterAlpha'] = chr($i);
-                    $newParameterArray['rangeStart'] = 0;
-
-                    $link = $this->_makeControlLink($newParameterArray);
-
-                    if (isset($this->_parameters['filterAlpha']) && $this->_parameters['filterAlpha'] == chr($i))
-                    {
-                        echo $link, '&nbsp;<span style="font-weight:bold;">', chr($i), '</span></a>';
-                    }
-                    else
-                    {
-                        echo $link, '&nbsp;', chr($i), '</a>';
-                    }
-                }
+                $start = ord('Z');
+                $end = ord('A');
+                $step = -1;
             }
             else
             {
-                for ($i = ord('A'); $i <= ord('Z'); $i++)
-                {
-                    $newParameterArray['filterAlpha'] = chr($i);
-                    $newParameterArray['rangeStart'] = 0;
-
-                    $link = $this->_makeControlLink($newParameterArray);
-
-                    if (isset($this->_parameters['filterAlpha']) && $this->_parameters['filterAlpha'] == chr($i))
-                    {
-                        echo $link, '&nbsp;<span style="font-weight:bold;">', chr($i), '</span></a>';
-                    }
-                    else
-                    {
-                        echo $link, '&nbsp;', chr($i), '</a>';
-                    }
-                }
+                $start = ord('A');
+                $end = ord('Z');
+                $step = 1;
             }
 
-            /* Print ALL link. */
-            $newParameterArray = $this->_parameters;
+            for ($i = $start;
+                 ($step > 0) ? $i <= $end : $i >= $end;
+            $i += $step)
+                 {
+                     $letter = chr($i);
 
-            if (isset($newParameterArray['filterAlpha']))
-            {
-                unset($newParameterArray['filterAlpha']);
-            }
+                     $newParameterArray['filterAlpha'] = $letter;
+                     $newParameterArray['rangeStart'] = 0;
 
-            $link = $this->_makeControlLink($newParameterArray);
+                     if (isset($this->_parameters['filterAlpha']) &&
+                         $this->_parameters['filterAlpha'] == $letter)
+                     {
+                         echo '<span class="dataGridAlphaLink active" ',
+                         'aria-current="page">',
+                         $letter,
+                         '</span>';
+                     }
+                     else
+                     {
+                         echo $this->_makeControlLink(
+                             $newParameterArray,
+                             'dataGridAlphaLink'
+                         ),
+                         $letter,
+                         '</a>';
+                     }
+                 }
 
-            if (!isset($this->_parameters['filterAlpha']))
-            {
-                echo $link . '&nbsp;&nbsp;<span style="font-weight:bold;">ALL</span></a>';
-            }
-            else
-            {
-                echo $link . '&nbsp;&nbsp;ALL</a>';
-            }
+                 /* ALL link. */
+                 $newParameterArray = $this->_parameters;
+
+                 if (isset($newParameterArray['filterAlpha']))
+                 {
+                     unset($newParameterArray['filterAlpha']);
+                 }
+
+                 if (!isset($this->_parameters['filterAlpha']))
+                 {
+                     echo '<span class="dataGridAlphaLink active" ',
+                     'aria-current="page">ALL</span>';
+                 }
+                 else
+                 {
+                     echo $this->_makeControlLink(
+                         $newParameterArray,
+                         'dataGridAlphaLink'
+                     ),
+                     'ALL</a>';
+                 }
+
+                 echo '</nav>';
         }
+
+        echo '</div>';
     }
 
 
@@ -2578,27 +2956,42 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
             return '';
         }
 
-        /* If this is the last page, don't make a link; just text. */
+        $className = 'btn btn-sm btn-outline-secondary pagerPrevNext';
+
+        /* Last page. */
         if ($this->_currentPage == $this->_totalPages)
         {
-            return '<span class="pagerPrevNext" style="' . $this->globalStyle . '">Next &gt;&gt;</span>&nbsp;&nbsp;<span class="pagerPrevNext" style="' . $this->globalStyle . '">Last &gt;</span>' . "\n";
+            return
+            '<span class="' . $className .
+            ' disabled" aria-disabled="true">Next</span>' .
+            '<span class="' . $className .
+            ' disabled" aria-disabled="true">Last</span>';
         }
 
-        $newParameterArray = $this->_parameters;
-        $newParameterArray['rangeStart'] += $newParameterArray['maxResults'];
-        
-        $newParameterArray2 = $this->_parameters;
-        $newParameterArray2['rangeStart'] = ($this->_totalPages - 1) * $newParameterArray2['maxResults'];
-        if ($newParameterArray2['rangeStart'] < 0)
+        $nextParameters = $this->_parameters;
+        $nextParameters['rangeStart'] +=
+        $nextParameters['maxResults'];
+
+        $lastParameters = $this->_parameters;
+        $lastParameters['rangeStart'] =
+        ($this->_totalPages - 1) *
+        $lastParameters['maxResults'];
+
+        if ($lastParameters['rangeStart'] < 0)
         {
-            $newParameterArray2['rangeStart'] = 0;
+            $lastParameters['rangeStart'] = 0;
         }
 
         return sprintf(
-            '%sNext &gt;&gt;</a>&nbsp;&nbsp;%sLast &gt;</a>%s',
-            $this->_makeControlLink($newParameterArray, 'pagerPrevNext'),
-            $this->_makeControlLink($newParameterArray2, 'pagerPrevNext'),
-            "\n"
+            '%sNext</a>%sLast</a>',
+            $this->_makeControlLink(
+                $nextParameters,
+                $className
+            ),
+            $this->_makeControlLink(
+                $lastParameters,
+                $className
+            )
         );
     }
 
@@ -2614,23 +3007,35 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
             return '';
         }
 
-        /* If this is the first page, don't make a link; just text. */
+        $className = 'btn btn-sm btn-outline-secondary pagerPrevNext';
+
+        /* First page. */
         if ($this->_currentPage == 1)
         {
-            return '<span class="pagerPrevNext" style="' . $this->globalStyle . '">&lt; First</span>&nbsp;&nbsp;<span class="pagerPrevNext" style="' . $this->globalStyle . '">&lt;&lt; Prev</span>' . "\n";
+            return
+            '<span class="' . $className .
+            ' disabled" aria-disabled="true">First</span>' .
+            '<span class="' . $className .
+            ' disabled" aria-disabled="true">Prev</span>';
         }
 
-        $newParameterArray = $this->_parameters;
-        $newParameterArray['rangeStart'] -= $newParameterArray['maxResults'];
+        $previousParameters = $this->_parameters;
+        $previousParameters['rangeStart'] -=
+        $previousParameters['maxResults'];
 
-        $newParameterArray2 = $this->_parameters;
-        $newParameterArray2['rangeStart'] = 0;
+        $firstParameters = $this->_parameters;
+        $firstParameters['rangeStart'] = 0;
 
         return sprintf(
-            '%s&lt; First</a>&nbsp;&nbsp;%s&lt;&lt; Prev</a>%s',
-            $this->_makeControlLink($newParameterArray2, 'pagerPrevNext'),
-            $this->_makeControlLink($newParameterArray, 'pagerPrevNext'),
-            "\n"
+            '%sFirst</a>%sPrev</a>',
+            $this->_makeControlLink(
+                $firstParameters,
+                $className
+            ),
+            $this->_makeControlLink(
+                $previousParameters,
+                $className
+            )
         );
     }
 

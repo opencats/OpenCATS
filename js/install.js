@@ -19,11 +19,13 @@ function setActiveStep(step)
     {
         if (i == step)
         {
-            document.getElementById("step" + i).style.fontWeight = "bold";
+            document.getElementById("step" + i).classList.add("active");
+            document.getElementById("step" + i).setAttribute("aria-current", "step");
         }
         else
         {
-            document.getElementById("step" + i).style.fontWeight = "";
+            document.getElementById("step" + i).classList.remove("active");
+            document.getElementById("step" + i).removeAttribute("aria-current");
         }
 
     }
@@ -102,7 +104,7 @@ function Installpage_showMaintenanceRetry(http)
     "successfully recorded.</p>" +
     statusMessage +
     "<p>" +
-    "<input type=\"button\" value=\"Continue Upgrade\" " +
+    "<input type=\"button\" class=\"btn btn-primary\" value=\"Continue Upgrade\" " +
     "onclick=\"this.disabled = true; Installpage_maint(); return false;\" />" +
     "</p>";
 }
@@ -275,6 +277,8 @@ function setProgressUpdating(progress, currentVersion, maxVersion, module)
     document.getElementById("upToDateSqlQuery").style.display = "";
     document.getElementById("upToDateSqlQueryLabel").style.display = "";
 
+    document.getElementById("d3").setAttribute("aria-valuenow", theProgress);
+
     if (theProgress > 12)
     {
         document.getElementById("d1").innerHTML = parseInt(theProgress) + "%";
@@ -286,6 +290,6 @@ function setProgressUpdating(progress, currentVersion, maxVersion, module)
 
     if (theProgress > 0)
     {
-        document.getElementById("d2").style.width = (theProgress * 3) + "px";
+        document.getElementById("d2").style.width = theProgress + "%";
     }
 }

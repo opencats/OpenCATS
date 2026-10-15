@@ -205,14 +205,24 @@ function centerPopWin(width, height)
         var scTop = parseInt(theBody.scrollTop,10);
         var scLeft = parseInt(theBody.scrollLeft,10);
 
+        // Fixed elements use viewport coordinates; legacy absolute styles need scroll offsets.
+        var maskStyle = window.getComputedStyle ? window.getComputedStyle(gPopupMask, null) : gPopupMask.currentStyle;
+        var containerStyle = window.getComputedStyle ? window.getComputedStyle(gPopupContainer, null) : gPopupContainer.currentStyle;
+
         gPopupMask.style.height = fullHeight + 'px';
         gPopupMask.style.width = fullWidth + 'px';
-        gPopupMask.style.top = scTop + 'px';
-        gPopupMask.style.left = scLeft + 'px';
+        gPopupMask.style.top = (maskStyle.position == 'fixed' ? 0 : scTop) + 'px';
+        gPopupMask.style.left = (maskStyle.position == 'fixed' ? 0 : scLeft) + 'px';
 
         window.status = gPopupMask.style.top + ' ' + gPopupMask.style.left + ' ' + gi++;
 
         var titleBarHeight = parseInt(document.getElementById('popupTitleBar').offsetHeight, 10);
+
+        if (containerStyle.position == 'fixed')
+        {
+            scTop = 0;
+            scLeft = 0;
+        }
 
         gPopupContainer.style.top = (scTop + ((fullHeight - (height+titleBarHeight)) / 2)) + 'px';
         gPopupContainer.style.left =  (scLeft + ((fullWidth - width) / 2)) + 'px';

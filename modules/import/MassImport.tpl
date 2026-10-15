@@ -2,57 +2,30 @@
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, '', 'settings'); ?>
 <link rel="stylesheet" type="text/css" href="<?php echo TemplateUtility::getVersionedAssetURL('modules/import/MassImport.css'); ?>" />
-    <div id="main">
+    <main id="main" class="container-fluid py-2">
         <div id="contents">
-            <div style="width: 880px; padding: 15px;">
-                <table cellpadding="0" cellspacing="0" border="0" width="100%">
-                    <tr>
-                        <td class="stepColumn<?php if ($this->step == 1): ?>Selected<?php endif; ?>">
-                            <span style="font-size: 18px; font-weight: bold;">Step 1</span>
-                            <br />
-                            Upload resume documents
-                        </td>
-                        <td class="stepColumn<?php if ($this->step == 2): ?>Selected<?php endif; ?>">
-                            <span style="font-size: 18px; font-weight: bold;">Step 2</span>
-                            <br />
-                            Process Documents
-                        </td>
-                        <td class="stepColumn<?php if ($this->step == 3): ?>Selected<?php endif; ?>">
-                            <span style="font-size: 18px; font-weight: bold;">Step 3</span>
-                            <br />
-                            Review
-                        </td>
-                        <td class="stepColumn<?php if ($this->step == 4): ?>Selected<?php endif; ?>">
-                            <span style="font-size: 18px; font-weight: bold;">Step 4</span>
-                            <br />
-                            Finish Up
-                        </td>
-                    </tr>
-                </table>
-
-                <table cellpadding="0" cellspacing="0" border="0" width="100%">
-                    <tr>
-                        <td width="29" height="29"><img src="images/parser/statusBottomLeft.jpg" border="0" /></td>
-                        <td width="100%" height="29" class="softMiddle">
-                            &nbsp;
-                        </td>
-                        <td width="29" height="29"><img src="images/parser/statusBottomRight.jpg" border="0" /></td>
-                    </tr>
-                </table>
+            <header class="oc-page-header mb-3"><h1 class="h5 fw-semibold mb-0">Import Resumes</h1></header>
+            <div class="card card-body p-3">
+                <ol class="row g-2 list-unstyled mb-3" aria-label="Resume import progress">
+                    <?php foreach (array(1 => 'Upload resume documents', 2 => 'Process Documents', 3 => 'Review', 4 => 'Finish Up') as $step => $label): ?>
+                    <li class="col-12 col-sm-6 col-lg-3">
+                        <div class="rounded p-2 h-100 <?php echo $this->step == $step ? 'bg-primary text-white' : 'bg-body-tertiary'; ?>"<?php if ($this->step == $step): ?> aria-current="step"<?php endif; ?>>
+                            <span class="fw-semibold">Step <?php echo $step; ?></span><br />
+                            <?php echo $label; ?>
+                        </div>
+                    </li>
+                    <?php endforeach; ?>
+                </ol>
 
                 <?php if (isset($this->errorMessage)): ?>
-                    <div class="stepContainer">
-                    <img src="images/friendly_error.jpg" border="0" align="left" />
-                    <span style="font-size: 16px;">
+                    <div class="alert alert-danger" role="alert">
                     <?php echo $this->errorMessage; ?>
-                    </span>
                     </div>
                 <?php else: ?>
                     <?php echo $this->subTemplateContents; ?>
                 <?php endif; ?>
             </div>
 
-
         </div>
-    </div>
+    </main>
 <?php TemplateUtility::printFooter(); ?>

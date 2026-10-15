@@ -11,6 +11,7 @@ use Behat\Gherkin\Node\TableNode;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\ElementHtmlException;
+use Behat\Mink\Selector\Xpath\Escaper;
 
 define('ADMIN_ID', 1);
 /**
@@ -18,6 +19,8 @@ define('ADMIN_ID', 1);
  */
 class SecurityContext extends MinkContext implements Context, SnippetAcceptingContext
 {
+    use \OpenCATS\Tests\Behat\NavigationSteps;
+
     private $result;
     private $accessLevel;
     private $csrfToken;
@@ -89,37 +92,37 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
         {
             case 'DISABLED':
                 $username = "testerDisabled";
-                $password = "tester";
+                $password = "opencats-test-security-903";
                 break;
             case 'READONLY':
                 $username = "testerRead";
-                $password = "tester";
+                $password = "opencats-test-security-903";
                 break;
             case 'EDIT':
                 $username = "testerEdit";
-                $password = "tester";
+                $password = "opencats-test-security-903";
                 break;
             case 'DELETE':
                 $username = "testerDelete";
-                $password = "tester";
+                $password = "opencats-test-security-903";
                 break;
             case 'DEMO':
                 $username = "testerDemo";
-                $password = "tester";
+                $password = "opencats-test-security-903";
                 break;
             case 'ADMIN':
                 $username = "testerSA";
-                $password = "tester";
+                $password = "opencats-test-security-903";
                 break;
             case 'MULTI_ADMIN':
                 /* Legacy multi-site administration was removed. Keep the
                  * existing security matrix label mapped to site-admin access. */
                 $username = "testerSA";
-                $password = "tester";
+                $password = "opencats-test-security-903";
                 break;
             case 'ROOT':
                 $username = "testerRoot";
-                $password = "tester";
+                $password = "opencats-test-security-903";
                 break;
             default:
                 throw new PendingException();
@@ -129,7 +132,7 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
         $this->visitPath('/index.php?m=login');
         $this->fillField('username', $username);
         $this->fillField('password', $password);
-        $this->pressButton('Login');
+        $this->pressButtonAndWaitForNavigation('Login');
         $this->visitPath('/index.php');
         $this->refreshCSRFTokenFromCurrentPage();
     }
@@ -234,7 +237,7 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
     {
         $this->theResponseShouldNotContain("You don't have permission");
         $this->theResponseShouldNotContain("Invalid user level for action");      
-        $this->theResponseShouldNotContain("opencats - Login");      
+        $this->theResponseShouldNotContain("OpenCATS - Login");
     }
 
     /**
@@ -245,7 +248,7 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
         
         if($this->accessLevel == "DISABLED")
         {
-            $this->theResponseShouldContain("opencats - Login");
+            $this->theResponseShouldContain("OpenCATS - Login");
             return;
         }
         $expectedTexts = array("You don't have permission", "Invalid user level for action", "You are not allowed to change your password.", "Invalid request.");
@@ -268,9 +271,28 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
     public function iFollowLink($name)
     {
         $link = $this->getSession()->getPage()->findLink($name);
-        if($link !== null)
+        if ($link === null && $this->accessLevel === 'DISABLED')
         {
-            $link->click();
+            return;
+        }
+        $this->clickLink($name);
+    }
+
+    /**
+     * @Then /^I should (see|not see) the page heading "([^"]*)"$/
+     */
+    public function assertPageHeading($visibility, $heading)
+    {
+        $escaper = new Escaper();
+        $xpath = '//h1[normalize-space(.) = ' . $escaper->escapeLiteral($heading) . ']';
+
+        if ($visibility === 'see')
+        {
+            $this->assertSession()->elementExists('xpath', $xpath);
+        }
+        else
+        {
+            $this->assertSession()->elementNotExists('xpath', $xpath);
         }
     }
 
@@ -295,7 +317,7 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
      */
     public function iWillLogOut()
     {
-        $this->clickLink('Logout');
+        $this->pressButton('Logout');
     }
 
 }

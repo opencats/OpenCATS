@@ -4,6 +4,7 @@
     <?php TemplateUtility::printModalHeader($this->activityModalTitle, array($this->activityValidatorPath, 'js/activity.js'), $this->activityModalTitle . ': Log Activity'); ?>
 <?php endif; ?>
 
+<main class="container-fluid p-2">
 <?php if (!$this->isFinishedMode): ?>
 
 <script type="text/javascript">
@@ -17,23 +18,23 @@
         <input type="hidden" id="regardingID" name="regardingID" value="<?php echo($this->regardingID); ?>" />
 <?php endif; ?>
 
-        <table class="editTable" width="560">
+        <div class="card card-body p-2">
 <?php if (!$this->onlyScheduleEvent): ?>
-            <tr id="activityDateTR">
-                <td class="tdVertical">
-                    <label id="activityDateLabel" for="activityDate_Month_ID">Date:</label>
-                </td>
-                <td class="tdData">
+            <div class="row g-2 mb-3" id="activityDateTR">
+                <div class="col-sm-3">
+                    <label class="form-label mb-1" id="activityDateLabel" for="activityDate_Month_ID">Date:</label>
+                </div>
+                <div class="col-sm-9">
                     <script type="text/javascript">DateInput('activityDate', true, (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY'), '', -1);</script>
-                </td>
-            </tr>
+                </div>
+            </div>
 
-            <tr id="activityTimeTR">
-                <td class="tdVertical">
-                    <label id="activityTimeLabel" for="activityHour">Time:</label>
-                </td>
-                <td class="tdData">
-                    <select id="activityHour" name="activityHour" class="inputbox" style="width: 40px;">
+            <div class="row g-2 mb-3" id="activityTimeTR">
+                <div class="col-sm-3">
+                    <label class="form-label mb-1" id="activityTimeLabel" for="activityHour">Time:</label>
+                </div>
+                <div class="col-sm-9">
+                    <select aria-label="Activity hour" id="activityHour" name="activityHour" class="form-select form-select-sm w-auto d-inline-block">
                         <?php if ($_SESSION['CATS']->isTimeFormat24()): ?>
                             <?php for ($i = 0; $i <= 23; ++$i): ?>
                                 <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
@@ -43,33 +44,33 @@
                                 <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
                             <?php endfor; ?>
                         <?php endif; ?>
-                    </select>&nbsp;
-                    <select id="activityMinute" name="activityMinute" class="inputbox" style="width: 40px;">
+                    </select>
+                    <select aria-label="Activity minute" id="activityMinute" name="activityMinute" class="form-select form-select-sm w-auto d-inline-block">
                         <?php for ($i = 0; $i <= 59; ++$i): ?>
                             <option value="<?php echo(sprintf('%02d', $i)); ?>">
                                 <?php echo(sprintf('%02d', $i)); ?>
                             </option>
                         <?php endfor; ?>
-                    </select>&nbsp;
+                    </select>
                     <?php if (!$_SESSION['CATS']->isTimeFormat24()): ?>
-                    <select id="activityMeridiem" name="activityMeridiem" class="inputbox" style="width: 45px;">
+                    <select aria-label="Activity AM or PM" id="activityMeridiem" name="activityMeridiem" class="form-select form-select-sm w-auto d-inline-block">
                         <option value="AM">AM</option>
                         <option value="PM">PM</option>
                     </select>
                     <?php endif; ?>
-                </td>
-            </tr>
+                </div>
+            </div>
 <?php endif; ?>
 
-            <tr id="visibleTR" <?php if ($this->onlyScheduleEvent): ?>style="display:none;"<?php endif; ?>>
-                <td class="tdVertical">
-                    <label id="regardingIDLabel" for="regardingID">Regarding:</label>
-                </td>
-                <td class="tdData">
+            <div class="row g-2 mb-3" id="visibleTR" <?php if ($this->onlyScheduleEvent): ?>style="display:none;"<?php endif; ?>>
+                <div class="col-sm-3">
+                    <label class="form-label mb-1" id="regardingIDLabel" for="regardingID">Regarding:</label>
+                </div>
+                <div class="col-sm-9">
 <?php if ($this->activityRegardingIDHidden): ?>
                     <span><?php $this->_($this->activityRegardingTitle); ?></span>
 <?php else: ?>
-                    <select id="regardingID" name="regardingID" class="inputbox" style="width: 150px;">
+                    <select id="regardingID" name="regardingID" class="form-select form-select-sm">
                         <option value="-1">General</option>
                         <?php foreach ($this->jobOrdersRS as $jobOrderData): ?>
                             <?php if ($this->regardingID == $jobOrderData['jobOrderID']): ?>
@@ -80,18 +81,18 @@
                         <?php endforeach; ?>
                     </select>
 <?php endif; ?>
-                </td>
-            </tr>
+                </div>
+            </div>
 
-            <tr id="addActivityTR" <?php if ($this->onlyScheduleEvent): ?>style="display:none;"<?php endif; ?>>
-                <td class="tdVertical">
-                    <label id="addActivityLabel" for="addActivity">Activity:</label>
-                </td>
-                <td class="tdData">
-                    <input type="checkbox" name="addActivity" id="addActivity" style="margin-left: 0px;"<?php if (!$this->onlyScheduleEvent): ?> checked="checked"<?php endif; ?> onclick="AS_onAddActivityChange('addActivity', 'activityTypeID', 'activityNote', 'addActivitySpanA', 'addActivitySpanB');" />Log an Activity<br />
-                    <div id="activityNoteDiv" style="margin-top: 4px;">
-                        <span id="addActivitySpanA">Activity Type</span><br />
-                        <select id="activityTypeID" name="activityTypeID" class="inputbox" style="width: 150px; margin-bottom: 4px;">
+            <div class="row g-2 mb-3" id="addActivityTR" <?php if ($this->onlyScheduleEvent): ?>style="display:none;"<?php endif; ?>>
+                <div class="col-sm-3">
+                    <label class="form-label mb-1" id="addActivityLabel" for="addActivity">Activity:</label>
+                </div>
+                <div class="col-sm-9">
+                    <input type="checkbox" class="form-check-input" name="addActivity" id="addActivity" <?php if (!$this->onlyScheduleEvent): ?> checked="checked"<?php endif; ?> onclick="AS_onAddActivityChange('addActivity', 'activityTypeID', 'activityNote', 'addActivitySpanA', 'addActivitySpanB');" /><label class="form-check-label ms-1" for="addActivity">Log an Activity</label>
+                    <div id="activityNoteDiv" class="mt-2">
+                        <label class="form-label mb-1" id="addActivitySpanA" for="activityTypeID">Activity Type</label>
+                        <select id="activityTypeID" name="activityTypeID" class="form-select form-select-sm">
                             <option selected="selected" value="">-- Select --</option>
                             <option value="<?php echo(ACTIVITY_CALL); ?>">Not reached</option>
                             <option value="<?php echo(ACTIVITY_CALL_TALKED); ?>">Call (Talked)</option>
@@ -100,38 +101,40 @@
                             <option value="<?php echo(ACTIVITY_EMAIL); ?>">Email</option>
                             <option value="<?php echo(ACTIVITY_MEETING); ?>">Meeting</option>
                             <option value="<?php echo(ACTIVITY_OTHER); ?>">Other</option>
-                        </select><br />
-                        <span id="addActivitySpanB">Activity Notes</span><br />
-                        <textarea name="activityNote" id="activityNote" cols="50" style="margin-bottom: 4px;" class="inputbox"></textarea>
+                        </select>
+                        <label class="form-label mt-2 mb-1" id="addActivitySpanB" for="activityNote">Activity Notes</label>
+                        <textarea name="activityNote" id="activityNote" rows="3" class="form-control form-control-sm"></textarea>
                     </div>
-                </td>
-            </tr>
+                </div>
+            </div>
 
-            <tr id="scheduleEventTR">
-                <td class="tdVertical">
-                    <label id="scheduleEventLabel" for="scheduleEvent">Schedule Event:</label>
-                </td>
-                <td class="tdData">
-                    <input type="checkbox" name="scheduleEvent" id="scheduleEvent" style="margin-left: 0px; <?php if ($this->onlyScheduleEvent): ?>display:none;<?php endif; ?>" onclick="AS_onScheduleEventChange('scheduleEvent', 'scheduleEventDiv');"<?php if ($this->onlyScheduleEvent): ?> checked="checked"<?php endif; ?> /><?php if (!$this->onlyScheduleEvent): ?>Schedule Event<?php endif; ?>
+            <div class="row g-2 mb-3" id="scheduleEventTR">
+                <div class="col-sm-3">
+                    <label class="form-label mb-1" id="scheduleEventLabel" for="scheduleEvent">Schedule Event:</label>
+                </div>
+                <div class="col-sm-9">
+                    <input type="checkbox" class="form-check-input" name="scheduleEvent" id="scheduleEvent" <?php if ($this->onlyScheduleEvent): ?>style="display:none;"<?php endif; ?> onclick="AS_onScheduleEventChange('scheduleEvent', 'scheduleEventDiv');"<?php if ($this->onlyScheduleEvent): ?> checked="checked"<?php endif; ?> /><?php if (!$this->onlyScheduleEvent): ?><label class="form-check-label ms-1" for="scheduleEvent">Schedule Event</label><?php endif; ?>
                     <div id="scheduleEventDiv" <?php if (!$this->onlyScheduleEvent): ?>style="display:none;"<?php endif; ?>>
-                        <table style="border: none; margin: 0px; padding: 0px;">
-                            <tr>
-                                <td valign="top">
-                                    <div style="margin-bottom: 4px;">
-                                        <select id="eventTypeID" name="eventTypeID" class="inputbox" style="width: 150px;">
+                        <div class="row g-3 mt-1">
+
+                                <div class="col-sm-6">
+                                    <div class="mb-2">
+                                        <label class="form-label mb-1" for="eventTypeID">Event Type</label>
+                                        <select id="eventTypeID" name="eventTypeID" class="form-select form-select-sm">
                                             <?php foreach ($this->calendarEventTypes as $eventType): ?>
                                                 <option <?php if ($eventType['typeID'] == CALENDAR_EVENT_INTERVIEW): ?>selected="selected" <?php endif; ?>value="<?php echo($eventType['typeID']); ?>"><?php $this->_($eventType['description']); ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
 
-                                    <div style="margin-bottom: 4px;">
+                                    <div class="mb-2">
+                                        <label class="form-label mb-1" for="dateAdd_Month_ID">Event Date</label>
                                         <script type="text/javascript">DateInput('dateAdd', true, (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY'), '', -1);</script>
                                     </div>
 
-                                    <div style="margin-bottom: 4px;">
-                                        <input type="radio" name="allDay" id="allDay0" value="0" style="margin-left: 0px" checked="checked" onchange="AS_onEventAllDayChange('allDay1');" />
-                                        <select id="hour" name="hour" class="inputbox" style="width: 40px;">
+                                    <div class="mb-2">
+                                        <input type="radio" class="form-check-input" name="allDay" aria-label="Specific time" id="allDay0" value="0"  checked="checked" onchange="AS_onEventAllDayChange('allDay1');" />
+                                        <select aria-label="Event hour" id="hour" name="hour" class="form-select form-select-sm w-auto d-inline-block">
                                             <?php if ($_SESSION['CATS']->isTimeFormat24()): ?>
                                                 <?php for ($i = 0; $i <= 23; ++$i): ?>
                                                     <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
@@ -141,42 +144,42 @@
                                                     <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
                                                 <?php endfor; ?>
                                             <?php endif; ?>
-                                        </select>&nbsp;
-                                        <select id="minute" name="minute" class="inputbox" style="width: 40px;">
+                                        </select>
+                                        <select aria-label="Event minute" id="minute" name="minute" class="form-select form-select-sm w-auto d-inline-block">
                                             <?php for ($i = 0; $i <= 45; $i = $i + 15): ?>
                                                 <option value="<?php echo(sprintf('%02d', $i)); ?>">
                                                     <?php echo(sprintf('%02d', $i)); ?>
                                                 </option>
                                             <?php endfor; ?>
-                                        </select>&nbsp;
+                                        </select>
                                         <?php if (!$_SESSION['CATS']->isTimeFormat24()): ?>
-                                        <select id="meridiem" name="meridiem" class="inputbox" style="width: 45px;">
+                                        <select aria-label="Event AM or PM" id="meridiem" name="meridiem" class="form-select form-select-sm w-auto d-inline-block">
                                             <option value="AM">AM</option>
                                             <option value="PM">PM</option>
                                         </select>
                                         <?php endif; ?>
                                     </div>
 
-                                    <div style="margin-bottom: 4px;">
-                                        <input type="radio" name="allDay" id="allDay1" value="1" style="margin-left: 0px" onchange="AS_onEventAllDayChange('allDay1');" />All Day / No Specific Time<br />
+                                    <div class="form-check mb-2">
+                                        <input type="radio" class="form-check-input" name="allDay" id="allDay1" value="1"  onchange="AS_onEventAllDayChange('allDay1');" /><label class="form-check-label ms-1" for="allDay1">All Day / No Specific Time</label>
                                     </div>
 
-                                    <div style="margin-bottom: 4px;">
-                                        <input type="checkBox" name="publicEntry" id="publicEntry" style="margin-left: 0px" />Public Entry
+                                    <div class="form-check mb-2">
+                                        <input type="checkbox" class="form-check-input" name="publicEntry" id="publicEntry"  /><label class="form-check-label ms-1" for="publicEntry">Public Entry</label>
                                     </div>
-                                </td>
+                                </div>
 
-                                <td valign="top">
-                                    <div style="margin-bottom: 4px;">
-                                        <label id="titleLabel" for="title">Title&nbsp;*</label><br />
-                                        <input type="text" class="inputbox" name="title" id="title" style="width: <?php echo($this->activityTitleWidth); ?>px" />
+                                <div class="col-sm-6">
+                                    <div class="mb-2">
+                                        <label class="form-label mb-1" id="titleLabel" for="title">Title&nbsp;*</label>
+                                        <input type="text" class="form-control form-control-sm" name="title" id="title" />
                                     </div>
 
 <?php if ($this->activityShowEventDuration): ?>
-                                    <div style="margin-bottom: 4px;">
-                                        <label id="durationLabel" for="duration">Length:</label>
-                                        <br />
-                                        <select id="duration" name="duration" class="inputbox" style="width: <?php echo($this->activityTitleWidth); ?>px;">
+                                    <div class="mb-2">
+                                        <label class="form-label mb-1" id="durationLabel" for="duration">Length:</label>
+
+                                        <select id="duration" name="duration" class="form-select form-select-sm">
                                             <option value="15">15 minutes</option>
                                             <option value="30">30 minutes</option>
                                             <option value="45">45 minutes</option>
@@ -190,23 +193,23 @@
                                     </div>
 <?php endif; ?>
 
-                                    <div style="margin-bottom: 4px;">
-                                        <label id="descriptionLabel" for="description">Description</label><br />
-                                        <textarea name="description" id="description" cols="20" class="inputbox" style="width: <?php echo($this->activityDescriptionWidth); ?>px;<?php if ($this->activityDescriptionHeight > 0): ?> height:<?php echo($this->activityDescriptionHeight); ?>px;<?php endif; ?>"></textarea>
+                                    <div class="mb-2">
+                                        <label class="form-label mb-1" id="descriptionLabel" for="description">Description</label>
+                                        <textarea name="description" id="description" rows="3" class="form-control form-control-sm"></textarea>
                                     </div>
 
                                     <div <?php if (!$this->allowEventReminders): ?>style="display:none;"<?php endif; ?>>
-                                        <input type="checkbox" name="reminderToggle" onclick="if (this.checked) document.getElementById('reminderArea').style.display = ''; else document.getElementById('reminderArea').style.display = '';">&nbsp;<label>Set Reminder</label><br />
+                                        <input type="checkbox" class="form-check-input" name="reminderToggle" id="reminderToggle" onclick="if (this.checked) document.getElementById('reminderArea').style.display = ''; else document.getElementById('reminderArea').style.display = '';"><label class="form-check-label ms-1" for="reminderToggle">Set Reminder</label>
                                     </div>
 
                                     <div style="display:none;" id="reminderArea">
-                                        <div>
-                                            <label><?php echo($this->activityReminderEmailLabel); ?></label><br />
-                                            <input type="text" id="sendEmail" name="sendEmail" class="inputbox" style="width: 150px" value="<?php $this->_($this->userEmail); ?>" />
+                                        <div class="mb-2">
+                                            <label class="form-label mb-1" for="sendEmail"><?php echo($this->activityReminderEmailLabel); ?></label>
+                                            <input type="text" id="sendEmail" name="sendEmail" class="form-control form-control-sm" value="<?php $this->_($this->userEmail); ?>" />
                                         </div>
-                                        <div>
-                                            <label>Time:</label><br />
-                                            <select id="reminderTime" name="reminderTime" style="width: 150px">
+                                        <div class="mb-2">
+                                            <label class="form-label mb-1" for="reminderTime">Time:</label>
+                                            <select class="form-select form-select-sm" id="reminderTime" name="reminderTime">
                                                 <option value="15">15 min early</option>
                                                 <option value="30">30 min early</option>
                                                 <option value="45">45 min early</option>
@@ -216,16 +219,17 @@
                                             </select>
                                         </div>
                                     </div>
-                                </td>
-                            </tr>
-                        </table>
+                                </div>
+                        </div>
                     </div>
-                </td>
-            </tr>
+                </div>
+            </div>
 
-        </table>
-        <input type="submit" class="button" name="submit" id="submit" value="Save" />&nbsp;
-        <input type="button" class="button" name="close" value="Cancel" onclick="parentGoToURL(<?php echo Template::escapeJsAttr($this->activityCancelURL); ?>);" />
+        </div>
+        <div class="d-flex justify-content-end gap-2 mt-3">
+        <input type="submit" class="btn btn-sm btn-primary" name="submit" id="submit" value="Save" />
+        <input type="button" class="btn btn-sm btn-secondary" name="close" value="Cancel" onclick="parentGoToURL(<?php echo Template::escapeJsAttr($this->activityCancelURL); ?>);" />
+        </div>
     </form>
 
     <script type="text/javascript">
@@ -258,9 +262,9 @@
         <?php if (!$this->onlyScheduleEvent): ?>
             <?php if ($this->activityAdded): ?>
                 <?php if (!empty($this->activityDescription)): ?>
-                    <p>An activity entry of type <span class="bold"><?php $this->_($this->activityType); ?></span> has been added with the following note: &quot;<?php $this->_($this->activityDescription); ?>&quot;.</p>
+                    <p>An activity entry of type <span class="fw-semibold"><?php $this->_($this->activityType); ?></span> has been added with the following note: &quot;<?php $this->_($this->activityDescription); ?>&quot;.</p>
                 <?php else: ?>
-                    <p>An activity entry of type <span class="bold"><?php $this->_($this->activityType); ?></span> has been added with no notes.</p>
+                    <p>An activity entry of type <span class="fw-semibold"><?php $this->_($this->activityType); ?></span> has been added with no notes.</p>
                 <?php endif; ?>
             <?php else: ?>
                 <p>No activity entries have been added.</p>
@@ -271,9 +275,10 @@
     <?php echo($this->eventHTML); ?>
 
     <form>
-        <input type="button" name="close" class="button" value="Close" onclick="parentGoToURL(<?php echo Template::escapeJsAttr($this->activityCloseURL); ?>);" />
+        <input type="button" name="close" class="btn btn-sm btn-primary" value="Close" onclick="parentGoToURL(<?php echo Template::escapeJsAttr($this->activityCloseURL); ?>);" />
     </form>
 <?php endif; ?>
 
+</main>
     </body>
 </html>
