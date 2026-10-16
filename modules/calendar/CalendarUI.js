@@ -174,7 +174,7 @@ function calendarEditEvent(entry)
     var dateString = (userDateFormat == "DD-MM-YY"
         ? dayString + "-" + monthString + "-" + yearString
         : userDateFormat == "YYYY-MM-DD"
-        ? entry.year + "-" + monthString + "-" + dayString
+        ? GetGoodYear(yearString) + "-" + monthString + "-" + dayString
         : monthString + "-" + dayString + "-" + yearString);
     SetDateInputDate("dateEdit", userDateFormat, dateString);
 
