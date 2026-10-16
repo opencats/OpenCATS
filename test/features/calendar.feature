@@ -22,7 +22,7 @@ Feature: Calendar
     And I select "Meeting" from "type"
     And I select "Jun" from "dateAdd_Month_ID"
     And I select "12" from "dateAdd_Day_ID"
-    And I fill in "dateAdd_Year_ID" with "30"
+    And I fill in "dateAdd_Year_ID" with "<year>"
     And I select "09" from "hour"
     And I select "15" from "minute"
     And I fill in "description" with "Calendar workflow details"
@@ -53,7 +53,7 @@ Feature: Calendar
     Then the "#calendarMonth" element should contain "Calendar workflow event"
     When I click on the element "#calendarMonth .calendarEntry"
     And I press "Edit Event"
-    Then the "dateEdit_Year_ID" field should contain "30"
+    Then the "dateEdit_Year_ID" field should contain "<year>"
     And the "minuteEdit" field should contain "15"
     And Calendar panel "sendEmailTDEdit" should be "visible"
     When I uncheck "reminderToggleEdit"
@@ -79,9 +79,10 @@ Feature: Calendar
     Then I should see "My Upcoming Events / Calls"
 
     Examples:
-      | dateFormat | timeFormat |
-      | MDY        | 12         |
-      | DMY        | 24         |
+      | dateFormat | timeFormat | year |
+      | MDY        | 12         | 30   |
+      | DMY        | 24         | 30   |
+      | YMD        | 24         | 2030 |
 
   Scenario Outline: Navigate beyond cached months and select a date to create an event
     Given Calendar AJAX is "<ajax>"

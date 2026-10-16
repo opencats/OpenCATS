@@ -11,6 +11,7 @@ class ChartDataTest extends DatabaseTestCase
             public function getUserID() { return 1; }
             public function isLoggedIn() { return false; }
             public function isDateDMY() { return true; }
+            public function getDateFormat() { return DATE_FORMAT_DDMMYY; }
             public function isTimeFormat24() { return true; }
             public function getTimeZoneOffset() { return 0; }
         };
