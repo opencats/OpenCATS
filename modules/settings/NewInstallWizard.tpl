@@ -83,6 +83,7 @@
                                     <select id="dateFormat" name="dateFormat" class="form-select form-select-sm">
                                         <option value="mdy" selected="selected">MM-DD-YYYY (US)</option>
                                         <option value="dmy">DD-MM-YYYY (UK)</option>
+                                        <option value="ymd">YYYY-MM-DD (ISO)</option>
                                     </select>
                                 </div>
                             </div>

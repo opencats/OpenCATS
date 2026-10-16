@@ -2,7 +2,7 @@
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <script>
-        window.CATSUserDateFormat = '<?php echo($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>';
+        window.CATSUserDateFormat = '<?php echo(DateUtility::getJsDateFormat()); ?>';
         window.CATSTimeFormat24 = <?php echo($_SESSION['CATS']->isTimeFormat24() ? 'true' : 'false'); ?>;
     </script>
 <?php TemplateUtility::printQuickSearch(); ?>
@@ -48,7 +48,7 @@
                                 </div>
                                 <div class="mb-2">
                                     <label class="form-label mb-1" id="dateLabel" for="dateAdd_Month_ID">Date:</label>
-                                    <script>DateInput('dateAdd', true, (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY'), '<?php echo($_SESSION['CATS']->isDateDMY() ? DateUtility::getAdjustedDate('d-m-y') : $this->currentDateMDY); ?>', -1);</script>
+                                    <script>DateInput('dateAdd', true, (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY'), '<?php echo(DateUtility::getAdjustedDate(DateUtility::getPhpDateFormat())); ?>', -1);</script>
                                 </div>
                                 <div class="mb-2">
                                     <label class="form-label mb-1" id="timeLabel" for="hour">Time:</label>
@@ -156,7 +156,7 @@
                                 </div>
                                 <div class="mb-2">
                                     <label class="form-label mb-1" id="dateLabelEdit" for="dateEdit_Month_ID">Date:</label>
-                                    <script>DateInput('dateEdit', true, (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY'), '<?php echo($_SESSION['CATS']->isDateDMY() ? DateUtility::getAdjustedDate('d-m-y') : $this->currentDateMDY); ?>', -1);</script>
+                                    <script>DateInput('dateEdit', true, (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY'), '<?php echo(DateUtility::getAdjustedDate(DateUtility::getPhpDateFormat())); ?>', -1);</script>
                                 </div>
                                 <div class="mb-2">
                                     <label class="form-label mb-1" id="timeLabelEdit" for="hourEdit">Time:</label>

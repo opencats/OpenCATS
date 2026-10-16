@@ -10,6 +10,7 @@
  */
 
 include(LEGACY_ROOT . '/lib/ACL.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php');
 
 /**
  *  CATS Session Object
@@ -49,7 +50,10 @@ class CATSSession
     private $_timeZoneOffset = 0;
     private $_timeZone = 0;
     private $_defaultPhoneCountryCode = '+1';
-    private $_dateDMY = false;
+    private $_dateFormat = DATE_FORMAT_MMDDYY;
+    /* Deprecated: only set in sessions serialized before _dateFormat was
+     * added; migrated to _dateFormat by __wakeup(). */
+    private $_dateDMY = null;
     private $_timeFormat24 = false;
     private $_pipelineEntriesPerPage = 15;
     private $_storedData = array();
@@ -334,7 +338,34 @@ class CATSSession
      */
     public function isDateDMY()
     {
-        return $this->_dateDMY;
+        return ($this->_dateFormat == DATE_FORMAT_DDMMYY);
+    }
+
+    /**
+     * Returns the date format flag for the current site (DATE_FORMAT_MMDDYY,
+     * DATE_FORMAT_DDMMYY or DATE_FORMAT_YYYYMMDD). The database is not
+     * accessed.
+     *
+     * @return integer date format flag
+     */
+    public function getDateFormat()
+    {
+        return $this->_dateFormat;
+    }
+
+    /**
+     * Migrates the date format of sessions serialized before _dateFormat was
+     * added, so users logged in during an upgrade keep their date format.
+     *
+     * @return void
+     */
+    public function __wakeup()
+    {
+        if ($this->_dateDMY !== null)
+        {
+            $this->_dateFormat = DateUtility::normalizeDateFormat((bool) $this->_dateDMY);
+            $this->_dateDMY = null;
+        }
     }
 
     /**
@@ -557,16 +588,16 @@ class CATSSession
      * is not modified.
      *
      * @param integer Time zone offset from GMT.
-     * @param boolean Display dates in D-M-Y format?
+     * @param integer|boolean Date format flag, or legacy boolean D-M-Y value.
      * @return void
      */
-    public function setTimeDateLocalization($timeZone, $isDMY, $isTimeFormat24 = false)
+    public function setTimeDateLocalization($timeZone, $dateFormat, $isTimeFormat24 = false)
     {
         $timeZone = (integer) $timeZone;
 
         $this->_timeZone       = $timeZone;
         $this->_timeZoneOffset = $timeZone - OFFSET_GMT;
-        $this->_dateDMY        = $isDMY;
+        $this->_dateFormat     = DateUtility::normalizeDateFormat($dateFormat);
         $this->_timeFormat24   = (bool) $isTimeFormat24;
     }
 
@@ -766,7 +797,7 @@ class CATSSession
                 $this->_timeZoneOffset         = $rs['timeZone'] - OFFSET_GMT;
                 $this->_timeZone               = $rs['timeZone'];
                 $this->_defaultPhoneCountryCode = $rs['defaultPhoneCountryCode'];
-                $this->_dateDMY                = ($rs['dateFormatDMY'] == 0 ? false : true);
+                $this->_dateFormat             = DateUtility::getDateFormatFromSiteValue($rs['dateFormatDMY']);
                 $this->_timeFormat24           = ($rs['timeFormat24'] == 0 ? false : true);
                 $this->_canSeeEEOInfo          = ($rs['canSeeEEOInfo'] == 0 ? false : true);
                 $this->_pipelineEntriesPerPage = $rs['pipelineEntriesPerPage'];

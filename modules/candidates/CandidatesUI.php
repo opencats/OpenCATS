@@ -1272,9 +1272,7 @@ class CandidatesUI extends UserInterface
          * ahead and convert the date to MySQL format.
          */
         $dateAvailable = $this->getTrimmedInput('dateAvailable', $_POST);
-        $dateFormatFlag = $_SESSION['CATS']->isDateDMY()
-            ? DATE_FORMAT_DDMMYY
-            : DATE_FORMAT_MMDDYY;
+        $dateFormatFlag = $_SESSION['CATS']->getDateFormat();
         if (!empty($dateAvailable))
         {
             if (!DateUtility::validate('-', $dateAvailable, $dateFormatFlag))
@@ -2804,9 +2802,7 @@ class CandidatesUI extends UserInterface
          * ahead and convert the date to MySQL format.
          */
         $dateAvailable = $this->getTrimmedInput('dateAvailable', $_POST);
-        $dateFormatFlag = $_SESSION['CATS']->isDateDMY()
-            ? DATE_FORMAT_DDMMYY
-            : DATE_FORMAT_MMDDYY;
+        $dateFormatFlag = $_SESSION['CATS']->getDateFormat();
         if (!empty($dateAvailable))
         {
             if (!DateUtility::validate('-', $dateAvailable, $dateFormatFlag))
@@ -3196,9 +3192,7 @@ class CandidatesUI extends UserInterface
 
             $activityDateOccurred = false;
             $isTimeFormat24 = $_SESSION['CATS']->isTimeFormat24();
-            $dateFormatFlag = $_SESSION['CATS']->isDateDMY()
-                ? DATE_FORMAT_DDMMYY
-                : DATE_FORMAT_MMDDYY;
+            $dateFormatFlag = $_SESSION['CATS']->getDateFormat();
             $activityDate = $this->getTrimmedInput('activityDate', $_POST);
             $activityHourSet = isset($_POST['activityHour']) && isset($_POST['activityMinute']) &&
                 ctype_digit((string) $_POST['activityHour']) &&
@@ -3249,9 +3243,7 @@ class CandidatesUI extends UserInterface
         {
             /* Bail out if we received an invalid date. */
             $trimmedDate = $this->getTrimmedInput('dateAdd', $_POST);
-            $dateFormatFlag = $_SESSION['CATS']->isDateDMY()
-                ? DATE_FORMAT_DDMMYY
-                : DATE_FORMAT_MMDDYY;
+            $dateFormatFlag = $_SESSION['CATS']->getDateFormat();
             if (empty($trimmedDate) ||
                 !DateUtility::validate('-', $trimmedDate, $dateFormatFlag))
             {

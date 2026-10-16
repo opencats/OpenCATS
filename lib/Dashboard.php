@@ -200,14 +200,12 @@ class Dashboard
             case DASHBOARD_GRAPH_WEEKLY:
 		    default:
               // TODO:   Localization d/m, week starts on monday
-                if ($_SESSION['CATS']->isDateDMY())
+                $pattern = match ($_SESSION['CATS']->getDateFormat())
                 {
-                    $pattern = "d/m";
-                }
-                else
-                {
-                    $pattern = "m/d";
-                }            
+                    DATE_FORMAT_DDMMYY   => "d/m",
+                    DATE_FORMAT_YYYYMMDD => "m-d",
+                    default              => "m/d",
+                };
             
                 /* * 6 at the end gives us the last day in the week (first day in week plus 6 days) */
                 $data[$rsCurrentTime['currentWeekNumber']] = array('label' => date($pattern, $rsCurrentTime['currentWeekNumber']) . ' - ' . date($pattern, $rsCurrentTime['currentWeekNumber'] + $oneUnixDay * 6));

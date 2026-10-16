@@ -2,7 +2,7 @@
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
 <script>
-        window.CATSUserDateFormat = '<?php echo($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>';
+        window.CATSUserDateFormat = '<?php echo(DateUtility::getJsDateFormat()); ?>';
     </script>
 <?php TemplateUtility::printQuickSearch(); ?>
 <main id="main" class="container-fluid py-2 oc-joborder-add-page">

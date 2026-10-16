@@ -43,7 +43,7 @@ trait ActivitiesSteps
     {
         $db = DatabaseConnection::getInstance();
         $this->activitiesFormats = $db->getAllAssoc('SELECT site_id, date_format_ddmmyy, time_format_24 FROM site');
-        $db->query('UPDATE site SET date_format_ddmmyy = ' . ($dateFormat === 'DMY' ? 1 : 0)
+        $db->query('UPDATE site SET date_format_ddmmyy = ' . array('MDY' => 0, 'DMY' => 1, 'YMD' => 2)[$dateFormat]
             . ', time_format_24 = ' . ($timeFormat === '24' ? 1 : 0));
     }
 
