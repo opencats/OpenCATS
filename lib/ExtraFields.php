@@ -808,9 +808,19 @@ class ExtraFields
 
                 if (!empty($newValue))
                 {
-                    $newValue = DateUtility::convert(
+                    $storedValue = DateUtility::convert(
                         '-', $newValue, $dateFormatFlag, DATE_FORMAT_MMDDYY
                     );
+
+                    /* Storage is MM-DD-YY; reject dates whose century would
+                     * be lost (e.g. 1950-06-12 would read back as 2050).
+                     */
+                    if (DateUtility::formatStoredDate($storedValue, $dateFormatFlag) !== $newValue)
+                    {
+                        continue;
+                    }
+
+                    $newValue = $storedValue;
                 }
             }
 
