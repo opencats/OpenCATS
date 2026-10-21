@@ -6,7 +6,7 @@ use OpenCATS\UI\QuickActionMenu;
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
 <script>
-    window.CATSUserDateFormat  = <?php echo Template::escapeJs($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>;
+    window.CATSUserDateFormat  = <?php echo Template::escapeJs(DateUtility::getJsDateFormat()); ?>;
     window.CATSTimeFormat24    = <?php echo $_SESSION['CATS']->isTimeFormat24() ? 'true' : 'false'; ?>;
 </script>
 <?php TemplateUtility::printQuickSearch(); ?>

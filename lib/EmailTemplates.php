@@ -210,14 +210,7 @@ class EmailTemplates
         $siteName = $_SESSION['CATS']->getSiteName();
         $fullName = $_SESSION['CATS']->getFullName();
 
-        if ($_SESSION['CATS']->isDateDMY())
-        {
-            $dateFormat = 'd-m-y';
-        }
-        else
-        {
-            $dateFormat = 'm-d-y';
-        }
+        $dateFormat = DateUtility::getPhpDateFormat();
 
         if (isset($_SESSION['CATS']))
         {

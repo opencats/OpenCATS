@@ -1529,18 +1529,20 @@ class Candidates
             );
         }
 
-        if (!empty($rs['dateAvailable']))
+        /* dateAvailable was formatted by the query in the session's date format. */
+        $dateFormat = isset($_SESSION['CATS'])
+            ? $_SESSION['CATS']->getDateFormat()
+            : DATE_FORMAT_MMDDYY;
+
+        if (!empty($rs['dateAvailable']) &&
+            DateUtility::validate('-', $rs['dateAvailable'], $dateFormat))
         {
-            $dateParts = explode('-', $rs['dateAvailable']);
+            $dateAvailable = DateUtility::convert(
+                '-', $rs['dateAvailable'], $dateFormat, DATE_FORMAT_YYYYMMDD
+            ) . ' 00:00:00';
 
-            if (count($dateParts) == 3)
-            {
-                $dateAvailable = '20' . $dateParts[2] . '-' .
-                $dateParts[0] . '-' . $dateParts[1] . ' 00:00:00';
-
-                $updates[] = 'date_available = ' .
-                $this->_db->makeQueryString($dateAvailable);
-            }
+            $updates[] = 'date_available = ' .
+            $this->_db->makeQueryString($dateAvailable);
         }
 
         $sql = sprintf(

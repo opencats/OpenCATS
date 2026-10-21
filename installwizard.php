@@ -375,6 +375,7 @@
                                 <select id="dateFormat" name="dateFormat" class="form-select">
                                     <option value="mdy" selected="selected">MM-DD-YYYY (US)</option>
                                     <option value="dmy">DD-MM-YYYY (UK)</option>
+                                    <option value="ymd">YYYY-MM-DD (ISO)</option>
                                 </select></section>
                             <section class="mb-3"><label for="timeFormat" class="form-label">Please choose your preferred time format.</label>
                                 <select id="timeFormat" name="timeFormat" class="form-select">

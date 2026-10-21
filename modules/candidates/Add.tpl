@@ -27,7 +27,7 @@
 <?php endif; ?>
 
 <script>
-    window.CATSUserDateFormat = '<?php echo($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>';
+    window.CATSUserDateFormat = '<?php echo(DateUtility::getJsDateFormat()); ?>';
 </script>
 
             <h2 class="h6 card-header bg-secondary-subtle py-1 px-2 fw-semibold mb-2">Basic Information</h2>

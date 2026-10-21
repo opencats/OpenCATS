@@ -18,7 +18,7 @@ $extraFieldSplit = intdiv(count($this->extraFieldRS), 2);
 
 <script>
 window.CATSUserDateFormat = <?php echo Template::escapeJs(
-    $_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'
+    DateUtility::getJsDateFormat()
 ); ?>;
 window.CATSTimeFormat24 = <?php echo $_SESSION['CATS']->isTimeFormat24() ? 'true' : 'false'; ?>;
 </script>

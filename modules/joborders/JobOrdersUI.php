@@ -763,9 +763,7 @@ class JobOrdersUI extends UserInterface
          * convert the date to MySQL format.
          */
         $startDate = $this->getTrimmedInput('startDate', $_POST);
-        $dateFormatFlag = $_SESSION['CATS']->isDateDMY()
-            ? DATE_FORMAT_DDMMYY
-            : DATE_FORMAT_MMDDYY;
+        $dateFormatFlag = $_SESSION['CATS']->getDateFormat();
         if (!empty($startDate))
         {
             if (!DateUtility::validate('-', $startDate, $dateFormatFlag))
@@ -1026,9 +1024,7 @@ class JobOrdersUI extends UserInterface
          * convert the date to MySQL format.
          */
         $startDate = $this->getTrimmedInput('startDate', $_POST);
-        $dateFormatFlag = $_SESSION['CATS']->isDateDMY()
-            ? DATE_FORMAT_DDMMYY
-            : DATE_FORMAT_MMDDYY;
+        $dateFormatFlag = $_SESSION['CATS']->getDateFormat();
         if (!empty($startDate))
         {
             if (!DateUtility::validate('-', $startDate, $dateFormatFlag))

@@ -34,8 +34,9 @@
                                 <div class="row g-2 mb-2">
                                     <div class="col-12 col-sm">
                                         <select id="dateFormat" name="dateFormat" class="form-select form-select-sm">
-                                            <option value="mdy"<?php if (!$this->isDateDMY): ?> selected<?php endif; ?>>MM-DD-YYYY (US)</option>
-                                            <option value="dmy"<?php if ($this->isDateDMY): ?> selected<?php endif; ?>>DD-MM-YYYY (UK)</option>
+                                            <option value="mdy"<?php if ($this->dateFormat == DATE_FORMAT_MMDDYY): ?> selected<?php endif; ?>>MM-DD-YYYY (US)</option>
+                                            <option value="dmy"<?php if ($this->dateFormat == DATE_FORMAT_DDMMYY): ?> selected<?php endif; ?>>DD-MM-YYYY (UK)</option>
+                                            <option value="ymd"<?php if ($this->dateFormat == DATE_FORMAT_YYYYMMDD): ?> selected<?php endif; ?>>YYYY-MM-DD (ISO)</option>
                                         </select>
                                     </div>
                                 </div>

@@ -937,12 +937,7 @@ function SetDateInputDate(DateName, DateFormat, NewDate)
     /* Select the day. */
     dayList.selectedIndex = (day - 1);
 
-    /* Set the year. */
-    var yearString = (year % 100) + '';
-    if (yearString.length == 1)
-    {
-        yearString = '0' + yearString;
-    }
-
-    yearField.value = yearString;
+    /* Set the year (2 or 4 digits, matching the date format). */
+    yearField.value = object.picked.yearPad;
+    yearField.defaultValue = yearField.value;
 }

@@ -152,9 +152,10 @@ Feature: Activities
     Then I should see "Activities combined fixture"
 
     Examples:
-      | format | clock | date     | hour |
-      | MDY    | 12    | 06-12-31 | 9    |
-      | DMY    | 24    | 12-06-31 | 21   |
+      | format | clock | date       | hour |
+      | MDY    | 12    | 06-12-31   | 9    |
+      | DMY    | 24    | 12-06-31   | 21   |
+      | YMD    | 24    | 2031-06-12 | 21   |
 
   @javascript @activities_form
   Scenario: Schedule an all-day private event without logging an activity
