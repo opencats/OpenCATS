@@ -14,6 +14,14 @@ var defaultDaytableHeight = 725;
 var currentViewedEntry = null;
 
 
+/* Escape text only where Calendar builds HTML; keep entry data literal for editing. */
+function calendarTextHTML(value)
+{
+    var element = document.createElement("span");
+    element.textContent = value;
+    return element.innerHTML;
+}
+
 function generateCalendarEntrySmall(time, title, separator, entry)
 {
     var visibleEntryID = visibleEntries.length;
@@ -58,7 +66,8 @@ function generateCalendarEntrySmall(time, title, separator, entry)
         string += iconSet + "&nbsp;";
     }
 
-    string += title + " - " + entry.getData("enteredByFirstName") + " " + entry.getData("enteredByLastName");
+    string += calendarTextHTML(title) + " - " + calendarTextHTML(entry.getData("enteredByFirstName"))
+        + " " + calendarTextHTML(entry.getData("enteredByLastName"));
 
     string +="</td></tr></table>";
     return string;
@@ -121,7 +130,8 @@ function generateCalendarEntryDayView(time, title, position, idDiv, idEntry, sep
         string += iconSet + "&nbsp;";
     }
 
-    string += title + " - " + entry.getData("enteredByFirstName") + " " + entry.getData("enteredByLastName");
+    string += calendarTextHTML(title) + " - " + calendarTextHTML(entry.getData("enteredByFirstName"))
+        + " " + calendarTextHTML(entry.getData("enteredByLastName"));
 
     string +="</td></tr></table>";
     
@@ -249,7 +259,7 @@ function calendarViewEvent(entry)
 
     document.getElementById("viewEventTD").style.display = "";
 
-    document.getElementById("viewEventTitle").innerHTML = entry.getData("title");
+    document.getElementById("viewEventTitle").textContent = entry.getData("title");
     document.getElementById("viewEventLink").innerHTML = entry.getData("displayDataItemLarge");
 
     document.getElementById("viewEventType").innerHTML = "<img src=\""
@@ -258,7 +268,7 @@ function calendarViewEvent(entry)
 
     document.getElementById("viewEventDate").innerHTML = entry.getData("date");
 
-    document.getElementById("viewEventOwner").innerHTML = entry.getData("enteredByFirstName")
+    document.getElementById("viewEventOwner").textContent = entry.getData("enteredByFirstName")
         + " " + entry.getData("enteredByLastName");
 
     if (entry.getData("allDay") != "1")
@@ -285,7 +295,7 @@ function calendarViewEvent(entry)
 
     if (entry.getData("description") != "")
     {
-        document.getElementById("viewEventDescription").innerHTML = entry.getData("description");
+        document.getElementById("viewEventDescription").textContent = entry.getData("description");
     }
     else
     {

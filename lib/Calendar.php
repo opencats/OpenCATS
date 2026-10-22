@@ -18,6 +18,7 @@ define('CALENDAR_EVENT_PERSONAL',  500);
 define('CALENDAR_EVENT_OTHER',     600);
 
 
+include_once(LEGACY_ROOT . '/lib/Template.php');
 include_once(LEGACY_ROOT . '/lib/ResultSetUtility.php');
 include_once(LEGACY_ROOT . '/lib/DateUtility.php');
 include_once(LEGACY_ROOT . '/lib/Companies.php');
@@ -862,7 +863,7 @@ class Calendar
                     }
                     else
                     {
-                        $string .= '&nbsp;' . $data['firstName'] . ' ' . $data['lastName'];
+                        $string .= '&nbsp;' . Template::escapeHtml($data['firstName']) . ' ' . Template::escapeHtml($data['lastName']);
                     }
                 }
                 $image = 'images/mru/candidate.gif';
@@ -881,7 +882,7 @@ class Calendar
                     }
                     else
                     {
-                        $string .= '&nbsp;' . $data['name'];
+                        $string .= '&nbsp;' . Template::escapeHtml($data['name']);
                     }
                 }
                 break;
@@ -899,7 +900,7 @@ class Calendar
                     }
                     else
                     {
-                        $string .= '&nbsp;' . $data['firstName'] . ' ' . $data['lastName'];
+                        $string .= '&nbsp;' . Template::escapeHtml($data['firstName']) . ' ' . Template::escapeHtml($data['lastName']);
                     }
                 }
                 break;
@@ -917,7 +918,7 @@ class Calendar
                     }
                     else
                     {
-                        $string .= '&nbsp;' . $data['title'];
+                        $string .= '&nbsp;' . Template::escapeHtml($data['title']);
                     }
                 }
                 break;

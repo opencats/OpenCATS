@@ -103,3 +103,8 @@
 {
     box-shadow: 2px 2px var(--bs-border-color, #ccc);
 }
+
+#viewEventDescription
+{
+    white-space: pre-wrap;
+}

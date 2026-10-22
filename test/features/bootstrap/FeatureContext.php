@@ -37,6 +37,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     use CareerPortalAuthenticationSteps;
     use ImportExportSteps;
     use RichTextSteps;
+    use CalendarXssSteps;
 
     protected $scenarioTitle = null;
     private $roleData;
