@@ -1,6 +1,12 @@
 ARG PHP_VERSION=8.4.27
 FROM php:${PHP_VERSION}-fpm-alpine
 
+# Log all diagnostics without injecting them into HTTP responses.
+RUN echo "display_errors = Off" > /usr/local/etc/php/conf.d/opencats-errors.ini
+RUN echo "display_startup_errors = Off" >> /usr/local/etc/php/conf.d/opencats-errors.ini
+RUN echo "log_errors = On" >> /usr/local/etc/php/conf.d/opencats-errors.ini
+RUN echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/opencats-errors.ini
+
 # Runtime/system packages required by OpenCATS and helper tools.
 RUN apk add --no-cache \
   antiword \
