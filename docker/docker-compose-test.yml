@@ -10,7 +10,7 @@ services:
 
     php:
       container_name: opencats_test_php
-      image: opencats/php-base:${PHP_VERSION:-8.4.1}
+      image: opencats/php-base:${PHP_VERSION:-8.4.27}
       working_dir: /var/www/public
       volumes_from:
         - opencatsdata

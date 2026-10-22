@@ -55,8 +55,8 @@ For significant new features which are not already on the roadmap, please open a
 
 OpenCATS currently targets:
 
-- PHP 8.4.1
-- PHP 8.5
+- PHP 8.4.27
+- PHP 8.5.12
 
 New code should work cleanly on both supported versions.
 
@@ -104,7 +104,7 @@ Large stylistic rewrites make regressions and code review harder and should gene
 
 When changing PHP code:
 
-- target PHP 8.4.1 and PHP 8.5;
+- target PHP 8.4.27 and PHP 8.5.12;
 - prefer existing OpenCATS helper classes/functions where available;
 - do not introduce direct database access where the OpenCATS database layer already provides the required functionality;
 - do not suppress PHP warnings or deprecations simply to make them disappear;

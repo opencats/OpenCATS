@@ -18,7 +18,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['8.4.1', '8.5']
+        php-version: ['8.4.27', '8.5.12']
+    env:
+      PHP_VERSION: ${{ matrix.php-version }}
 
     steps:
       - name: Checkout Code
@@ -66,7 +68,7 @@ jobs:
           chmod 0777 temp
 
           cd docker/
-          PHP_VERSION=${{ matrix.php-version }} docker compose -f docker-compose-test.yml up -d
+          docker compose -f docker-compose-test.yml up -d
 
           echo "Waiting for BOTH databases..."
           opencatsdb_container="$(docker compose -f docker-compose-test.yml ps -q opencatsdb)"
@@ -155,7 +157,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4.1'
+          php-version: '8.4.27'
           tools: composer:v2
           extensions: gd, mbstring, zip, zlib
 

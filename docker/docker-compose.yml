@@ -10,9 +10,7 @@ services:
 
     php:
       container_name: opencats_php
-      build:
-        context: ..
-        dockerfile: docker/php/Dockerfile
+      image: opencats/php-base:${PHP_VERSION:-8.4.27}
       volumes_from:
         - opencatsdata
 
