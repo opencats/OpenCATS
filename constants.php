@@ -24,7 +24,7 @@ $coreModules = array(
 
 /* CATS Version */
 
-define('CATS_VERSION', '0.10.0');
+define('CATS_VERSION', '0.12.0');
 
 
 /* Copyright information at bottom of pages. */
