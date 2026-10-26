@@ -227,6 +227,7 @@ function calendarEditEvent(entry)
     document.getElementById("typeEdit").value         = entry.getData("eventType");
     document.getElementById("dataItemTypeEdit").value = entry.getData("dataItemType");
     document.getElementById("dataItemIDEdit").value   = entry.getData("dataItemID");
+    document.getElementById("jobOrderIDEdit").value   = entry.getData("jobOrderID");
     document.getElementById("eventIDEdit").value      = entry.getData("eventID");
     document.getElementById("titleEdit").value        = entry.getData("title");
     document.getElementById("descriptionEdit").value  = entry.getData("description");

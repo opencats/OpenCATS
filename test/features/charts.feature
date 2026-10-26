@@ -3,10 +3,14 @@ Feature: Chart data remains accessible on the containing pages
   Background:
     Given I am authenticated as "Administrator"
 
-  Scenario Outline: Hiring Overview works without JavaScript for each range
-    When I am on "/index.php?m=home&view=<view>"
+  Scenario Outline: Retained Hiring Overview endpoint reflects recorded transitions for each range
+    Given Hiring Overview has recorded transitions
+    When I am on "/index.php?m=home&a=hiringOverview&view=<view>"
     Then chart "hiring-<view>" contains "3" series and "4" categories
-    And I should see "Status-change events across four periods"
+    And Hiring Overview "<view>" agrees with the test database
+    When another Hiring Overview hire is recorded
+    And I am on "/index.php?m=home&a=hiringOverview&view=<view>"
+    Then Hiring Overview "<view>" agrees with the test database
     Examples:
       | view |
       | 0    |

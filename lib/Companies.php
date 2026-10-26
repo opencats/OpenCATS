@@ -35,6 +35,36 @@ class Companies
     public $extraFields;
 
 
+    /** Bounded owned-account preview, ordered by the existing classification codes. */
+    public function getHomeAccounts($limit = 3)
+    {
+        if (!is_int($limit) || $limit < 1 || $limit > 10) throw new InvalidArgumentException('Invalid preview size.');
+        if (!isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn() || $_SESSION['CATS']->getUserID() <= 0 ||
+            $_SESSION['CATS']->getAccessLevel('companies.list') < ACCESS_LEVEL_READ ||
+            $_SESSION['CATS']->getAccessLevel('companies.show') < ACCESS_LEVEL_READ) return null;
+        $rows = $this->_db->getAllAssoc('SELECT company_id AS companyID, name, commercial_tier AS commercialTier,
+            relationship_status AS relationshipStatus FROM company WHERE owner = ' .
+            (int) $_SESSION['CATS']->getUserID() . " AND commercial_tier IN ('A','B','C','D')
+            ORDER BY commercial_tier, name, company_id LIMIT " . $limit);
+        $labels = (new CompanySettings())->getAll();
+        $canReadContact = $_SESSION['CATS']->getAccessLevel('contacts.show') >= ACCESS_LEVEL_READ &&
+            $_SESSION['CATS']->getAccessLevel('activity.listByViewDataGrid') >= ACCESS_LEVEL_READ;
+        $contactDates = array();
+        if ($canReadContact && $rows)
+        {
+            include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
+            $contactDates = (new ActivityEntries())->getRelationshipContactDates(array_column($rows, 'companyID'));
+        }
+        foreach ($rows as &$row)
+        {
+            $row['tierLabel'] = CompanySettings::formatTier($row['commercialTier'], $labels);
+            if ($canReadContact) $row['lastContact'] = $contactDates[$row['companyID']] ?? null;
+        }
+        unset($row);
+        return $rows;
+    }
+
+
     /** Field-only administrative handover; caller must authorise and lock the record. */
     public function updateHandoverAssignment($id, $from, $to)
     {

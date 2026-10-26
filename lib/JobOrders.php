@@ -41,6 +41,29 @@ class JobOrders
     public $extraFields;
 
 
+    /** Current = native configured Open statuses; actor is owner or recruiter. */
+    public function getHomeCurrent($limit = 3)
+    {
+        if (!is_int($limit) || $limit < 1 || $limit > 10) throw new InvalidArgumentException('Invalid preview size.');
+        if (!isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn() || $_SESSION['CATS']->getUserID() <= 0 ||
+            $_SESSION['CATS']->getAccessLevel('joborders.list') < ACCESS_LEVEL_READ ||
+            $_SESSION['CATS']->getAccessLevel('joborders.show') < ACCESS_LEVEL_READ) return null;
+        $userID = (int) $_SESSION['CATS']->getUserID();
+        $where = 'j.status IN ' . JobOrderStatuses::getOpenStatusSQL() .
+            ' AND (j.owner = ' . $userID . ' OR j.recruiter = ' . $userID . ')';
+        if ($_SESSION['CATS']->getAccessLevel('joborders.hidden') < ACCESS_LEVEL_SA)
+            $where .= ' AND COALESCE(j.is_admin_hidden, 0) <> 1';
+        $total = $this->_db->getAssoc('SELECT COUNT(*) AS total FROM joborder j WHERE ' . $where);
+        $company = $_SESSION['CATS']->getAccessLevel('companies.show') >= ACCESS_LEVEL_READ;
+        $rows = $this->_db->getAllAssoc('SELECT j.joborder_id AS jobOrderID, j.title, j.status,
+            j.openings_available AS openingsAvailable, DATEDIFF(CURDATE(), j.date_created) AS daysOld, ' .
+            ($company ? 'c.name' : 'NULL') . ' AS companyName FROM joborder j ' .
+            ($company ? 'LEFT JOIN company c ON c.company_id = j.company_id ' : '') .
+            'WHERE ' . $where . ' ORDER BY j.date_created DESC, j.joborder_id DESC LIMIT ' . $limit);
+        return array('total' => (int) ($total['total'] ?? 0), 'rows' => $rows);
+    }
+
+
     /** Field-only administrative handover; caller must authorise and lock the record. */
     public function updateHandoverAssignment($id, $from, $to, $field = 'owner')
     {

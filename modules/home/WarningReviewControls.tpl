@@ -2,6 +2,7 @@
 $identity = $review['identity'];
 $reviewForm = array_merge($identity, array('expectedVersion' => $review['version'],
     'expectedEvidence' => $review['evidence'], 'requestID' => bin2hex(random_bytes(16)), 'returnTo' => $reviewReturnTo));
+if ($reviewReturnTo === 'home' && isset($reviewHomeContext)) $reviewForm = array_merge($reviewForm, $reviewHomeContext);
 $reviewLabel = $identity['warning_rule'] . ' — ' . $warning['title'] . ': ' . str_replace('_', ' ', $identity['reason_key']);
 ?>
 <div class="my-2">

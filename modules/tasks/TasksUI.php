@@ -6,6 +6,8 @@ include_once(LEGACY_ROOT . '/modules/tasks/dataGrids.php');
 
 class TasksUI extends UserInterface
 {
+    private $_homeReturn = array();
+
     public function __construct()
     {
         parent::__construct();
@@ -21,6 +23,7 @@ class TasksUI extends UserInterface
 
     public function handleRequest()
     {
+        $this->_homeReturn = array();
         if ($this->getAction() === 'quickAdd')
         {
             $this->quickAdd();
@@ -46,6 +49,14 @@ class TasksUI extends UserInterface
                 throw new InvalidArgumentException('Invalid Task request.');
             if ($post && !$_SESSION['CATS']->isCSRFTokenValid($_POST['csrfToken'] ?? null))
                 throw new RuntimeException('Invalid request token. Please reload the form.');
+
+            $input = $post ? $_POST : $_GET;
+            if (array_key_exists('returnTo', $input) || array_intersect_key($input,
+                array_flip(array('homeView', 'homeFilter', 'homePage', 'homeContext'))))
+            {
+                if (($input['returnTo'] ?? null) !== 'home') throw new InvalidArgumentException('Invalid Task return destination.');
+                $this->_homeReturn = TaskPresentation::homeReturnFields($input);
+            }
 
             if (in_array($action, array('show', 'edit', 'complete', 'cancel', 'reopen', 'completeLog'), true))
             {
@@ -95,7 +106,7 @@ class TasksUI extends UserInterface
             }
             elseif ($writeAction)
             {
-                if (array_diff_key($_POST, array_flip(array('taskID', 'csrfToken', 'postback'))))
+                if (array_diff_key($_POST, array_flip(array('taskID', 'csrfToken', 'postback', 'returnTo', 'homeView', 'homeFilter', 'homePage', 'homeContext'))))
                     throw new InvalidArgumentException('Unexpected Task action fields.');
                 $status = array('complete' => 'completed', 'completeLog' => 'completed', 'cancel' => 'cancelled', 'reopen' => 'open')[$action];
                 $tasks->update($id, array('status' => $status));
@@ -133,6 +144,7 @@ class TasksUI extends UserInterface
             try { $pipelineChoices = $tasks->getPipelineChoices($record['dataItemType'], $record['dataItemID']); }
             catch (InvalidArgumentException $e) { /* Invalid submitted associations stay editable. */ }
         }
+        $this->_template->assign('homeReturnFields', $this->_homeReturn);
         $this->_template->assign('pipelineChoices', $pipelineChoices);
         $this->_template->assign('activityTarget', $view === 'Show' && $this->getAction() === 'show' ? $tasks->getActivityTarget($record['taskID']) : array());
         $this->_template->assign('active', $this);
@@ -218,15 +230,24 @@ class TasksUI extends UserInterface
             if (!is_string($input[$field])) throw new InvalidArgumentException('Invalid Task field: ' . $field . '.');
             $values[$field] = $input[$field];
         }
+        $metadata = array('taskID', 'csrfToken', 'postback');
+        if ($this->_homeReturn) $metadata = array_merge($metadata, array('returnTo', 'homeView', 'homeFilter', 'homePage', 'homeContext'));
         foreach ($input as $field => $value)
-            if (!in_array($field, array_merge($fields, array('taskID', 'csrfToken', 'postback')), true))
+            if (!in_array($field, array_merge($fields, $metadata), true))
                 throw new InvalidArgumentException('Unknown Task field.');
         return $values;
     }
 
     protected function redirectToTask($id, $notice)
     {
-        CATSUtility::transferRelativeURI('m=tasks&a=show&taskID=' . (int) $id . '&notice=' . $notice);
+        if ($this->_homeReturn && $notice !== 'activity')
+        {
+            $parts = explode('#', TaskPresentation::homeReturnURI($this->_homeReturn), 2);
+            CATSUtility::transferRelativeURI($parts[0] . '&taskNotice=saved' . (isset($parts[1]) ? '#' . $parts[1] : ''));
+            return;
+        }
+        CATSUtility::transferRelativeURI('m=tasks&a=show&taskID=' . (int) $id . '&notice=' . $notice .
+            ($this->_homeReturn ? '&' . http_build_query(array_merge(array('returnTo' => 'home'), $this->_homeReturn)) : ''));
     }
 
     public static function getUserChoices($retained = null)

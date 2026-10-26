@@ -21,6 +21,8 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
 {
     use \OpenCATS\Tests\Behat\NavigationSteps;
 
+    use HomeDataSteps;
+
     private $result;
     private $accessLevel;
     private $csrfToken;
@@ -35,6 +37,26 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
     public function __construct()
     {
         $this->csrfToken = '';
+    }
+
+    /** @Then the seeded Home Task completion respects :access access */
+    public function homeTaskCompletionAccess($access)
+    {
+        $id = $this->homeData['task'][0];
+        $this->iDoPOSTRequest('index.php?m=tasks&a=complete', array(
+            'taskID' => (string) $id, 'returnTo' => 'home', 'homeView' => 'compact',
+            'homeFilter' => 'all', 'homePage' => '1', 'homeContext' => ''
+        ));
+        $row = DatabaseConnection::getInstance()->getAssoc('SELECT status, completed_by FROM task WHERE task_id = ' . $id);
+        $allowed = !in_array($access, array('DISABLED', 'READONLY'), true);
+        if ($row['status'] !== ($allowed ? 'completed' : 'open') ||
+            ($allowed && (int) $row['completed_by'] !== $this->homeActor))
+            throw new \RuntimeException('Task completion did not enforce the actor access level.');
+        if ($access === 'READONLY') $this->theResponseShouldContain('Task update denied.');
+        if ($access === 'DISABLED') $this->theResponseShouldContain('OpenCATS - Login');
+        $this->visitPath('/index.php?m=home');
+        if ($allowed) $this->assertSession()->pageTextNotContains('Home regression follow-up');
+        elseif ($access === 'READONLY') $this->assertSession()->pageTextContains('Home regression follow-up');
     }
 
     /** @When I submit Sector maintenance with an invalid CSRF token */

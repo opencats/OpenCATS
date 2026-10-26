@@ -36,6 +36,33 @@ class TaskPresentation
             $_SESSION['CATS']->isDateDMY() ? 'd-m-y' : 'm-d-y'), strtotime($value));
     }
 
+    /** Fixed Home destinations only; shared by native Task and review forms. */
+    public static function homeReturnFields($input)
+    {
+        $fields = array('homeView' => 'compact', 'homeFilter' => 'all', 'homePage' => '1', 'homeContext' => '');
+        foreach ($fields as $field => $default)
+        {
+            if (!array_key_exists($field, $input)) continue;
+            if (!is_string($input[$field])) throw new InvalidArgumentException('Invalid Home return context.');
+            $fields[$field] = $input[$field];
+        }
+        if (!in_array($fields['homeView'], array('compact', 'all'), true) ||
+            !in_array($fields['homeFilter'], array('all', 'tasks', 'warnings'), true) ||
+            !preg_match('/^[1-9][0-9]{0,8}$/D', $fields['homePage']) ||
+            ($fields['homeContext'] !== '' && $fields['homeContext'] !== 'suppressedWarnings' &&
+             !preg_match('/^priority-(task-[1-9][0-9]{0,9}|warning-W(01|02|03|07|08)-[1-9][0-9]{0,9}(-(invalid_owner|invalid_recruiter|invalid_assignee))?)$/D', $fields['homeContext'])))
+            throw new InvalidArgumentException('Invalid Home return context.');
+        return $fields;
+    }
+
+    public static function homeReturnURI($fields)
+    {
+        $fields = self::homeReturnFields($fields);
+        return 'm=home&a=' . ($fields['homeView'] === 'all' ? 'priorities' : 'home') .
+            '&filter=' . $fields['homeFilter'] . '&page=' . $fields['homePage'] .
+            ($fields['homeContext'] === '' ? '' : '#' . $fields['homeContext']);
+    }
+
     public static function parentURL($type, $id)
     {
         $parents = array(DATA_ITEM_COMPANY => array('companies', 'companyID'),

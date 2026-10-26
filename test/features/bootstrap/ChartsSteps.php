@@ -3,6 +3,58 @@
 /** Checks application data/behaviour, never Chart.js internals or generated DOM. */
 trait ChartsSteps
 {
+    private $hiringHistory = array();
+
+    /** @Given Hiring Overview has recorded transitions */
+    public function hiringTransitions()
+    {
+        foreach (array(400, 400, 500, 800) as $status) $this->hiringTransition($status);
+    }
+
+    private function hiringTransition($status)
+    {
+        $db = DatabaseConnection::getInstance();
+        $db->query("INSERT INTO candidate_joborder_status_history (candidate_id, joborder_id, date, status_from, status_to) VALUES (20000, 40001, NOW(), 100, " . $status . ')');
+        $id = (int) $db->getLastInsertID();
+        $this->hiringHistory[] = $id;
+        $row = $db->getAssoc('SELECT candidate_id, joborder_id, status_to FROM candidate_joborder_status_history WHERE candidate_joborder_status_history_id = ' . $id);
+        if (!$row || (int) $row['candidate_id'] !== 20000 || (int) $row['joborder_id'] !== 40001 || (int) $row['status_to'] !== $status)
+            throw new \RuntimeException('Hiring transition fixture was not persisted.');
+    }
+
+    /** @When another Hiring Overview hire is recorded */
+    public function hiringAnotherHire()
+    {
+        $this->hiringTransition(800);
+    }
+
+    /** @Then Hiring Overview :view agrees with the test database */
+    public function hiringDatabaseValues($view)
+    {
+        $db = DatabaseConnection::getInstance();
+        $firstMonday = $db->getAssoc("SELECT value FROM settings WHERE settings_type = " . SETTINGS_CALENDAR . " AND setting = 'firstDayMonday'");
+        $start = array('0' => "DATE_SUB(CURDATE(), INTERVAL (DAYOFWEEK(CURDATE()) - 1) DAY)",
+            '1' => "DATE_SUB(CURDATE(), INTERVAL (DAYOFMONTH(CURDATE()) - 1) DAY)",
+            '2' => "MAKEDATE(YEAR(CURDATE()), 1)");
+        if (($firstMonday['value'] ?? 0) == 1) $start['0'] = 'DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY)';
+        $element = $this->getSession()->getPage()->find('css', 'script[type="application/json"]');
+        $chart = $element ? json_decode($element->getText(), true) : null;
+        if (!$chart) throw new \RuntimeException('Missing Hiring Overview values.');
+        foreach (array(400, 500, 800) as $index => $status)
+        {
+            $expected = (int) $db->getAssoc('SELECT COUNT(*) AS n FROM candidate_joborder_status_history WHERE status_to = ' . $status . ' AND date >= ' . $start[$view] . ' AND date <= NOW()')['n'];
+            if ($expected < 1 || end($chart['datasets'][$index]['data']) !== $expected)
+                throw new \RuntimeException('Hiring Overview differs from recorded transitions for status ' . $status);
+        }
+    }
+
+    /** @AfterScenario @charts */
+    public function hiringCleanup()
+    {
+        if ($this->hiringHistory)
+            DatabaseConnection::getInstance()->query('DELETE FROM candidate_joborder_status_history WHERE candidate_joborder_status_history_id IN (' . implode(',', $this->hiringHistory) . ')');
+    }
+
     private $chartEEOSettings = null;
 
     /** @Given EEO chart panels are enabled for this scenario */

@@ -45,6 +45,48 @@ class ActivityEntries
     private $_mysqlDateTimeFormat;
 
 
+    /** Small recorded-Activity preview for one readable selected source; no per-row histories. */
+    public function getRecentForSource($type, $id, $limit = 3)
+    {
+        if (!is_int($limit) || $limit < 1 || $limit > 10) throw new InvalidArgumentException('Invalid preview size.');
+        if (!isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn() ||
+            $_SESSION['CATS']->getAccessLevel('activity.listByViewDataGrid') < ACCESS_LEVEL_READ) return null;
+        include_once(LEGACY_ROOT . '/lib/Tasks.php');
+        try { (new Tasks())->getParentContext($type, $id); }
+        catch (RuntimeException $e) { return null; }
+        $type = (int) $type;
+        $id = (int) $id;
+        $candidate = $_SESSION['CATS']->getAccessLevel('candidates.show') >= ACCESS_LEVEL_READ ? '1' : '0';
+        $contact = $_SESSION['CATS']->getAccessLevel('contacts.show') >= ACCESS_LEVEL_READ ? '1' : '0';
+        $hidden = $_SESSION['CATS']->getAccessLevel('candidates.hidden') >= ACCESS_LEVEL_SA ? '' : ' AND COALESCE(c.is_admin_hidden,0) <> 1';
+        $source = $type === DATA_ITEM_COMPANY ? '(a.data_item_type = 200 AND a.data_item_id = ' . $id . ') OR (a.data_item_type = 300 AND ct.company_id = ' . $id . ')' :
+            ($type === DATA_ITEM_JOBORDER ? 'a.joborder_id = ' . $id : 'a.data_item_type = ' . $type . ' AND a.data_item_id = ' . $id);
+        $company = $_SESSION['CATS']->getAccessLevel('companies.show') >= ACCESS_LEVEL_READ ? '1' : '0';
+        $job = $_SESSION['CATS']->getAccessLevel('joborders.show') >= ACCESS_LEVEL_READ ? '1' : '0';
+        $jobHidden = $_SESSION['CATS']->getAccessLevel('joborders.hidden') >= ACCESS_LEVEL_SA ? '' : ' AND COALESCE(j.is_admin_hidden,0) <> 1';
+        return $this->_db->getAllAssoc("SELECT a.activity_id AS activityID, a.notes,
+            a.data_item_type AS dataItemType, a.data_item_id AS dataItemID,
+            CASE a.data_item_type
+                WHEN 100 THEN TRIM(CONCAT_WS(' ', c.first_name, c.last_name))
+                WHEN 300 THEN TRIM(CONCAT_WS(' ', ct.first_name, ct.last_name))
+                WHEN 200 THEN co.name
+            END AS subjectName,
+            DATE_FORMAT(a.date_occurred, '" . str_replace('%%', '%', $this->_mysqlDateTimeFormat) . "') AS dateCreated,
+            t.short_description AS typeDescription, u.first_name AS enteredByFirstName, u.last_name AS enteredByLastName
+            FROM activity a LEFT JOIN activity_type t ON t.activity_type_id = a.type
+            LEFT JOIN user u ON u.user_id = a.entered_by
+            LEFT JOIN candidate c ON a.data_item_type = 100 AND c.candidate_id = a.data_item_id
+            LEFT JOIN contact ct ON a.data_item_type = 300 AND ct.contact_id = a.data_item_id
+            LEFT JOIN company co ON a.data_item_type = 200 AND co.company_id = a.data_item_id
+            LEFT JOIN joborder j ON j.joborder_id = a.joborder_id
+            WHERE (" . $source . ") AND ((a.data_item_type = 100 AND " . $candidate . " AND c.candidate_id IS NOT NULL" . $hidden . ")
+                OR (a.data_item_type = 300 AND " . $contact . " AND ct.contact_id IS NOT NULL)
+                OR (a.data_item_type = 200 AND " . $company . " AND co.company_id IS NOT NULL))
+            AND (COALESCE(a.joborder_id,0) <= 0 OR (" . $job . " AND j.joborder_id IS NOT NULL" . $jobHidden . "))
+            ORDER BY a.date_occurred DESC, a.activity_id DESC LIMIT " . $limit);
+    }
+
+
     public function __construct()
     {
         $this->_db = DatabaseConnection::getInstance();

@@ -1,11 +1,12 @@
 <?php include './modules/tasks/Header.tpl'; ?>
+<?php $homeReturnQuery = empty($this->homeReturnFields) ? '' : '&' . http_build_query(array_merge(array('returnTo' => 'home'), $this->homeReturnFields)); ?>
 <?php if ($this->notice === 'saved'): ?><div class="alert alert-success" role="status">Task saved.</div><?php endif; ?>
 <?php if ($this->notice === 'activity'): ?>
 <div class="alert alert-success" role="status">Task completed. No Activity has been recorded. Use the existing Activity form below to record an actual interaction. Cancelling or failing that form leaves this Task completed.</div>
 <?php endif; ?>
 <section class="card mb-2">
 <div class="card-header d-flex flex-wrap align-items-center gap-2"><h2 class="h6 mb-0"><?php echo Template::escapeHtml($this->task['title']); ?></h2>
-<?php if ($this->permissions['edit']): ?><a class="btn btn-sm btn-primary ms-auto" href="<?php echo Template::escapeAttr(CATSUtility::getIndexName() . '?m=tasks&a=edit&taskID=' . (int) $this->task['taskID']); ?>">Edit Task</a><?php endif; ?></div>
+<?php if ($this->permissions['edit']): ?><a class="btn btn-sm btn-primary ms-auto" href="<?php echo Template::escapeAttr(CATSUtility::getIndexName() . '?m=tasks&a=edit&taskID=' . (int) $this->task['taskID'] . $homeReturnQuery); ?>">Edit Task</a><?php endif; ?></div>
 <div class="card-body">
 <p class="text-break"><?php echo nl2br(Template::escapeHtml($this->task['description'])); ?></p>
 <dl class="row mb-0">
@@ -29,6 +30,7 @@
 <form method="post" action="<?php echo Template::escapeAttr(CATSUtility::getIndexName() . '?m=tasks&a=' . $action); ?>">
 <input type="hidden" name="csrfToken" value="<?php echo Template::escapeAttr($_SESSION['CATS']->getCSRFToken()); ?>">
 <input type="hidden" name="taskID" value="<?php echo (int) $this->task['taskID']; ?>">
+<?php if (!empty($this->homeReturnFields)): ?><input type="hidden" name="returnTo" value="home"><?php foreach ($this->homeReturnFields as $field => $value): ?><input type="hidden" name="<?php echo Template::escapeAttr($field); ?>" value="<?php echo Template::escapeAttr($value); ?>"><?php endforeach; ?><?php endif; ?>
 <button class="btn btn-sm btn-outline-primary" type="submit"><?php echo Template::escapeHtml($label); ?></button>
 </form>
 <?php endforeach; ?>

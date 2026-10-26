@@ -344,6 +344,37 @@ class WarningReviewTest extends DatabaseTestCase
         self::assertSame(array(), $this->filtered()['visibleWarnings']);
     }
 
+    /** Supply the same view contract as HomeUI, using the authorised model result. */
+    private function renderHomeWarnings($warnings, $page = 1)
+    {
+        require_once LEGACY_ROOT . '/lib/Template.php';
+        require_once LEGACY_ROOT . '/lib/UserInterface.php';
+        require_once LEGACY_ROOT . '/lib/Pager.php';
+        require_once LEGACY_ROOT . '/modules/home/HomeUI.php';
+        $today = \DateUtility::getAdjustedDate('Y-m-d');
+        $rows = \HomeUI::priorityRows(array(), $warnings['visibleWarnings'], $today);
+        $pager = new \Pager(count($rows), 8, $page);
+        $rows = array_slice($rows, $pager->getThisPageStartRow(), 8);
+        foreach ($rows as &$row) $row['parentContext'] = null;
+        unset($row);
+        $template = new \Template();
+        foreach (array('recruitmentWarnings' => $warnings, 'priorityRows' => $rows,
+            'priorityPager' => $pager, 'myTaskCount' => 0, 'homeToday' => $today,
+            'homeState' => array('homeView' => 'compact', 'homeFilter' => 'all', 'homePage' => (string) $page, 'homeContext' => '')) as $key => $value)
+            $template->assign($key, $value);
+        $level = ob_get_level();
+        ob_start();
+        try
+        {
+            $template->display('./modules/home/RecruitmentWarnings.tpl');
+            return ob_get_contents();
+        }
+        finally
+        {
+            while (ob_get_level() > $level) ob_end_clean();
+        }
+    }
+
     public function testActivityResolutionRecurrenceAndHomeRendering(): void
     {
         require_once LEGACY_ROOT . '/lib/Template.php';
@@ -360,21 +391,14 @@ class WarningReviewTest extends DatabaseTestCase
         $this->db->query("UPDATE task SET status = 'completed' WHERE task_id = " . $task);
         self::assertSame(0, $this->filtered()['visibleCounts']['W07']);
         $this->save($this->snapshot('no_next_action'), 'request-home-reset', array(5 => 'reset', 6 => null, 7 => null));
-        $template = new \Template();
-        $template->assign('recruitmentWarnings', $this->filtered());
-        ob_start();
-        try { $template->display('./modules/home/RecruitmentWarnings.tpl'); $html = ob_get_contents(); }
-        finally { ob_end_clean(); }
-        self::assertStringContainsString('1 visible warnings', $html);
+        $html = $this->renderHomeWarnings($this->filtered());
+        self::assertMatchesRegularExpression('/1\\s*Visible warning/', strip_tags($html));
         self::assertStringContainsString('&lt;script&gt;private&lt;/script&gt;', $html);
         self::assertStringNotContainsString('<script>private</script>', $html);
         $this->overrides['companies.show'] = ACCESS_LEVEL_DISABLED;
-        $template->assign('recruitmentWarnings', $this->filtered());
-        ob_start();
-        try { $template->display('./modules/home/RecruitmentWarnings.tpl'); $html = ob_get_contents(); }
-        finally { ob_end_clean(); }
+        $html = $this->renderHomeWarnings($this->filtered());
         self::assertStringNotContainsString('private', $html);
-        self::assertStringContainsString('0 visible warnings', $html);
+        self::assertMatchesRegularExpression('/0\\s*Visible warnings/', strip_tags($html));
     }
 
     public function testReminderSurvivesTimezoneAndDstChanges(): void
@@ -457,26 +481,27 @@ class WarningReviewTest extends DatabaseTestCase
             $this->db->query("INSERT INTO company (name, owner, commercial_tier, relationship_status)
                 VALUES ('Limit company " . $i . "', 1, 'A', 'Client')");
         $result = $this->filtered();
-        $template = new \Template();
-        $template->assign('recruitmentWarnings', $result);
-        ob_start();
-        try { $template->display('./modules/home/RecruitmentWarnings.tpl'); $html = ob_get_contents(); }
-        finally { ob_end_clean(); }
+        $html = $this->renderHomeWarnings($result);
         self::assertSame(22, $result['visibleCounts']['W07']);
-        self::assertSame(20, substr_count($html, '<a href='));
-        self::assertStringContainsString('22 visible warnings', $html);
-        self::assertStringContainsString('Underlying authorised warnings: 22', $html);
-        self::assertStringContainsString('Showing 20 of 22 visible warnings', $html);
-        self::assertStringContainsString('2 additional warnings', $html);
+        self::assertStringContainsString('Showing 8 of 22 priorities', $html);
+        // Assert identities and destinations from the database, rather than counting markup.
+        $rows = \HomeUI::priorityRows(array(), $result['visibleWarnings'], \DateUtility::getAdjustedDate('Y-m-d'));
+        foreach (array(1, 2, 3) as $page)
+        {
+            if ($page !== 1) $html = $this->renderHomeWarnings($result, $page);
+            $dom = new \DOMDocument();
+            $dom->loadHTML($html, LIBXML_NOERROR | LIBXML_NOWARNING);
+            $xpath = new \DOMXPath($dom);
+            foreach ($rows as $index => $row)
+            {
+                $warning = $row['warnings'][0];
+                $links = $xpath->query('//a[@href="' . \TaskPresentation::parentURL(DATA_ITEM_COMPANY, $warning['entityID']) . '"]');
+                self::assertSame($index >= ($page - 1) * 8 && $index < $page * 8,
+                    $links->length > 0, $warning['title']);
+                if ($links->length) self::assertContains($warning['title'], array_map(fn($link) => $link->textContent, iterator_to_array($links)));
+            }
+        }
         self::assertSame($result, $this->filtered());
-        $result['visibleWarnings'] = array_slice($result['visibleWarnings'], 0, 20);
-        $result['visibleCounts']['W07'] = 20;
-        $template->assign('recruitmentWarnings', $result);
-        ob_start();
-        try { $template->display('./modules/home/RecruitmentWarnings.tpl'); $html = ob_get_contents(); }
-        finally { ob_end_clean(); }
-        self::assertSame(20, substr_count($html, '<a href='));
-        self::assertStringNotContainsString('additional warnings', $html);
     }
 
     private function reviewJob()
@@ -588,11 +613,7 @@ class WarningReviewTest extends DatabaseTestCase
             foreach ($reasons as $review) self::assertStringContainsString($review['evidence'], $html);
         $s = $this->reviews->get('W02', DATA_ITEM_JOBORDER, $job, 'no_recorded_submission');
         $this->save($s, 'request-render-001', array(5 => 'remind_later', 6 => null, 7 => \WarningReviews::reminderDates()[5]));
-        $template->assign('recruitmentWarnings', $this->filtered());
-        ob_start();
-        try { $template->display('./modules/home/RecruitmentWarnings.tpl'); $html = ob_get_contents(); }
-        finally { ob_end_clean(); }
-        self::assertStringContainsString('data-bs-toggle="collapse"', $html);
+        $html = $this->renderHomeWarnings($this->filtered());
         self::assertStringContainsString('Personally Reviewed / Remind Later (2)', $html);
         self::assertSame(2, substr_count($html, '>Show Again</button>'));
         $this->overrides['joborders.edit'] = ACCESS_LEVEL_READ;

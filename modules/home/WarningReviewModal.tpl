@@ -11,6 +11,7 @@
                 <?php
                 $reviewForm = array_fill_keys(array('warning_rule', 'data_item_type', 'data_item_id', 'reason_key', 'reason_id',
                     'expectedVersion', 'expectedEvidence', 'requestID', 'returnTo', 'reviewAction'), '');
+                if (isset($reviewHomeContext)) $reviewForm = array_merge($reviewForm, $reviewHomeContext);
                 include(LEGACY_ROOT . '/modules/home/WarningReviewFields.tpl');
                 ?>
                 <div data-review-reminder>

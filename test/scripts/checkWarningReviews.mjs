@@ -33,6 +33,9 @@ try {
         await page.goto(`http://127.0.0.1:${server.address().port}/?view=${view}`);
         assert.equal(await page.locator('script[src*="bootstrap.bundle"]').count(), 1);
         assert.equal(await page.locator('#warningReviewModal').count(), 1);
+        if (view === 'home') {
+            for (const context of await page.locator('[data-home-context-toggle]').all()) await context.click();
+        }
         if (view !== 'companies') {
             await page.getByRole('button', { name: 'Mark Reviewed — 5 working days' }).first().click();
             const reviewed = await page.evaluate(() => window.submitted);

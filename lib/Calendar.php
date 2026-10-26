@@ -38,6 +38,38 @@ class Calendar
     private $_userID;
 
 
+    /** Own appointments today and later, using native Calendar dates and association visibility. */
+    public function getHomeUpcoming($limit = 3)
+    {
+        if (!is_int($limit) || $limit < 1 || $limit > 10) throw new InvalidArgumentException('Invalid preview size.');
+        if (!isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn() || $this->_userID <= 0 ||
+            $_SESSION['CATS']->getAccessLevel('calendar.show') < ACCESS_LEVEL_READ) return null;
+        $can = function ($action) { return $_SESSION['CATS']->getAccessLevel($action) >= ACCESS_LEVEL_READ; };
+        $job = $can('joborders.show') ? '1' : '0';
+        $hiddenJob = $_SESSION['CATS']->getAccessLevel('joborders.hidden') >= ACCESS_LEVEL_SA ? '' : ' AND COALESCE(j.is_admin_hidden,0) <> 1';
+        $linkedHidden = str_replace('j.', 'linked.', $hiddenJob);
+        $candidate = $can('candidates.show') ? '1' : '0';
+        $hiddenCandidate = $_SESSION['CATS']->getAccessLevel('candidates.hidden') >= ACCESS_LEVEL_SA ? '' : ' AND COALESCE(c.is_admin_hidden,0) <> 1';
+        return $this->_db->getAllAssoc("SELECT e.calendar_event_id AS eventID, e.title, DATE_FORMAT(e.date, '%Y-%m-%d') AS date, e.all_day AS allDay,
+            e.data_item_id AS dataItemID, e.data_item_type AS dataItemType, e.joborder_id AS jobOrderID,
+            DATE_FORMAT(e.date, '" . str_replace('%%', '%', DateUtility::getMysqlTimeFormat()) . "') AS time
+            FROM calendar_event e
+            LEFT JOIN candidate c ON e.data_item_type = 100 AND c.candidate_id = e.data_item_id
+            LEFT JOIN contact ct ON e.data_item_type = 300 AND ct.contact_id = e.data_item_id
+            LEFT JOIN company co ON e.data_item_type = 200 AND co.company_id = e.data_item_id
+            LEFT JOIN joborder j ON e.data_item_type = 400 AND j.joborder_id = e.data_item_id
+            LEFT JOIN joborder linked ON linked.joborder_id = e.joborder_id
+            WHERE e.entered_by = " . (int) $this->_userID . " AND e.date >= CURDATE()
+            AND ((COALESCE(e.data_item_type,0) <= 0 AND COALESCE(e.data_item_id,0) <= 0)
+                OR (e.data_item_type = 100 AND " . $candidate . " AND c.candidate_id IS NOT NULL" . $hiddenCandidate . ")
+                OR (e.data_item_type = 300 AND " . ($can('contacts.show') ? '1' : '0') . " AND ct.contact_id IS NOT NULL)
+                OR (e.data_item_type = 200 AND " . ($can('companies.show') ? '1' : '0') . " AND co.company_id IS NOT NULL)
+                OR (e.data_item_type = 400 AND " . $job . " AND j.joborder_id IS NOT NULL" . $hiddenJob . "))
+            AND (COALESCE(e.joborder_id,0) <= 0 OR (" . $job . " AND linked.joborder_id IS NOT NULL" . $linkedHidden . "))
+            ORDER BY e.date, e.calendar_event_id LIMIT " . $limit);
+    }
+
+
     public function __construct()
     {
         // FIXME: Factor out Session dependency.

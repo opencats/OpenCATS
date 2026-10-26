@@ -3,6 +3,7 @@
 /** Focused Home checks with disposable dashboard fixtures. */
 trait HomeSteps
 {
+    use HomeDataSteps;
     private $homeCandidates = array();
 
     /** @When I follow Home result :text for :destination */
@@ -56,123 +57,6 @@ trait HomeSteps
             $db->query('DELETE FROM candidate_joborder WHERE candidate_id IN (' . $ids . ')');
             $db->query('DELETE FROM candidate WHERE candidate_id IN (' . $ids . ')');
             $this->homeCandidates = array();
-        }
-    }
-
-    /** @Then the Home graph is loaded */
-    public function homeGraphLoaded()
-    {
-        if (!$this->getSession()->wait(5000, "['ready', 'empty'].indexOf(document.querySelector('#homeGraph [data-chart-period]:not([hidden]) .oc-chart').dataset.chartState) !== -1"))
-        {
-            throw new \RuntimeException('Hiring Overview did not load.');
-        }
-    }
-
-    /** @Then the Home graph view is :view */
-    public function homeGraphView($view)
-    {
-        $this->getSession()->wait(5000, "document.getElementById('homeGraph').dataset.view === '" . $view . "'");
-        $graph = $this->getSession()->getPage()->find('css', '#homeGraph');
-        if ($graph->getAttribute('data-view') !== $view)
-        {
-            throw new \RuntimeException('Incorrect Hiring Overview range.');
-        }
-        $panel = $graph->find('css', '[data-chart-period="' . $view . '"]');
-        if (!$panel->isVisible() || count($panel->findAll('css', 'tbody tr')) !== 4)
-        {
-            throw new \RuntimeException('Hiring Overview must retain four periods.');
-        }
-    }
-
-    private function homeGrid()
-    {
-        return $this->getSession()->getPage()->findById('table' . md5('home:ImportantPipelineDashboard'));
-    }
-
-    /** @When I sort Home candidates by :column */
-    public function homeSort($column)
-    {
-        foreach ($this->homeGrid()->findAll('named', array('link', $column)) as $link)
-        {
-            if ($link->isVisible())
-            {
-                $link->click();
-                return;
-            }
-        }
-        throw new \RuntimeException('Missing Home sort link.');
-    }
-
-    /** @Then Home shows :count fixture rows starting with :name */
-    public function homeRows($count, $name)
-    {
-        $this->spins(function () use ($count, $name) {
-            $rows = $this->homeGrid()->findAll('css', 'tbody tr');
-            $rows = array_values(array_filter($rows, function ($row) {
-                return strpos($row->getText(), 'HomeFixture') !== false;
-            }));
-            if (count($rows) !== (int) $count || strpos($rows[0]->getText(), $name) === false)
-            {
-                throw new \RuntimeException('Unexpected Home rows/order: ' . count($rows) . '; first: ' . ($rows ? $rows[0]->getText() : 'none'));
-            }
-        });
-    }
-
-    /** @Then Home candidate links reach their records */
-    public function homeLinks()
-    {
-        $urls = array();
-        foreach (array('candidateID=', 'jobOrderID=', 'companyID=') as $parameter)
-        {
-            $link = $this->homeGrid()->find('css', 'tbody a[href*="' . $parameter . '"]');
-            if (!$link)
-            {
-                throw new \RuntimeException('Missing Home entity link: ' . $parameter);
-            }
-            $urls[] = $link->getAttribute('href');
-        }
-        foreach ($urls as $url)
-        {
-            $this->visit($url);
-            $this->assertSession()->pageTextNotContains('Invalid ID');
-            $this->assertSession()->elementExists('css', '#contents');
-        }
-    }
-
-    /** @Given Home has recent calls, upcoming calendar entries and a hire */
-    public function homeWidgetFixtures()
-    {
-        $db = DatabaseConnection::getInstance();
-        $db->query("INSERT INTO candidate (first_name, last_name, owner, entered_by) VALUES ('HomeWidget', 'Fixture', 1, 1)");
-        $id = (int) $db->getLastInsertID();
-        $this->homeCandidates[] = $id;
-        $db->query("INSERT INTO activity (data_item_type, data_item_id, entered_by, date_occurred, date_created, type) VALUES (100, " . $id . ", 1, NOW(), NOW(), 100)");
-        $db->query("INSERT INTO candidate_joborder_status_history (candidate_id, joborder_id, date, status_from, status_to) VALUES (" . $id . ", 40001, NOW(), 400, 800)");
-        foreach (array(100 => 'Home upcoming call', 300 => 'Home upcoming event') as $type => $title)
-        {
-            $db->query("INSERT INTO calendar_event (type, date, title, entered_by, public, data_item_type, data_item_id) VALUES (" . $type . ", DATE_ADD(NOW(), INTERVAL 1 DAY), '" . $title . "', 1, 0, 100, " . $id . ")");
-        }
-    }
-
-    /** @Then Home widget records and Calendar links are present */
-    public function homeWidgetRecords()
-    {
-        $page = $this->getSession()->getPage();
-        foreach (array('recentCallsHeading', 'recentHiresHeading') as $heading)
-        {
-            $section = $page->find('css', 'section[aria-labelledby="' . $heading . '"]');
-            if (strpos($section->getText(), 'HomeWidget') === false)
-            {
-                throw new \RuntimeException('Missing populated Home widget: ' . $heading);
-            }
-        }
-        foreach (array('Home upcoming call', 'Home upcoming event') as $title)
-        {
-            $link = $page->findLink($title);
-            if (!$link || strpos($link->getAttribute('href'), 'showEvent=') === false)
-            {
-                throw new \RuntimeException('Missing Calendar event link: ' . $title);
-            }
         }
     }
 

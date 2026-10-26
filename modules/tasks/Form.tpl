@@ -5,6 +5,10 @@
 <form method="post" action="<?php echo Template::escapeAttr(CATSUtility::getIndexName() . '?m=tasks&a=' . $this->action); ?>">
 <input type="hidden" name="csrfToken" value="<?php echo Template::escapeAttr($_SESSION['CATS']->getCSRFToken()); ?>">
 <?php if (isset($this->task['taskID'])): ?><input type="hidden" name="taskID" value="<?php echo (int) $this->task['taskID']; ?>"><?php endif; ?>
+<?php if (!empty($this->homeReturnFields)): ?>
+<input type="hidden" name="returnTo" value="home">
+<?php foreach ($this->homeReturnFields as $field => $value): ?><input type="hidden" name="<?php echo Template::escapeAttr($field); ?>" value="<?php echo Template::escapeAttr($value); ?>"><?php endforeach; ?>
+<?php endif; ?>
 <div class="row g-3">
 <div class="col-12"><label class="form-label" for="title">Title <span class="text-danger">*</span></label><input class="form-control" id="title" name="title" maxlength="255" required value="<?php echo Template::escapeAttr($this->task['title']); ?>"></div>
 <div class="col-12"><label class="form-label" for="description">Description</label><textarea class="form-control" id="description" name="description" rows="4"><?php echo Template::escapeHtml($this->task['description']); ?></textarea></div>
@@ -26,7 +30,7 @@
 <?php else: ?>
 <div class="col-12"><p class="text-body-secondary mb-0">Assignment and record links can be changed only by an authorised creator or administrator.</p></div>
 <?php endif; ?>
-<div class="col-12 d-flex gap-2"><button class="btn btn-primary" type="submit">Save Task</button><a class="btn btn-outline-secondary" href="<?php echo Template::escapeAttr(CATSUtility::getIndexName() . '?m=tasks' . (isset($this->task['taskID']) ? '&a=show&taskID=' . (int) $this->task['taskID'] : '')); ?>">Cancel</a></div>
+<div class="col-12 d-flex gap-2"><button class="btn btn-primary" type="submit">Save Task</button><a class="btn btn-outline-secondary" href="<?php echo Template::escapeAttr(CATSUtility::getIndexName() . '?' . (!empty($this->homeReturnFields) ? TaskPresentation::homeReturnURI($this->homeReturnFields) : 'm=tasks' . (isset($this->task['taskID']) ? '&a=show&taskID=' . (int) $this->task['taskID'] : ''))); ?>">Cancel</a></div>
 </div>
 </form>
 </div>

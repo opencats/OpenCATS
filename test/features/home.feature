@@ -3,16 +3,13 @@ Feature: Home dashboard and global Quick Search
   Background:
     Given I am authenticated as "Administrator"
 
-  Scenario: Dashboard keeps its widgets and global search
+  @home_data
+  Scenario: Home shows assigned work, account, current job and appointment records
+    Given Home has working-day records for "admin"
     When I am on "/index.php?m=home"
-    Then I should see "My Recent Calls"
-    And I should see "My Upcoming Calls"
-    And I should see "My Upcoming Events"
-    And I should see "Recent Hires"
-    And I should see "Hiring Overview"
-    And I should see "Important Candidates"
-    And I should see a "input[name=quickSearchFor]" element
-    And I should see a "#homeGraph" element
+    Then Home shows the working-day records
+    When I open the seeded Home Task
+    Then I should see "Home regression follow-up"
 
   @home_search
   Scenario Outline: Global search keeps entity results and links
@@ -42,46 +39,42 @@ Feature: Home dashboard and global Quick Search
     And I should see "No matching entries found."
     And the "quickSearchFor" field should contain "HomeNoMatch9f683b"
 
-  @javascript @home_graph
-  Scenario: Hiring Overview keeps period switching
-    Given Home has recent calls, upcoming calendar entries and a hire
+  @home_data
+  Scenario: Resolving the underlying work updates Home
+    Given Home has working-day records for "admin"
     When I am on "/index.php?m=home"
-    When I follow "Monthly"
-    Then the Home graph view is "1"
-    When I follow "Yearly"
-    Then the Home graph view is "2"
-    When I follow "Weekly"
-    Then the Home graph view is "0"
+    Then Home shows the working-day records
+    When the Home working-day records are resolved
+    And I am on "/index.php?m=home"
+    Then Home no longer shows the resolved working-day records
 
-  @javascript @home_grid
-  Scenario: Important Candidates keeps sorting, paging and Show All
-    Given Home has 16 important candidates
+  @home_data @javascript
+  Scenario: Priority context loads recorded Activity for its linked Job Order
+    Given Home has working-day records for "admin"
     When I am on "/index.php?m=home"
-    And I sort Home candidates by "First Name"
-    Then Home shows "15" fixture rows starting with "HomeFixture01"
-    When I follow "Next"
-    Then Home shows "1" fixture rows starting with "HomeFixture16"
-    When I follow "Show All"
-    Then Home shows "16" fixture rows starting with "HomeFixture"
-    When I sort Home candidates by "First Name"
-    Then Home shows "16" fixture rows starting with "HomeFixture01"
-    When I sort Home candidates by "First Name"
-    Then Home shows "16" fixture rows starting with "HomeFixture16"
-    And Home candidate links reach their records
+    And I open context for the seeded Home priority
+    Then Home displays the seeded recorded Activity
+    When the seeded Home Activity is corrected
+    And I am on "/index.php?m=home"
+    And I open context for the seeded Home priority
+    Then Home displays the seeded recorded Activity
 
-  @javascript @home_graph_render
-  Scenario: Hiring Overview chart or empty state loads
-    Given Home has recent calls, upcoming calendar entries and a hire
-    When I am on "/index.php?m=home"
-    Then the Home graph is loaded
+  @home_data
+  Scenario: Home warning evidence responds to a qualifying Company contact
+    Given Home has working-day records for "admin"
+    When I am on "/index.php?m=home&a=priorities&filter=warnings"
+    Then Home shows the seeded Company warning
+    When the seeded Company gets a qualifying contact and next action
+    And I am on "/index.php?m=home&a=priorities&filter=warnings"
+    Then Home shows the changed Company warning evidence
 
-  @home_widgets
-  Scenario: Calls, calendar output and Recent Hires retain their records
-    Given Home has recent calls, upcoming calendar entries and a hire
-    When I am on "/index.php?m=home"
-    Then Home widget records and Calendar links are present
-    When I follow "Home upcoming call"
-    Then the Home destination contains "showEvent="
+  @home_data
+  Scenario: Home filters retain the seeded Task and its native destination
+    Given Home has working-day records for "admin"
+    When I am on "/index.php?m=home&a=priorities&filter=tasks"
+    Then I should see "Home regression follow-up"
+    When I follow "Home regression follow-up"
+    Then I should see "Home regression follow-up"
 
   @javascript @home_search
   Scenario: Quick Search retains wildcard matching and sortable candidate results

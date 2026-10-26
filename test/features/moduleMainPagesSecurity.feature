@@ -5,31 +5,28 @@ Feature: Access Level to objects check - main pages
   
   ######## DASHBOARD(HOME) #######
 
-  @dashboard
+  @dashboard @home_data
   Scenario Outline: Dashboard module visibility
     Given I am logged in with <accessLevel> access level
-    And I am on "/index.php?m=home"
+    And Home has working-day records for "<username>"
+    When I am on "/index.php?m=home"
     Then the page should <quickSearch> contain "Quick Search"
     And the page should <quickSearch> contain "quickSearchFor"
     And the page should <quickSearch> contain "quickSearch"
-    And I should <recentCalls> "My Recent Calls"
-    And I should <upcomingCalls> "My Upcoming Calls"
-    And I should <upcomingEvents> "My Upcoming Events"
-    And I should <recentHires> "Recent Hires"
-    And I should <hiringOverview> "Hiring Overview"
-    And I should <importantCandidates> "Important Candidates"
-    
+    And Home enforces working-day access "<accessLevel>"
+    And the seeded Home Task completion respects "<accessLevel>" access
+
     Examples:
-     | accessLevel | quickSearch | recentCalls | upcomingCalls | upcomingEvents | recentHires | hiringOverview | importantCandidates| 
-     | DISABLED    | not         | not see     | not see       | not see        | not see     | not see        | not see            |
-     | READONLY    |             | see         | see           | see            | see         | see            | see                | 
-     | EDIT        |             | see         | see           | see            | see         | see            | see                |
-     | DELETE      |             | see         | see           | see            | see         | see            | see                |
-     | DEMO        |             | see         | see           | see            | see         | see            | see                |
-     | ADMIN       |             | see         | see           | see            | see         | see            | see                |
-     | MULTI_ADMIN |             | see         | see           | see            | see         | see            | see                |
-     | ROOT        |             | see         | see           | see            | see         | see            | see                |
-     
+     | accessLevel | username       | quickSearch |
+     | DISABLED    | testerDisabled | not         |
+     | READONLY    | testerRead     |             |
+     | EDIT        | testerEdit     |             |
+     | DELETE      | testerDelete   |             |
+     | DEMO        | testerDemo     |             |
+     | ADMIN       | testerSA       |             |
+     | MULTI_ADMIN | testerSA       |             |
+     | ROOT        | testerRoot     |             |
+
   ####### ACTIVITIES #######
     
   @activities
