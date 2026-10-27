@@ -16,14 +16,14 @@
             try {
                 const data = JSON.parse(element.querySelector('.oc-chart-data').textContent);
                 const horizontal = data.horizontal;
-                plot.style.height = horizontal ? Math.max(160, data.labels.length * 42 + 50) + 'px' : '240px';
+                plot.style.height = horizontal ? Math.max(160, data.labels.length * (data.compact ? 26 : 42) + 50) + 'px' : '240px';
                 plot.hidden = false;
                 new Chart(canvas, {
-                    type: 'bar',
+                    type: data.type === 'line' ? 'line' : 'bar',
                     data: {
                         labels: data.labels,
                         datasets: data.datasets.map(function (dataset, index) {
-                            return Object.assign({}, dataset, {backgroundColor: colours[index % colours.length]});
+                            return Object.assign({backgroundColor: colours[index % colours.length], borderColor: colours[index % colours.length]}, dataset);
                         })
                     },
                     options: {
@@ -38,8 +38,8 @@
                             }}}
                         },
                         scales: {
-                            [horizontal ? 'x' : 'y']: {beginAtZero: true, ticks: {precision: 0}},
-                            [horizontal ? 'y' : 'x']: {grid: {display: false}, ticks: {
+                            [horizontal ? 'x' : 'y']: {beginAtZero: true, stacked: data.stacked === true, ticks: {precision: 0}},
+                            [horizontal ? 'y' : 'x']: {stacked: data.stacked === true, grid: {display: false}, ticks: {
                                 autoSkip: false, maxRotation: 0,
                                 callback: function (value) {
                                     const label = String(this.getLabelForValue(value));

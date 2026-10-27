@@ -32,6 +32,290 @@ class Statistics
     }
 
 
+    /** Strict GET contract shared by the landing page and its contributing-record views. */
+    public static function operationsFilters($input)
+    {
+        $filters = array('range' => 'month', 'start' => '', 'end' => '', 'recruiter' => 'all',
+            'desk' => 'all', 'view' => 'overview', 'page' => '1', 'comparisonPage' => '1');
+        foreach ($filters as $key => $default)
+        {
+            if (isset($input[$key]) && !is_string($input[$key])) throw new InvalidArgumentException('Invalid reporting filter.');
+            if (isset($input[$key])) $filters[$key] = $input[$key];
+        }
+        if (!in_array($filters['range'], array('week','month','quarter','custom'), true) ||
+            !in_array($filters['view'], array('overview','activity','jobs','tasks','warnings'), true))
+            throw new InvalidArgumentException('Invalid reporting selection.');
+        foreach (array('recruiter','desk','page','comparisonPage') as $field)
+            if (!(in_array($field, array('recruiter','desk'), true) && $filters[$field] === 'all') &&
+                (!preg_match('/^(0|[1-9][0-9]*)$/D', $filters[$field]) || strlen($filters[$field]) > 10 || $filters[$field] > 2147483647))
+                throw new InvalidArgumentException('Invalid reporting scope.');
+        if ($filters['page'] === '0' || $filters['comparisonPage'] === '0') throw new InvalidArgumentException('Invalid reporting page.');
+        $today = new DateTimeImmutable(DateUtility::getAdjustedDate('Y-m-d'));
+        if ($filters['range'] !== 'custom')
+        {
+            $filters['end'] = $today->format('Y-m-d');
+            $filters['start'] = match ($filters['range']) {
+                'week' => $today->modify('monday this week')->format('Y-m-d'),
+                'month' => $today->format('Y-m-01'),
+                'quarter' => sprintf('%s-%02d-01', $today->format('Y'), 1 + 3 * intdiv((int) $today->format('n') - 1, 3))
+            };
+        }
+        foreach (array('start','end') as $field)
+            if (!DateUtility::isValidDatabaseDateTime($filters[$field] . ' 00:00:00'))
+                throw new InvalidArgumentException('Choose valid reporting dates.');
+        if ($filters['start'] > $filters['end'] || $filters['end'] > $today->format('Y-m-d') ||
+            DateUtility::getCalendarDaysBetween($filters['start'], $filters['end']) > 366)
+            throw new InvalidArgumentException('Choose an ordered reporting range of at most 367 days ending today or earlier.');
+        return $filters;
+    }
+
+    /** Equal elapsed calendar-day windows; a shorter previous month/quarter caps both windows. */
+    public static function operationsComparisonPeriod($filters)
+    {
+        $filters = self::operationsFilters($filters);
+        $start = new DateTimeImmutable($filters['start']);
+        $days = DateUtility::getCalendarDaysBetween($filters['start'], $filters['end']) + 1;
+        $previous = $start->modify(match ($filters['range']) {
+            'week' => '-7 days', 'month' => '-1 month', 'quarter' => '-3 months',
+            'custom' => '-' . $days . ' days'
+        });
+        if (in_array($filters['range'], array('month','quarter'), true))
+        {
+            $capacity = (int) $previous->diff($start)->format('%a');
+            $days = min($days, $capacity);
+        }
+        return array('currentStart'=>$start->format('Y-m-d'), 'currentEnd'=>$start->modify('+' . ($days - 1) . ' days')->format('Y-m-d'),
+            'previousStart'=>$previous->format('Y-m-d'), 'previousEnd'=>$previous->modify('+' . ($days - 1) . ' days')->format('Y-m-d'),
+            'days'=>$days);
+    }
+
+    /** Native read population only. Ownership and Desk selections never grant access. */
+    public function getOperations($filters)
+    {
+        include_once(LEGACY_ROOT . '/lib/Tasks.php');
+        include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
+        include_once(LEGACY_ROOT . '/lib/WarningReviews.php');
+        include_once(LEGACY_ROOT . '/lib/Pager.php');
+        $filters = self::operationsFilters($filters);
+        if (!isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn() || $_SESSION['CATS']->getUserID() <= 0 ||
+            $_SESSION['CATS']->getAccessLevel('reports.show') < ACCESS_LEVEL_READ)
+            throw new RuntimeException('Reports unavailable.');
+        $actor = $this->_db->getAssoc('SELECT access_level FROM user WHERE user_id = ' . (int) $_SESSION['CATS']->getUserID());
+        if (!$actor || $actor['access_level'] <= ACCESS_LEVEL_DISABLED) throw new RuntimeException('Reports unavailable.');
+        $can = fn($key) => $_SESSION['CATS']->getAccessLevel($key) >= ACCESS_LEVEL_READ;
+        $available = array('activity' => $can('activity.listByViewDataGrid'),
+            'jobs' => $can('joborders.list') && $can('joborders.show'),
+            'tasks' => $can('tasks.list') && $can('tasks.show'));
+        $available['warnings'] = $available['tasks'] && $available['jobs'] && $can('candidates.show') &&
+            $can('companies.show') && $can('contacts.show') && $available['activity'];
+        $totals = array('activity'=>0, 'jobs'=>0, 'tasks'=>0, 'overdue'=>0, 'warnings'=>0);
+        $groups = array('recruiter'=>array(), 'desk'=>array());
+        $choices = array('recruiter'=>array(), 'desk'=>array());
+        // Zero-activity users are included only as comparison labels, never as authority.
+        $users = $this->_db->getAllAssoc("SELECT user_id, CONCAT_WS(' ',first_name,last_name) AS name, access_level FROM user ORDER BY first_name,last_name,user_id");
+        $userNames = array_column($users, 'name', 'user_id');
+        $userNames[0] = 'Unassigned';
+        $deskNames = array_column((new Desks())->getAll(true), 'name', 'deskID');
+        $deskNames[0] = 'Unassigned / no Job Desk';
+        $details = array();
+        $detailCount = 0;
+        $trend = array();
+        $dispositions = array('remind_later'=>array(), 'close'=>array(), 'reappeared'=>array());
+        $reviewActions = 0;
+        $repeatedReviews = 0;
+        $warningJobs = array();
+        $offset = ((int) $filters['page'] - 1) * 25;
+        $empty = array('activity'=>0,'calls'=>0,'conversations'=>0,'emails'=>0,'meetings'=>0,'statusChanges'=>0,'other'=>0,'jobs'=>0,'tasks'=>0,'overdue'=>0,'warnings'=>0);
+        $add = function ($kind, $row) use (&$totals, &$groups, &$choices, &$details, &$detailCount, &$trend,
+            $filters, $offset, $empty, $userNames, $deskNames) {
+            $actor = max(0, (int) ($row['actor'] ?? 0));
+            $desk = max(0, (int) ($row['desk'] ?? 0));
+            // Filter options are derived from readable contributing records before scope filtering.
+            $choices['recruiter'][$actor] = $userNames[$actor] ?? ('Former user #' . $actor);
+            $choices['desk'][$desk] = $deskNames[$desk] ?? ('Former Desk #' . $desk);
+            if (($filters['recruiter'] !== 'all' && (int) $filters['recruiter'] !== $actor) ||
+                ($filters['desk'] !== 'all' && (int) $filters['desk'] !== $desk)) return false;
+            ++$totals[$kind];
+            foreach (array('recruiter'=>$actor,'desk'=>$desk) as $dimension=>$key)
+            {
+                if (!isset($groups[$dimension][$key])) $groups[$dimension][$key] = $empty;
+                ++$groups[$dimension][$key][$kind];
+                if ($kind === 'tasks' && $row['overdue']) ++$groups[$dimension][$key]['overdue'];
+                if ($kind === 'activity')
+                {
+                    if (in_array((int) $row['type'], array(ACTIVITY_CALL,ACTIVITY_CALL_TALKED,ACTIVITY_CALL_LVM,ACTIVITY_CALL_MISSED), true)) ++$groups[$dimension][$key]['calls'];
+                    if ((int) $row['type'] === ACTIVITY_CALL_TALKED) ++$groups[$dimension][$key]['conversations'];
+                    if ((int) $row['type'] === ACTIVITY_EMAIL) ++$groups[$dimension][$key]['emails'];
+                    if ((int) $row['type'] === ACTIVITY_MEETING) ++$groups[$dimension][$key]['meetings'];
+                    if ((int) $row['type'] === ACTIVITY_STATUS_CHANGE) ++$groups[$dimension][$key]['statusChanges'];
+                    if (!in_array((int) $row['type'], array(ACTIVITY_CALL,ACTIVITY_CALL_TALKED,ACTIVITY_CALL_LVM,
+                        ACTIVITY_CALL_MISSED,ACTIVITY_EMAIL,ACTIVITY_MEETING,ACTIVITY_STATUS_CHANGE), true))
+                        ++$groups[$dimension][$key]['other'];
+                }
+            }
+            if ($kind === 'tasks' && $row['overdue']) ++$totals['overdue'];
+            if ($kind === 'activity') $trend[$row['sourceDate']] = ($trend[$row['sourceDate']] ?? 0) + 1;
+            if ($filters['view'] === $kind)
+            {
+                if ($detailCount >= $offset && $detailCount < $offset + 25)
+                    $details[] = $row + array('actorName'=>$userNames[$actor] ?? ('Former user #' . $actor),
+                        'deskName'=>$deskNames[$desk] ?? ('Former Desk #' . $desk));
+                ++$detailCount;
+            }
+            return true;
+        };
+        foreach ((new ActivityEntries())->getOperationsRows($filters['start'], $filters['end']) as $row)
+        {
+            $module = array(100=>'candidates',200=>'companies',300=>'contacts')[(int) $row['dataItemType']];
+            $row['url'] = CATSUtility::getIndexName() . '?m=' . $module . '&a=show&' .
+                array(100=>'candidateID',200=>'companyID',300=>'contactID')[(int) $row['dataItemType']] . '=' . (int) $row['dataItemID'];
+            $add('activity', $row);
+        }
+        $comparison = null;
+        if ($filters['view'] === 'activity' && $available['activity'])
+        {
+            $comparison = self::operationsComparisonPeriod($filters) + array('current'=>0,'previous'=>0);
+            foreach ($trend as $date=>$count)
+                if ($date >= $comparison['currentStart'] && $date <= $comparison['currentEnd']) $comparison['current'] += $count;
+            // Only the missing historical window is acquired; the current period reuses the authorised trend.
+            foreach ((new ActivityEntries())->getOperationsRows($comparison['previousStart'], $comparison['previousEnd']) as $row)
+            {
+                $actorID = max(0, (int) $row['actor']);
+                $deskID = max(0, (int) $row['desk']);
+                if (($filters['recruiter'] === 'all' || (int) $filters['recruiter'] === $actorID) &&
+                    ($filters['desk'] === 'all' || (int) $filters['desk'] === $deskID)) ++$comparison['previous'];
+            }
+        }
+        foreach ((new JobOrders())->getOperationsRows() as $row)
+        {
+            $row['url'] = CATSUtility::getIndexName() . '?m=joborders&a=show&jobOrderID=' . (int) $row['id'];
+            $add('jobs', $row);
+        }
+        // Resolve Task Desk through its readable explicit Job or pipeline; never through assignee membership.
+        $batch = array();
+        $consume = function ($batch) use ($add, $can) {
+            if (!$batch) return;
+            $ids = array_column($batch, 'candidateJobOrderID');
+            $ids = array_filter(array_map('intval', $ids), fn($id) => $id > 0);
+            $pipelines = $ids ? array_column($this->_db->getAllAssoc('SELECT candidate_joborder_id,joborder_id FROM candidate_joborder WHERE candidate_joborder_id IN (' . implode(',', $ids) . ')'), 'joborder_id','candidate_joborder_id') : array();
+            $jobIDs = array();
+            foreach ($batch as $task)
+            {
+                $id = $task['dataItemType'] == DATA_ITEM_JOBORDER ? $task['dataItemID'] : ($pipelines[(int) $task['candidateJobOrderID']] ?? null);
+                if ($id > 0) $jobIDs[] = (int) $id;
+            }
+            $desks = $jobIDs && $can('joborders.show') ? array_column($this->_db->getAllAssoc('SELECT joborder_id,desk_id FROM joborder WHERE joborder_id IN (' . implode(',', array_unique($jobIDs)) . ')'), 'desk_id','joborder_id') : array();
+            foreach ($batch as $task)
+            {
+                $jobID = $task['dataItemType'] == DATA_ITEM_JOBORDER ? $task['dataItemID'] : ($pipelines[(int) $task['candidateJobOrderID']] ?? null);
+                $add('tasks', array('id'=>$task['taskID'],'title'=>$task['title'],'actor'=>$task['assignedTo'],
+                    'desk'=>$desks[(int) $jobID] ?? null, 'sourceDate'=>$task['dueDate'],
+                    'overdue'=>DateUtility::getCalendarDaysBetween($task['dueDate'], DateUtility::getAdjustedDate('Y-m-d')) > 0,
+                    'url'=>CATSUtility::getIndexName() . '?m=tasks&a=show&taskID=' . (int) $task['taskID'], 'status'=>$task['status']));
+            }
+        };
+        foreach ((new Tasks())->getOperationsRows() as $task)
+        {
+            $batch[] = $task;
+            if (count($batch) === 200) { $consume($batch); $batch = array(); }
+        }
+        $consume($batch);
+        $oversight = $_SESSION['CATS']->getAccessLevel('reports.show') >= ACCESS_LEVEL_SA;
+        $warnings = array();
+        if ($available['warnings'])
+        {
+            if ($oversight)
+            {
+                $result = (new WarningReviews())->getOversight('', '', 0, null, $filters['start'], $filters['end']);
+                $warnings = $result['rows'];
+            }
+            else
+                foreach ((new Tasks())->getRecruitmentWarnings()['warnings'] as $warning)
+                    $warnings[] = array('warning'=>$warning,'state'=>null,'status'=>'outstanding');
+        }
+        // Reuse the existing enumeration. W07 remains the viewer's account scope.
+        $jobIDs = array();
+        foreach ($warnings as $row) if ($row['warning']['jobOrderID']) $jobIDs[] = (int) $row['warning']['jobOrderID'];
+        $jobDesks = array();
+        foreach (array_chunk(array_unique($jobIDs), 200) as $ids)
+            foreach ($this->_db->getAllAssoc('SELECT joborder_id,desk_id FROM joborder WHERE joborder_id IN (' . implode(',', $ids) . ')') as $job)
+                $jobDesks[$job['joborder_id']] = $job['desk_id'];
+        $warningSubjects = array();
+        $warningGroups = array('recruiter'=>array(),'desk'=>array());
+        $acceptedKeys = array();
+        foreach ($warnings as $item)
+        {
+            $w = $item['warning'];
+            $key = isset($item['identity']) ? implode(':', array_values($item['identity'])) : $w['identity'];
+            $subject = $w['entityType'] . ':' . $w['entityID'];
+            $actor = max(0, (int) $w['responsibleUserID']);
+            $desk = max(0, (int) ($jobDesks[(int) $w['jobOrderID']] ?? 0));
+            $choices['recruiter'][$actor] = $userNames[$actor] ?? ('Former user #' . $actor);
+            $choices['desk'][$desk] = $deskNames[$desk] ?? ('Former Desk #' . $desk);
+            if (($filters['recruiter'] !== 'all' && (int) $filters['recruiter'] !== $actor) ||
+                ($filters['desk'] !== 'all' && (int) $filters['desk'] !== $desk)) continue;
+            foreach (array('recruiter'=>$actor,'desk'=>$desk) as $dimension=>$id)
+                $warningGroups[$dimension][$id][$subject] = true;
+            if (isset($dispositions[$item['status']])) $dispositions[$item['status']][$key] = true;
+            $acceptedKeys[$key] = true;
+            if ($w['jobOrderID']) $warningJobs[$w['jobOrderID']] = true;
+            $type = (int) $w['entityType'];
+            $route = array(DATA_ITEM_TASK=>array('tasks','taskID'), DATA_ITEM_JOBORDER=>array('joborders','jobOrderID'), DATA_ITEM_COMPANY=>array('companies','companyID'))[$type];
+            if (!isset($warningSubjects[$subject]))
+                $warningSubjects[$subject] = array('id'=>$w['entityID'],'title'=>$w['title'],'actor'=>$actor,'desk'=>$desk,
+                    'sourceDate'=>$w['sourceDate'], 'conditions'=>array(), 'actors'=>array(),
+                    'url'=>CATSUtility::getIndexName() . '?m=' . $route[0] . '&a=show&' . $route[1] . '=' . (int) $w['entityID']);
+            $warningSubjects[$subject]['conditions'][$w['code'] . ': ' . str_replace('_',' ',$w['reason'])] = true;
+            $warningSubjects[$subject]['actors'][$actor] = $userNames[$actor] ?? ('Former user #' . $actor);
+        }
+        foreach ($warningSubjects as $row)
+        {
+            $row['status'] = implode('; ', array_keys($row['conditions']));
+            $row['actorName'] = implode(', ', $row['actors']);
+            unset($row['conditions'], $row['actors']);
+            $add('warnings', $row);
+        }
+        // Distinct subjects per native responsibility may overlap across recruiters.
+        foreach ($warningGroups as $dimension=>$byID)
+            foreach ($byID as $id=>$sourceSubjects)
+            {
+                if (!isset($groups[$dimension][$id])) $groups[$dimension][$id] = $empty;
+                $groups[$dimension][$id]['warnings'] = count($sourceSubjects);
+            }
+        if ($oversight && isset($result))
+            foreach ($result['eventCounts'] as $key=>$count)
+                if (isset($acceptedKeys[$key]))
+                {
+                    $reviewActions += $count;
+                    if ($count > 1) ++$repeatedReviews;
+                }
+        // Include known users with no recorded Activity without inventing work or Desk attribution.
+        foreach ($users as $user)
+            if ($user['access_level'] > ACCESS_LEVEL_DISABLED &&
+                ($filters['recruiter'] === 'all' || (int) $filters['recruiter'] === (int) $user['user_id']) &&
+                $filters['desk'] === 'all')
+            {
+                $id = (int) $user['user_id'];
+                $choices['recruiter'][$id] = $user['name'];
+                if (!isset($groups['recruiter'][$id])) $groups['recruiter'][$id] = $empty;
+            }
+        foreach (array('recruiter','desk') as $dimension)
+        {
+            $names = $dimension === 'recruiter' ? $userNames : $deskNames;
+            foreach ($groups[$dimension] as $key=>&$row) $row['name'] = $names[$key] ?? ('Former #' . $key);
+            unset($row);
+            uasort($groups[$dimension], fn($a,$b) => array(-$a['overdue'],-$a['warnings'],-$a['jobs'],$a['name']) <=> array(-$b['overdue'],-$b['warnings'],-$b['jobs'],$b['name']));
+            asort($choices[$dimension]);
+            if ($filters[$dimension] !== 'all' && !array_key_exists((int) $filters[$dimension], $choices[$dimension]))
+                throw new InvalidArgumentException('Reporting scope unavailable.');
+        }
+        ksort($trend);
+        return array('filters'=>$filters, 'available'=>$available, 'totals'=>$totals, 'groups'=>$groups,
+            'choices'=>$choices, 'details'=>$details, 'pager'=>new Pager($detailCount,25,(int) $filters['page']),
+            'trend'=>$trend, 'comparison'=>$comparison, 'oversight'=>$oversight, 'dispositions'=>array_map('count',$dispositions),
+            'reviewActions'=>$oversight ? $reviewActions : null, 'repeatedReviews'=>$oversight ? $repeatedReviews : null, 'jobsAtRisk'=>count($warningJobs));
+    }
+
     /**
      * Returns the total number of candidates created in the given period.
      *

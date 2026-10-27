@@ -85,6 +85,46 @@ class Charts
         return $chart;
     }
 
+    /** Reports transform their already authorised projection; chart helpers never acquire records. */
+    public static function operationsTasks($rows)
+    {
+        $rows = array_values($rows);
+        $chart = self::comparison('Outstanding Tasks by recruiter', array_column($rows,'name'), array(),
+            'Current workload. Overdue is part of outstanding work; bar lengths count each Task once.');
+        $chart['stacked'] = true;
+        $chart['compact'] = true;
+        $chart['datasets'] = array(
+            array('label'=>'Overdue', 'data'=>array_map(fn($row) => (int) $row['overdue'], $rows), 'backgroundColor'=>'#b42318'),
+            array('label'=>'Other outstanding', 'data'=>array_map(fn($row) => (int) $row['tasks'] - (int) $row['overdue'], $rows), 'backgroundColor'=>'#667085'));
+        return $chart;
+    }
+
+    public static function operationsActivity($rows)
+    {
+        $rows = array_values($rows);
+        $chart = self::comparison('Recorded activity by recruiter', array_column($rows,'name'), array(),
+            'Selected dates. Recorded categories, not successful engagement. Talked calls are included in Calls.');
+        $chart['stacked'] = true;
+        $chart['compact'] = true;
+        $chart['datasets'] = array();
+        foreach (array('calls'=>array('Calls','#0d6efd'), 'emails'=>array('Emails','#36454f'),
+            'meetings'=>array('Meetings','#087f8c'), 'statusChanges'=>array('Status changes','#667085'),
+            'other'=>array('Other / unclassified','#765aa7')) as $key=>$category)
+            $chart['datasets'][] = array('label'=>$category[0], 'data'=>array_map(fn($row) => (int) $row[$key], $rows), 'backgroundColor'=>$category[1]);
+        return $chart;
+    }
+
+    public static function operationsJobs($rows)
+    {
+        $rows = array_values($rows);
+        $chart = self::comparison('Open Job Orders by Desk', array_column($rows,'name'), array_column($rows,'jobs'),
+            "Current snapshot. Uses each Job Order's own Desk; volume alone is neither good nor bad.");
+        $chart['compact'] = true;
+        $chart['datasets'][0]['label'] = 'Open Job Orders';
+        $chart['datasets'][0]['backgroundColor'] = '#0d6efd';
+        return $chart;
+    }
+
     public static function render($id, $chart, $existingTable = false)
     {
         $escape = array('Template', 'escapeHtml');

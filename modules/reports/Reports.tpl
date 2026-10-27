@@ -1,12 +1,13 @@
-<?php TemplateUtility::printHeader('Reports'); ?>
+<?php TemplateUtility::printHeader('Recruitment Operations', array('modules/reports/reports.css', 'js/chartjs/chart.umd.min.js', 'js/charts.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
 <?php TemplateUtility::printQuickSearch(); ?>
 <main id="main" class="container-fluid py-2">
 
         <div id="contents">
+            <?php include(LEGACY_ROOT . '/modules/reports/Operations.tpl'); ?>
             <header class="oc-page-header mb-2">
-                <h1 class="h5 fw-semibold mb-0">Reports</h1>
+                <h2 class="h5 fw-semibold mb-0">Existing &amp; Specialist Reports</h2>
             </header>
 
             <?php if ($_SESSION['CATS']->getAccessLevel('reports.show') >= ACCESS_LEVEL_SA): ?>

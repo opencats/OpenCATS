@@ -1,0 +1,37 @@
+/* Operational Reports use the approved OpenCATS palette; legacy reports retain
+ * their native presentation. Bootstrap supplies layout and components. */
+.reports-operations
+{
+    color: #36454f;
+    font-family: var(--bs-font-sans-serif);
+    font-size: .875rem;
+}
+.reports-operations .btn-success
+{
+    --bs-btn-bg: #2e8b57;
+    --bs-btn-border-color: #2e8b57;
+    --bs-btn-hover-bg: #246e45;
+    --bs-btn-hover-border-color: #246e45;
+    --bs-btn-active-bg: #246e45;
+    --bs-btn-active-border-color: #246e45;
+}
+.reports-operations .form-select { border-color: var(--bs-border-color); }
+/* Custom dates have no purpose for preset periods. Browsers without :has()
+ * retain the working date inputs as a progressive-enhancement fallback. */
+@supports selector(:has(*))
+{
+    .reports-operations form:not(:has(#ops-range option[value="custom"]:checked)) [data-operations-custom-date]
+    {
+        display: none;
+    }
+}
+.reports-operations .card-header { padding-block: .375rem; }
+.reports-operations th { vertical-align: bottom; }
+/* Operational urgency follows the existing Home due-date palette. Neutral bars
+ * show volume; future/no-date work is not asserted to be On track. */
+.reports-operations .reports-cue { display: inline-block; padding: .0625rem .375rem; border-radius: .25rem; font-weight: 600; }
+.reports-operations .reports-cue-overdue { color: #b42318; background: #fef3f2; }
+.reports-operations .reports-cue-attention { color: #b54708; background: #fffaeb; }
+.reports-operations .reports-number-overdue { color: #b42318; font-weight: 600; }
+.reports-operations .reports-number-attention { color: #b54708; font-weight: 600; }
+.reports-operations .oc-chart-values { margin-bottom: .375rem; }

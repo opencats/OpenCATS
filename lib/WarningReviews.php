@@ -260,7 +260,7 @@ class WarningReviews
      * record-read permissions through the same source query; never impersonate users.
      * Counts are distinct rule/subject/reasons, not reviewer rows or History events.
      */
-    public function getOversight($rule = '', $status = '', $reviewer = 0, $companyID = null)
+    public function getOversight($rule = '', $status = '', $reviewer = 0, $companyID = null, $start = null, $end = null)
     {
         $this->authorizeOversight();
         if (!is_string($rule) || !in_array($rule, array('', 'W01', 'W02', 'W03', 'W07', 'W08'), true) ||
@@ -269,6 +269,11 @@ class WarningReviews
             throw new InvalidArgumentException('Invalid oversight filter.');
         if ($companyID !== null && (!is_int($companyID) || $companyID <= 0 || $companyID > 2147483647))
             throw new InvalidArgumentException('Invalid oversight Company.');
+        foreach (array($start, $end) as $date)
+            if ($date !== null && (!is_string($date) || !DateUtility::isValidDatabaseDateTime($date . ' 00:00:00')))
+                throw new InvalidArgumentException('Invalid oversight period.');
+        if (($start === null) !== ($end === null) || ($start !== null && $start > $end))
+            throw new InvalidArgumentException('Invalid oversight period.');
         $sources = array();
         $ids = array();
         $tasks = new Tasks();
@@ -298,8 +303,11 @@ class WarningReviews
             }
         }
         $states = array();
-        $events = array();
-        $since = DateUtility::getAdjustedDate('Y-m-d', strtotime('-30 days'));
+        $eventCounts = array();
+        $since = $start ?? DateUtility::getAdjustedDate('Y-m-d', strtotime('-30 days'));
+        $offset = (float) $_SESSION['CATS']->getTimeZoneOffset();
+        $from = $start === null ? $since . ' 00:00:00' : date('Y-m-d H:i:s', strtotime($start . ' 00:00:00') - (int) ($offset * 3600));
+        $until = $end === null ? null : date('Y-m-d H:i:s', strtotime($end . ' 00:00:00 +1 day') - (int) ($offset * 3600));
         foreach ($ids as $type => $sourceIDs)
             foreach (array_chunk($sourceIDs, 200) as $batch)
             {
@@ -312,18 +320,28 @@ class WarningReviews
                     if (isset($sources[$key]) && (int) $state['reviewing_user'] > 0)
                         $states[$key][] = $state;
                 }
-                foreach ($this->_db->getAllAssoc("SELECT new_value FROM history WHERE the_field = 'warning_review' AND " . $scope .
-                    ' AND set_date >= ' . $this->_db->makeQueryString($since . ' 00:00:00') . ' AND set_date <= NOW()') as $event)
+                $after = 0;
+                do
                 {
-                    $state = json_decode($event['new_value'], true);
-                    if (!is_array($state)) continue;
-                    try { $identity = self::identity($state['warning_rule'] ?? null, $state['data_item_type'] ?? null,
-                        $state['data_item_id'] ?? null, $state['reason_key'] ?? null, $state['reason_id'] ?? null); }
-                    catch (InvalidArgumentException $e) { continue; }
-                    $key = self::identityKey($identity);
-                    if (isset($sources[$key]) && (int) ($state['reviewing_user'] ?? 0) > 0)
-                        $events[] = array('identity' => $identity, 'reviewer' => (int) $state['reviewing_user']);
-                }
+                    $historyRows = $this->_db->getAllAssoc("SELECT history_id, new_value FROM history WHERE the_field = 'warning_review' AND " . $scope .
+                        ' AND set_date >= ' . $this->_db->makeQueryString($from) .
+                        ($until === null ? ' AND set_date <= NOW()' : ' AND set_date < ' . $this->_db->makeQueryString($until) . ' AND set_date <= NOW()') .
+                        ' AND history_id > ' . $after . ' ORDER BY history_id LIMIT 200');
+                    foreach ($historyRows as $event)
+                    {
+                        $after = (int) ($event['history_id'] ?? 0);
+                        $state = json_decode($event['new_value'], true);
+                        if (!is_array($state)) continue;
+                        try { $identity = self::identity($state['warning_rule'] ?? null, $state['data_item_type'] ?? null,
+                            $state['data_item_id'] ?? null, $state['reason_key'] ?? null, $state['reason_id'] ?? null); }
+                        catch (InvalidArgumentException $e) { continue; }
+                        $key = self::identityKey($identity);
+                        if (isset($sources[$key]) && (int) ($state['reviewing_user'] ?? 0) > 0 &&
+                            ($rule === '' || $identity['warning_rule'] === $rule) &&
+                            (!$reviewer || (int) $state['reviewing_user'] === $reviewer))
+                            $eventCounts[$key] = ($eventCounts[$key] ?? 0) + 1;
+                    }
+                } while (count($historyRows) === 200 && $after > 0);
             }
         $counts = array('outstanding' => array(), 'remind_later' => array(), 'close' => array(), 'reappeared' => array());
         $rows = array();
@@ -355,11 +373,9 @@ class WarningReviews
         foreach (array_chunk(array_keys($users), 200) as $batch)
             foreach ($this->_db->getAllAssoc("SELECT user_id, CONCAT(first_name, ' ', last_name) AS name FROM user WHERE user_id IN (" . implode(',', $batch) . ')') as $user)
                 $names[$user['user_id']] = $user['name'];
-        $eventCount = 0;
-        foreach ($events as $event)
-            if (($rule === '' || $event['identity']['warning_rule'] === $rule) && (!$reviewer || $event['reviewer'] === $reviewer)) ++$eventCount;
+        $eventCount = array_sum($eventCounts);
         return array('rows' => $rows, 'counts' => array_map('count', $counts), 'events' => $eventCount,
-            'since' => $since, 'names' => $names);
+            'since' => $since, 'names' => $names, 'eventCounts' => $eventCounts);
     }
 
     /** Available native audit for an enumerated, still-authorised source/reviewer. */

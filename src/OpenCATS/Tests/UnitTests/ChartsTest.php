@@ -63,6 +63,39 @@ class ChartsTest extends TestCase
         $this->assertStringNotContainsString('<table', Charts::render('eeo', $chart, true));
     }
 
+    public function testOperationsTaskStacksCountOverdueOnlyOnce()
+    {
+        $rows = array(7=>array('name'=>'Recruiter','tasks'=>9,'overdue'=>4),0=>array('name'=>'Unassigned','tasks'=>3,'overdue'=>0));
+        $chart = Charts::operationsTasks($rows);
+        self::assertTrue($chart['stacked']);
+        self::assertSame(array('Recruiter','Unassigned'),$chart['labels']);
+        self::assertSame(array(4,0),$chart['datasets'][0]['data']);
+        self::assertSame(array(5,3),$chart['datasets'][1]['data']);
+        self::assertSame('#b42318',$chart['datasets'][0]['backgroundColor']);
+        self::assertSame('Other outstanding',$chart['datasets'][1]['label']);
+        self::assertStringContainsString('Overdue',Charts::render('tasks',$chart));
+    }
+
+    public function testOperationsActivityCategoriesPartitionRecordedEvents()
+    {
+        $rows = array(array('name'=>'Recorded by','calls'=>4,'conversations'=>2,'emails'=>3,'meetings'=>1,'statusChanges'=>2,'other'=>5));
+        $chart = Charts::operationsActivity($rows);
+        self::assertSame(array('Calls','Emails','Meetings','Status changes','Other / unclassified'),array_column($chart['datasets'],'label'));
+        self::assertSame(15,array_sum(array_map(fn($dataset) => $dataset['data'][0],$chart['datasets'])));
+        self::assertCount(5,$chart['datasets']); // Talked calls are already included in Calls.
+        self::assertTrue($chart['stacked']);
+    }
+
+    public function testOperationsJobVolumesRemainNeutralAndAccessible()
+    {
+        $chart = Charts::operationsJobs(array(array('name'=>'Engineering','jobs'=>7),array('name'=>'Unassigned','jobs'=>2)));
+        self::assertSame(array(7,2),$chart['datasets'][0]['data']);
+        self::assertSame('#0d6efd',$chart['datasets'][0]['backgroundColor']);
+        self::assertStringContainsString('<table',Charts::render('jobs',$chart));
+        self::assertStringContainsString('Unassigned',Charts::render('jobs',$chart));
+        self::assertStringContainsString('No data to chart',Charts::render('empty',Charts::operationsTasks(array())));
+    }
+
     public function testApplicationHasNoLegacyGraphDependency()
     {
         $root = dirname(__DIR__, 4);

@@ -64,6 +64,25 @@ class JobOrders
     }
 
 
+    /** Same record visibility and configured Open statuses as native Job lists. */
+    public function getOperationsRows()
+    {
+        if (!isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn() || $_SESSION['CATS']->getUserID() <= 0 ||
+            $_SESSION['CATS']->getAccessLevel('joborders.list') < ACCESS_LEVEL_READ ||
+            $_SESSION['CATS']->getAccessLevel('joborders.show') < ACCESS_LEVEL_READ) return;
+        $where = 'status IN ' . JobOrderStatuses::getOpenStatusSQL();
+        if ($_SESSION['CATS']->getAccessLevel('joborders.hidden') < ACCESS_LEVEL_SA)
+            $where .= ' AND COALESCE(is_admin_hidden,0) <> 1';
+        $after = 0;
+        do
+        {
+            $rows = $this->_db->getAllAssoc('SELECT joborder_id AS id, title, status, recruiter AS actor,
+                owner, desk_id AS desk, sector_id AS sector, date_created AS sourceDate FROM joborder WHERE ' .
+                $where . ' AND joborder_id > ' . $after . ' ORDER BY joborder_id LIMIT 200');
+            foreach ($rows as $row) { $after = (int) $row['id']; yield $row; }
+        } while (count($rows) === 200);
+    }
+
     /** Field-only administrative handover; caller must authorise and lock the record. */
     public function updateHandoverAssignment($id, $from, $to, $field = 'owner')
     {

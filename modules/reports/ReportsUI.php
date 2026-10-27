@@ -172,6 +172,20 @@ class ReportsUI extends UserInterface
 
     private function reports()
     {
+        try
+        {
+            $operations = (new Statistics())->getOperations(Statistics::operationsFilters($_GET));
+        }
+        catch (InvalidArgumentException $e)
+        {
+            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid operational reporting scope or dates.');
+        }
+        catch (RuntimeException $e)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Operational reports unavailable.');
+        }
+        $this->_template->assign('operations', $operations);
+
         /* Grab an instance of Statistics. */
         $statistics = new Statistics();
 

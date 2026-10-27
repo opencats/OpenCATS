@@ -56,14 +56,8 @@ class ActivityEntries
         catch (RuntimeException $e) { return null; }
         $type = (int) $type;
         $id = (int) $id;
-        $candidate = $_SESSION['CATS']->getAccessLevel('candidates.show') >= ACCESS_LEVEL_READ ? '1' : '0';
-        $contact = $_SESSION['CATS']->getAccessLevel('contacts.show') >= ACCESS_LEVEL_READ ? '1' : '0';
-        $hidden = $_SESSION['CATS']->getAccessLevel('candidates.hidden') >= ACCESS_LEVEL_SA ? '' : ' AND COALESCE(c.is_admin_hidden,0) <> 1';
         $source = $type === DATA_ITEM_COMPANY ? '(a.data_item_type = 200 AND a.data_item_id = ' . $id . ') OR (a.data_item_type = 300 AND ct.company_id = ' . $id . ')' :
             ($type === DATA_ITEM_JOBORDER ? 'a.joborder_id = ' . $id : 'a.data_item_type = ' . $type . ' AND a.data_item_id = ' . $id);
-        $company = $_SESSION['CATS']->getAccessLevel('companies.show') >= ACCESS_LEVEL_READ ? '1' : '0';
-        $job = $_SESSION['CATS']->getAccessLevel('joborders.show') >= ACCESS_LEVEL_READ ? '1' : '0';
-        $jobHidden = $_SESSION['CATS']->getAccessLevel('joborders.hidden') >= ACCESS_LEVEL_SA ? '' : ' AND COALESCE(j.is_admin_hidden,0) <> 1';
         return $this->_db->getAllAssoc("SELECT a.activity_id AS activityID, a.notes,
             a.data_item_type AS dataItemType, a.data_item_id AS dataItemID,
             CASE a.data_item_type
@@ -79,13 +73,53 @@ class ActivityEntries
             LEFT JOIN contact ct ON a.data_item_type = 300 AND ct.contact_id = a.data_item_id
             LEFT JOIN company co ON a.data_item_type = 200 AND co.company_id = a.data_item_id
             LEFT JOIN joborder j ON j.joborder_id = a.joborder_id
-            WHERE (" . $source . ") AND ((a.data_item_type = 100 AND " . $candidate . " AND c.candidate_id IS NOT NULL" . $hidden . ")
-                OR (a.data_item_type = 300 AND " . $contact . " AND ct.contact_id IS NOT NULL)
-                OR (a.data_item_type = 200 AND " . $company . " AND co.company_id IS NOT NULL))
-            AND (COALESCE(a.joborder_id,0) <= 0 OR (" . $job . " AND j.joborder_id IS NOT NULL" . $jobHidden . "))
+            WHERE (" . $source . ") AND " . $this->readableSourceSQL() . "
             ORDER BY a.date_occurred DESC, a.activity_id DESC LIMIT " . $limit);
     }
 
+
+    /** Recorded Activity, credited to entered_by; date boundaries use the session offset. */
+    public function getOperationsRows($start, $end)
+    {
+        foreach (array($start, $end) as $date)
+            if (!is_string($date) || !DateUtility::isValidDatabaseDateTime($date . ' 00:00:00'))
+                throw new InvalidArgumentException('Invalid Activity period.');
+        if (!isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn() || $_SESSION['CATS']->getUserID() <= 0 ||
+            $_SESSION['CATS']->getAccessLevel('activity.listByViewDataGrid') < ACCESS_LEVEL_READ) return;
+        $offset = (float) $_SESSION['CATS']->getTimeZoneOffset();
+        $from = date('Y-m-d H:i:s', strtotime($start . ' 00:00:00') - (int) ($offset * 3600));
+        $until = date('Y-m-d H:i:s', strtotime($end . ' 00:00:00 +1 day') - (int) ($offset * 3600));
+        $after = 0;
+        do
+        {
+            $rows = $this->_db->getAllAssoc("SELECT a.activity_id AS id, a.entered_by AS actor, a.type,
+                a.data_item_type AS dataItemType, a.data_item_id AS dataItemID, a.joborder_id AS jobID,
+                j.desk_id AS desk, DATE(DATE_ADD(a.date_occurred, INTERVAL " . (int) ($offset * 3600) . " SECOND)) AS sourceDate,
+                CASE a.data_item_type WHEN 100 THEN CONCAT_WS(' ',c.first_name,c.last_name)
+                    WHEN 200 THEN co.name WHEN 300 THEN CONCAT_WS(' ',ct.first_name,ct.last_name) END AS title
+                FROM activity a
+                LEFT JOIN candidate c ON a.data_item_type=100 AND c.candidate_id=a.data_item_id
+                LEFT JOIN company co ON a.data_item_type=200 AND co.company_id=a.data_item_id
+                LEFT JOIN contact ct ON a.data_item_type=300 AND ct.contact_id=a.data_item_id
+                LEFT JOIN joborder j ON j.joborder_id=a.joborder_id
+                WHERE " . $this->readableSourceSQL() . "
+                AND a.date_occurred >= " . $this->_db->makeQueryString($from) . ' AND a.date_occurred < ' . $this->_db->makeQueryString($until) .
+                ' AND a.activity_id > ' . $after . ' ORDER BY a.activity_id LIMIT 200');
+            foreach ($rows as $row) { $after = (int) $row['id']; yield $row; }
+        } while (count($rows) === 200);
+    }
+
+    /** Shared Activity subject and linked-Job visibility; aliases are fixed by both native reads. */
+    private function readableSourceSQL()
+    {
+        $can = fn($action) => $_SESSION['CATS']->getAccessLevel($action) >= ACCESS_LEVEL_READ ? '1' : '0';
+        $candidateHidden = $_SESSION['CATS']->getAccessLevel('candidates.hidden') >= ACCESS_LEVEL_SA ? '' : ' AND COALESCE(c.is_admin_hidden,0) <> 1';
+        $jobHidden = $_SESSION['CATS']->getAccessLevel('joborders.hidden') >= ACCESS_LEVEL_SA ? '' : ' AND COALESCE(j.is_admin_hidden,0) <> 1';
+        return "((a.data_item_type=100 AND " . $can('candidates.show') . " AND c.candidate_id IS NOT NULL" . $candidateHidden . ")
+            OR (a.data_item_type=200 AND " . $can('companies.show') . " AND co.company_id IS NOT NULL)
+            OR (a.data_item_type=300 AND " . $can('contacts.show') . " AND ct.contact_id IS NOT NULL))
+            AND (COALESCE(a.joborder_id,0)<=0 OR (" . $can('joborders.show') . " AND j.joborder_id IS NOT NULL" . $jobHidden . "))";
+    }
 
     public function __construct()
     {

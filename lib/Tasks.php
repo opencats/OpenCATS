@@ -201,29 +201,51 @@ class Tasks
             $sql = $this->selectSQL(', ' . $invalid . ' AS invalidAssignee,
                 (SELECT joborder_id FROM candidate_joborder WHERE candidate_joborder_id = task.candidate_joborder_id) AS contextJobOrderID');
             $rows = $this->_db->getAllAssoc($sql . $where . ' AND task_id > ' . $lastID . ' ORDER BY task_id LIMIT 200');
-            $parents = array();
-            $ids = array();
-            $pipelineIDs = array();
-            foreach ($rows as $row)
-            {
-                $lastID = (int) $row['taskID'];
-                if ($row['dataItemType'] !== null) $ids[$row['dataItemType']][] = (int) $row['dataItemID'];
-                if ($row['candidateJobOrderID'] !== null) $pipelineIDs[] = (int) $row['candidateJobOrderID'];
-            }
-            foreach (array(DATA_ITEM_COMPANY => 'company', DATA_ITEM_CONTACT => 'contact',
-                DATA_ITEM_CANDIDATE => 'candidate', DATA_ITEM_JOBORDER => 'joborder') as $type => $table)
-            {
-                if (empty($ids[$type]) || !$this->hasAccess($this->parentModule($type) . '.show', ACCESS_LEVEL_READ)) continue;
-                $hidden = in_array($type, array(DATA_ITEM_CANDIDATE, DATA_ITEM_JOBORDER), true) ? ', is_admin_hidden AS isAdminHidden' : '';
-                $records = $this->_db->getAllAssoc('SELECT ' . $table . '_id AS id' . $hidden .
-                    ' FROM ' . $table . ' WHERE ' . $table . '_id IN (' . implode(',', array_unique($ids[$type])) . ')');
-                $parents[$type] = array_column($records, null, 'id');
-            }
-            $pipelines = (new Pipelines())->getAccessMap($pipelineIDs);
-            foreach ($rows as $row)
-                if ($this->canRead($row, $parents, $pipelines)) $result[] = $row;
+            foreach ($this->readableBatch($rows) as $row) $result[] = $row;
+            if ($rows) $lastID = (int) end($rows)['taskID'];
         } while (count($rows) === 200);
         return $result;
+    }
+
+    /** Apply the existing parent and pipeline checks once per batch. */
+    private function readableBatch($rows)
+    {
+        $result = array();
+        $parents = array();
+        $ids = array();
+        $pipelineIDs = array();
+        foreach ($rows as $row)
+        {
+            if ($row['dataItemType'] !== null) $ids[$row['dataItemType']][] = (int) $row['dataItemID'];
+            if ($row['candidateJobOrderID'] !== null) $pipelineIDs[] = (int) $row['candidateJobOrderID'];
+        }
+        foreach (array(DATA_ITEM_COMPANY => 'company', DATA_ITEM_CONTACT => 'contact',
+            DATA_ITEM_CANDIDATE => 'candidate', DATA_ITEM_JOBORDER => 'joborder') as $type => $table)
+        {
+            if (empty($ids[$type]) || !$this->hasAccess($this->parentModule($type) . '.show', ACCESS_LEVEL_READ)) continue;
+            $hidden = in_array($type, array(DATA_ITEM_CANDIDATE, DATA_ITEM_JOBORDER), true) ? ', is_admin_hidden AS isAdminHidden' : '';
+            $records = $this->_db->getAllAssoc('SELECT ' . $table . '_id AS id' . $hidden .
+                ' FROM ' . $table . ' WHERE ' . $table . '_id IN (' . implode(',', array_unique($ids[$type])) . ')');
+            $parents[$type] = array_column($records, null, 'id');
+        }
+        $pipelines = (new Pipelines())->getAccessMap($pipelineIDs);
+        foreach ($rows as $row)
+            if ($this->canRead($row, $parents, $pipelines)) $result[] = $row;
+        return $result;
+    }
+
+    /** Stream current open work without collecting an unscoped Task list. */
+    public function getOperationsRows()
+    {
+        if (!$this->hasAccess('tasks.list', ACCESS_LEVEL_READ) || !$this->hasAccess('tasks.show', ACCESS_LEVEL_READ)) return;
+        $after = 0;
+        do
+        {
+            $rows = $this->_db->getAllAssoc($this->selectSQL() . " WHERE status IN ('open','in_progress') AND task_id > " .
+                $after . ' ORDER BY task_id LIMIT 200');
+            foreach ($this->readableBatch($rows) as $row) yield $row;
+            if ($rows) $after = (int) end($rows)['taskID'];
+        } while (count($rows) === 200);
     }
 
     /** Bounded visible handover page; reuse native Task visibility before exposing IDs/counts. */
