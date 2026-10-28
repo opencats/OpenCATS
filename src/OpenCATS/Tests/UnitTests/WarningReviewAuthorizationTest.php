@@ -117,7 +117,7 @@ class WarningReviewAuthorizationTest extends AuthorizationTestCase
         });
         $this->db->method('getAllAssoc')->willReturnCallback(function ($sql) use (&$states, &$history, &$reads, $today) {
             $reads[] = $sql;
-            if (str_contains($sql, 'FROM joborder j'))
+            if (str_contains($sql, 'j.recruitment_baseline AS actionable'))
             {
                 self::assertStringContainsString('is_admin_hidden', $sql);
                 if ($this->accessOverrides['joborders.show'] ?? false) return array();
@@ -125,7 +125,9 @@ class WarningReviewAuthorizationTest extends AuthorizationTestCase
                     'isHot' => 0, 'isAdminHidden' => 0, 'actionable' => date('Y-m-d', strtotime($today . ' -20 days')) . ' 09:00:00',
                     'submitted' => 0, 'progress' => null));
             }
-            if (str_contains($sql, 'FROM warning_review') || str_contains($sql, 'FROM history'))
+            // Scope review state/audit reads, not the source query's reopening status History.
+            if (str_contains($sql, 'FROM warning_review') ||
+                (str_contains($sql, 'FROM history') && str_contains($sql, "the_field = 'warning_review'")))
             {
                 self::assertStringContainsString('data_item_id IN (7)', $sql);
                 return str_contains($sql, 'FROM warning_review') ? $states : $history;

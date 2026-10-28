@@ -176,7 +176,7 @@ class HomePrioritiesTest extends AuthorizationTestCase
             return array('access_level' => ACCESS_LEVEL_EDIT, 'joborder_id' => 7);
         });
         $this->db->method('getAllAssoc')->willReturnCallback(function ($sql) use ($clock) {
-            if (str_contains($sql, 'FROM joborder j'))
+            if (str_contains($sql, 'j.recruitment_baseline AS actionable'))
                 return array(array('jobOrderID' => 7, 'title' => 'Visible job', 'owner' => 10, 'recruiter' => 10,
                     'isHot' => 0, 'isAdminHidden' => 0, 'actionable' => date('Y-m-d', strtotime($clock . ' -20 days')) . ' 09:00:00',
                     'submitted' => 0, 'progress' => null));

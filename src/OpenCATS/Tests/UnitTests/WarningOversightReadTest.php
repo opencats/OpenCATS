@@ -37,7 +37,9 @@ class WarningOversightReadTest extends TestCase
         $db->method('makeQueryInteger')->willReturnCallback(fn($value)=>(string) (int) $value);
         $auditReads = 0;
         $db->expects(self::atLeastOnce())->method('getAllAssoc')->willReturnCallback(function ($sql) use ($invalidAssignee, &$auditReads) {
-            if (str_contains($sql,'FROM history') || str_contains($sql,'FROM warning_review')) ++$auditReads;
+            // Recruitment-source status History is independent of personal review audit.
+            if (str_contains($sql,'FROM warning_review') ||
+                (str_contains($sql,'FROM history') && str_contains($sql, "the_field = 'warning_review'"))) ++$auditReads;
             if (str_contains($sql,'AS invalidAssignee') && str_contains($sql,'FROM task'))
                 return array(array('taskID'=>1,'title'=>'Overdue commitment','dueDate'=>date('Y-m-d',strtotime('-1 day')),
                     'priority'=>'normal','assignedTo'=>$invalidAssignee ? 2 : 1,'dataItemType'=>null,'dataItemID'=>null,'candidateJobOrderID'=>null,
