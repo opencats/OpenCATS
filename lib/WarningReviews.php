@@ -298,7 +298,11 @@ class WarningReviews
                     $identity = self::identity($warning['code'], $warning['entityType'], $warning['entityID'], $reason, $reasonID);
                     $sources[self::identityKey($identity)] = array('warning' => $warning, 'identity' => $identity,
                         'evidence' => $this->evidence($identity, $warning));
-                    $ids[$warning['entityType']][$warning['entityID']] = (int) $warning['entityID'];
+                    // As in prepare(), only W02/W03/W07 support personal review state/audit.
+                    // Keep all source rows; W01/W08 cannot generate review actions through save().
+                    if (in_array($warning['code'], array('W02', 'W03', 'W07'), true) &&
+                        ($rule === '' || $rule === $warning['code']))
+                        $ids[$warning['entityType']][$warning['entityID']] = (int) $warning['entityID'];
                 }
             }
         }

@@ -117,6 +117,10 @@ class JobOrdersUI extends UserInterface
 
                 break;
 
+            case 'reopen':
+                $this->reopen();
+                break;
+
             case 'edit':
                 if ($this->getUserAccessLevel('joborders.edit') < ACCESS_LEVEL_EDIT)
                 {
@@ -1065,6 +1069,11 @@ class JobOrdersUI extends UserInterface
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'This Job Order is hidden.');
         }
+        if (($_POST['status'] ?? null) === 'Active' && JobOrderStatuses::requiresReopening($currentJob['status']))
+        {
+            CATSUtility::transferRelativeURI('m=joborders&a=reopen&jobOrderID=' . (int) $jobOrderID);
+            return;
+        }
         $deskID = $this->getDeskInput($currentJob['deskID']);
         $sectorID = $this->getSectorInput($currentJob['sectorID']);
 
@@ -1301,6 +1310,8 @@ class JobOrdersUI extends UserInterface
 
         $jobOrderID = $_GET['jobOrderID'];
 
+        if (!$this->checkPipelineJob($jobOrderID)) return;
+
         if (!eval(Hooks::get('JO_CONSIDER_CANDIDATE_SEARCH'))) return;
 
         $this->_template->assign('isFinishedMode', false);
@@ -1388,16 +1399,82 @@ class JobOrdersUI extends UserInterface
      * Called by handleRequest() to process adding a candidate to the pipeline
      * in the modal dialog.
      */
+    private function checkPipelineJob($jobOrderID)
+    {
+        try
+        {
+            $pipelineJob = (new JobOrders())->getForPipeline($jobOrderID);
+        }
+        catch (RuntimeException $e)
+        {
+            CommonErrors::fatalModal(COMMONERROR_PERMISSION, $this, 'Job Order unavailable or permission denied.');
+        }
+        if (JobOrderStatuses::requiresReopening($pipelineJob['status']))
+        {
+            CATSUtility::transferRelativeURI('m=joborders&a=reopen&jobOrderID=' . (int) $jobOrderID);
+            return false;
+        }
+        return true;
+    }
+
+    /** Existing modal action conventions; this is the only reopening write entry point. */
+    private function reopen()
+    {
+        $post = ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST';
+        try
+        {
+            $input = $post ? $_POST : $_GET;
+            if (!isset($input['jobOrderID']) || !is_scalar($input['jobOrderID']) ||
+                !$this->isRequiredIDValid('jobOrderID', $input))
+                throw new InvalidArgumentException('Invalid Job Order ID.');
+            if ($post && !$_SESSION['CATS']->isCSRFTokenValid($_POST['csrfToken'] ?? null))
+                throw new RuntimeException('Invalid request token. Reload the Job Order.');
+            $jobs = new JobOrders();
+            $job = $jobs->getForPipeline($input['jobOrderID']);
+            if ($post)
+            {
+                $jobs->reopen($input['jobOrderID'], $input['newVacancies'] ?? null, $input['expectedVersion'] ?? null);
+                header('Content-Type: application/json; charset=UTF-8');
+                echo json_encode(array('success'=>true));
+                return;
+            }
+            if (!JobOrderStatuses::requiresReopening($job['status']))
+            {
+                header('Content-Type: application/json; charset=UTF-8');
+                echo json_encode(array('success'=>true,'required'=>false));
+                return;
+            }
+            $job = $jobs->getForPipeline($input['jobOrderID'], true);
+            $this->_template->assign('reopenJob', $job);
+            $this->_template->display('./modules/joborders/ReopenModal.tpl');
+        }
+        catch (InvalidArgumentException $e)
+        {
+            http_response_code(400);
+            header('Content-Type: application/json; charset=UTF-8');
+            echo json_encode(array('success'=>false,'message'=>$e->getMessage(),'reload'=>false));
+        }
+        catch (Throwable $e)
+        {
+            http_response_code(409);
+            header('Content-Type: application/json; charset=UTF-8');
+            $known = get_class($e) === 'RuntimeException';
+            $message = $known ? $e->getMessage() : 'Unable to confirm reopening. Reload the Job Order before trying again.';
+            echo json_encode(array('success'=>false,'message'=>$message,
+                'reload'=>!$known || str_contains($message, 'has changed or has already been reopened')));
+        }
+    }
+
     private function onAddToPipeline()
     {
         /* Bail out if we don't have a valid job order ID. */
-        if (!$this->isRequiredIDValid('jobOrderID', $_POST))
+        if (!isset($_POST['jobOrderID']) || !is_scalar($_POST['jobOrderID']) || !$this->isRequiredIDValid('jobOrderID', $_POST))
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
         }
 
         /* Bail out if we don't have a valid candidate ID. */
-        if (!$this->isRequiredIDValid('candidateID', $_POST))
+        if (!isset($_POST['candidateID']) || !is_scalar($_POST['candidateID']) || !$this->isRequiredIDValid('candidateID', $_POST))
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
         }
@@ -1409,6 +1486,8 @@ class JobOrdersUI extends UserInterface
         {
             CommonErrors::fatalModal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
         }
+
+        if (!$this->checkPipelineJob($jobOrderID)) return;
 
         if (!eval(Hooks::get('JO_ON_ADD_PIPELINE'))) return;
 
@@ -1495,6 +1574,8 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('associatedFileResume', false);
         $this->_template->assign('EEOSettingsRS', $EEOSettingsRS);
 
+        if (!$this->checkPipelineJob($jobOrderID)) return;
+
         if (!eval(Hooks::get('JO_ADD_CANDIDATE_MODAL'))) return;
 
         /* REMEMBER TO ALSO UPDATE CandidatesUI::add() IF APPLICABLE. */
@@ -1514,6 +1595,8 @@ class JobOrdersUI extends UserInterface
         }
 
         $jobOrderID = $_POST['jobOrderID'];
+
+        if (!$this->checkPipelineJob($jobOrderID)) return;
 
         /* URI to transfer after candidate is successfully added. */
         $transferURI = sprintf(

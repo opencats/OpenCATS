@@ -7,14 +7,18 @@ class PipelineStatusPersistenceTest extends DatabaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        require_once LEGACY_ROOT . '/lib/CATSUtility.php';
         require_once LEGACY_ROOT . '/lib/Session.php';
         require_once LEGACY_ROOT . '/lib/Hooks.php';
         require_once LEGACY_ROOT . '/lib/Pipelines.php';
         $session = $this->createStub(\CATSSession::class);
         $session->method('getUserID')->willReturn(1);
+        $session->method('isLoggedIn')->willReturn(true);
+        $session->method('getAccessLevel')->willReturn(ACCESS_LEVEL_SA);
         $_SESSION['CATS'] = $session;
         $this->db = \DatabaseConnection::getInstance();
-        (new \Pipelines())->add(1, 1, 1);
+        $this->db->query("INSERT INTO joborder (joborder_id,title,status,openings,openings_available) VALUES (1,'Pipeline fixture','Active',1,1)");
+        self::assertTrue((new \Pipelines())->add(1, 1, 1));
     }
     protected function tearDown(): void
     {

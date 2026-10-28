@@ -13,6 +13,9 @@ use OpenCATS\UI\QuickActionMenu;
 
 <main id="main" class="container-fluid py-2 oc-joborder-show-page">
     <div id="contents">
+        <?php if (isset($_GET['reopenChanged'])): ?>
+        <div class="alert alert-info" role="status">Reopening was not confirmed. The Job Order may have changed or already been reopened. Its current state is shown below; no candidate addition was replayed.</div>
+        <?php endif; ?>
         <section class="oc-page-header mb-2"><h1 class="h5 fw-semibold mb-0">Job Orders: Job Order Details</h1></section>
 
         <?php if ($this->data['isAdminHidden'] == 1): ?>

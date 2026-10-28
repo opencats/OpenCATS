@@ -30,7 +30,7 @@ $_SESSION['CATS'] = new class {
 };
 $kind=$argv[1] ?? 'ordinary';
 $view=$argv[2] ?? 'overview';
-if (!in_array($kind,array('empty','ordinary','busy','unavailable','restricted','custom','recruiter','desk','unassigned','deniedTasks'),true) || !in_array($view,array('overview','activity','tasks','jobs','warnings'),true)) throw new InvalidArgumentException('Invalid fixture.');
+if (!in_array($kind,array('empty','ordinary','busy','unavailable','restricted','custom','recruiter','desk','unassigned','deniedTasks'),true) || !in_array($view,array('overview','activity','tasks','jobs','warnings','outcomes'),true)) throw new InvalidArgumentException('Invalid fixture.');
 $empty=array('activity'=>0,'calls'=>0,'conversations'=>0,'emails'=>0,'meetings'=>0,'statusChanges'=>0,'other'=>0,'jobs'=>0,'tasks'=>0,'overdue'=>0,'warnings'=>0);
 $groups=array('recruiter'=>array(),'desk'=>array());
 $names=array(1=>'Alex Morgan',2=>'Priya Shah',3=>'Helen Ward',4=>'James Carter',0=>'Unassigned');
@@ -62,7 +62,7 @@ if (in_array($kind,array('recruiter','desk','unassigned'),true))
 $totals=array('activity'=>0,'jobs'=>0,'tasks'=>0,'overdue'=>0,'warnings'=>0);
 foreach ($groups['recruiter'] as $row) foreach ($totals as $key=>$unused) $totals[$key]+=$row[$key];
 $details=array();
-if ($kind!=='empty') for ($i=1;$i<=($kind==='busy'?25:4);++$i) $details[]=array('id'=>$i,'title'=>array('activity'=>'Recorded call — Northbridge Engineering','tasks'=>'Candidate interview follow-up','jobs'=>'CNC Maintenance Engineer','warnings'=>'Northbridge Engineering')[$view==='overview'?'jobs':$view].' '.$i,'actorName'=>'Priya Shah','deskName'=>'Engineering','sourceDate'=>date('Y-m-d'),'status'=>'Open','url'=>'index.php?m=tasks&a=show&taskID='.$i);
+if ($kind!=='empty') for ($i=1;$i<=($kind==='busy'?25:4);++$i) $details[]=array('id'=>$i,'title'=>array('activity'=>'Recorded call — Northbridge Engineering','tasks'=>'Candidate interview follow-up','jobs'=>'CNC Maintenance Engineer','warnings'=>'Northbridge Engineering','outcomes'=>'Recorded outcome pair')[$view==='overview'?'jobs':$view].' '.$i,'actorName'=>'Priya Shah','deskName'=>'Engineering','sourceDate'=>date('Y-m-d'),'status'=>'Open','url'=>'index.php?m=tasks&a=show&taskID='.$i);
 if ($view==='warnings')
     foreach ($details as $i=>&$row) $row['status']=array('W02: no recorded submission; W08: invalid recruiter','W01: overdue commitment','W07: upcoming','W07: due today')[$i%4];
 unset($row);
@@ -95,6 +95,40 @@ $op=array('filters'=>array('range'=>$kind==='custom'?'custom':'month','start'=>d
     'oversight'=>$kind!=='restricted','dispositions'=>array('remind_later'=>$kind==='empty'?0:2,'close'=>$kind==='empty'?0:1,'reappeared'=>$kind==='empty'?0:1),
     'reviewActions'=>$kind==='empty'?0:12,'repeatedReviews'=>$kind==='empty'?0:2,'jobsAtRisk'=>$kind==='empty'?0:3);
 if ($kind==='deniedTasks') { $op['available']['tasks']=false; $op['available']['warnings']=false; }
+// Synthetic R02 values use the same projection shape; persistence is covered by OperationsReportTest.
+$op['filters'] += array('milestone'=>'submissions','outcomeSort'=>'date','outcomeDirection'=>'desc');
+$outDefinitions=array('submissions'=>array('id'=>400,'label'=>'Submissions recorded','configuredLabel'=>'Submitted'),
+    'interviews'=>array('id'=>500,'label'=>'Interview stage recorded','configuredLabel'=>'Interviewing'),
+    'offers'=>array('id'=>600,'label'=>'Offers recorded','configuredLabel'=>'Offered'),
+    'placements'=>array('id'=>800,'label'=>'Placements recorded','configuredLabel'=>'Placed'));
+$outTotals=$kind==='empty'?array('submissions'=>0,'interviews'=>0,'offers'=>0,'placements'=>0):array('submissions'=>48,'interviews'=>18,'offers'=>6,'placements'=>4);
+$outChanges=array();
+foreach ($outTotals as $key=>$count)
+{
+    $prior=(int) floor($count/2);
+    $outChanges[$key]=array('current'=>$count,'previous'=>$prior,'absolute'=>$count-$prior,'percent'=>$prior?100*($count-$prior)/$prior:null);
+}
+$outDesks=array(); $outWeeks=array();
+foreach (array('Commercial','Engineering','Unassigned / no Job Desk') as $i=>$name)
+{
+    $row=array('name'=>$name);
+    foreach ($outTotals as $key=>$count) $row[$key]=$i===2?$count-2*(int) floor($count/3):(int) floor($count/3);
+    $outDesks[$i]=$row;
+    $outWeeks[]=array_replace($row,array('name'=>date('Y-m-').sprintf('%02d',min(1+$i*7,(int) date('j'))).' (partial)'));
+}
+$outDetails=array();
+if ($kind!=='empty') for ($i=1;$i<=($kind==='busy'?25:4);++$i)
+    $outDetails[]=array('candidateID'=>$i,'jobID'=>$i+10,'title'=>$i===1?'Candidate <img src=x onerror=alert(1)>':'Candidate '.$i,
+        'jobTitle'=>'Recorded vacancy '.$i,'sourceDate'=>date('Y-m-d'),'repeats'=>$i===1?3:1,
+        'deskName'=>'Engineering','isSpeculative'=>$i%2);
+$op['outcomes']=array('definitions'=>$outDefinitions,'available'=>array_fill_keys(array_keys($outDefinitions),$kind!=='unavailable'),
+    'totals'=>$outTotals,'changes'=>$outChanges,'comparison'=>$comparison ?? array('days'=>1,'currentStart'=>date('Y-m-d'),'currentEnd'=>date('Y-m-d'),'previousStart'=>date('Y-m-d',strtotime('-1 day')),'previousEnd'=>date('Y-m-d',strtotime('-1 day'))),
+    'weeks'=>$kind==='empty'?array():$outWeeks,'desks'=>$kind==='empty'?array():$outDesks,
+    'details'=>$kind==='unavailable'?array():$outDetails,'pager'=>new Pager($outTotals['submissions'],25,1),
+    'actorUnavailable'=>false,'timeZoneOffset'=>0);
+if (!in_array($recruiter,array('all','0'),true)) { $op['outcomes']['actorUnavailable']=true; $op['outcomes']['available']=array_fill_keys(array_keys($outDefinitions),false); }
+if ($view==='outcomes') $op['choices']['recruiter']=array(0=>'Unknown event actor');
+
 $statistics=array();
 preg_match_all('/statisticsData\[\'([^\']+)\'\]/',file_get_contents('modules/reports/Reports.tpl'),$matches);
 foreach ($matches[1] as $key) $statistics[$key]=0;

@@ -74,7 +74,7 @@ trait HomeDataSteps
         $sections = array(
             "Today's priorities" => array('Home regression follow-up'),
             'My accounts by tier' => array('Home regression account', 'Client'),
-            'My current jobs' => array('Home regression job', 'Active'),
+            'My active jobs' => array('Home regression job', 'Active'),
             'My Calendar' => array('Home regression appointment')
         );
         foreach ($sections as $heading => $records)

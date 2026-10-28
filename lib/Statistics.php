@@ -36,15 +36,20 @@ class Statistics
     public static function operationsFilters($input)
     {
         $filters = array('range' => 'month', 'start' => '', 'end' => '', 'recruiter' => 'all',
-            'desk' => 'all', 'view' => 'overview', 'page' => '1', 'comparisonPage' => '1');
+            'desk' => 'all', 'view' => 'overview', 'page' => '1', 'comparisonPage' => '1',
+            'milestone'=>'submissions', 'outcomeSort'=>'date', 'outcomeDirection'=>'desc');
         foreach ($filters as $key => $default)
         {
             if (isset($input[$key]) && !is_string($input[$key])) throw new InvalidArgumentException('Invalid reporting filter.');
             if (isset($input[$key])) $filters[$key] = $input[$key];
         }
         if (!in_array($filters['range'], array('week','month','quarter','custom'), true) ||
-            !in_array($filters['view'], array('overview','activity','jobs','tasks','warnings'), true))
+            !in_array($filters['view'], array('overview','activity','jobs','tasks','warnings','outcomes'), true))
             throw new InvalidArgumentException('Invalid reporting selection.');
+        if (!in_array($filters['milestone'], array('submissions','interviews','offers','placements'), true) ||
+            !in_array($filters['outcomeSort'], array('date','candidate','job','repeats'), true) ||
+            !in_array($filters['outcomeDirection'], array('asc','desc'), true))
+            throw new InvalidArgumentException('Invalid outcome selection.');
         foreach (array('recruiter','desk','page','comparisonPage') as $field)
             if (!(in_array($field, array('recruiter','desk'), true) && $filters[$field] === 'all') &&
                 (!preg_match('/^(0|[1-9][0-9]*)$/D', $filters[$field]) || strlen($filters[$field]) > 10 || $filters[$field] > 2147483647))
@@ -102,6 +107,11 @@ class Statistics
             throw new RuntimeException('Reports unavailable.');
         $actor = $this->_db->getAssoc('SELECT access_level FROM user WHERE user_id = ' . (int) $_SESSION['CATS']->getUserID());
         if (!$actor || $actor['access_level'] <= ACCESS_LEVEL_DISABLED) throw new RuntimeException('Reports unavailable.');
+        if ($filters['view'] === 'outcomes')
+        {
+            $outcomes = $this->getRecruitmentOutcomes($filters);
+            return array('filters'=>$filters, 'choices'=>$outcomes['choices'], 'outcomes'=>$outcomes);
+        }
         $can = fn($key) => $_SESSION['CATS']->getAccessLevel($key) >= ACCESS_LEVEL_READ;
         $available = array('activity' => $can('activity.listByViewDataGrid'),
             'jobs' => $can('joborders.list') && $can('joborders.show'),
@@ -166,9 +176,9 @@ class Statistics
         };
         foreach ((new ActivityEntries())->getOperationsRows($filters['start'], $filters['end']) as $row)
         {
-            $module = array(100=>'candidates',200=>'companies',300=>'contacts')[(int) $row['dataItemType']];
+            $module = array(100=>'candidates',200=>'companies',300=>'contacts',400=>'joborders')[(int) $row['dataItemType']];
             $row['url'] = CATSUtility::getIndexName() . '?m=' . $module . '&a=show&' .
-                array(100=>'candidateID',200=>'companyID',300=>'contactID')[(int) $row['dataItemType']] . '=' . (int) $row['dataItemID'];
+                array(100=>'candidateID',200=>'companyID',300=>'contactID',400=>'jobOrderID')[(int) $row['dataItemType']] . '=' . (int) $row['dataItemID'];
             $add('activity', $row);
         }
         $comparison = null;
@@ -186,7 +196,7 @@ class Statistics
                     ($filters['desk'] === 'all' || (int) $filters['desk'] === $deskID)) ++$comparison['previous'];
             }
         }
-        foreach ((new JobOrders())->getOperationsRows() as $row)
+        foreach ((new JobOrders())->getOperationsRows(true) as $row)
         {
             $row['url'] = CATSUtility::getIndexName() . '?m=joborders&a=show&jobOrderID=' . (int) $row['id'];
             $add('jobs', $row);
@@ -289,16 +299,18 @@ class Statistics
                     $reviewActions += $count;
                     if ($count > 1) ++$repeatedReviews;
                 }
-        // Include known users with no recorded Activity without inventing work or Desk attribution.
-        foreach ($users as $user)
-            if ($user['access_level'] > ACCESS_LEVEL_DISABLED &&
-                ($filters['recruiter'] === 'all' || (int) $filters['recruiter'] === (int) $user['user_id']) &&
-                $filters['desk'] === 'all')
-            {
-                $id = (int) $user['user_id'];
-                $choices['recruiter'][$id] = $user['name'];
-                if (!isset($groups['recruiter'][$id])) $groups['recruiter'][$id] = $empty;
-            }
+        // Current comparisons/selectors follow native Users::getSelectList() eligibility.
+        // Historical Activity keeps its recorded contributors regardless of current user status.
+        if ($filters['view'] !== 'activity')
+        {
+            $levels = array_column($users, 'access_level', 'user_id');
+            foreach ($choices['recruiter'] as $id=>$name)
+                if ($id > 0 && (!isset($levels[$id]) || $levels[$id] <= ACCESS_LEVEL_DISABLED))
+                    unset($choices['recruiter'][$id]);
+            foreach ($groups['recruiter'] as $id=>$row)
+                if ($id > 0 && (!isset($levels[$id]) || $levels[$id] <= ACCESS_LEVEL_DISABLED))
+                    unset($groups['recruiter'][$id]);
+        }
         foreach (array('recruiter','desk') as $dimension)
         {
             $names = $dimension === 'recruiter' ? $userNames : $deskNames;
@@ -313,7 +325,107 @@ class Statistics
         return array('filters'=>$filters, 'available'=>$available, 'totals'=>$totals, 'groups'=>$groups,
             'choices'=>$choices, 'details'=>$details, 'pager'=>new Pager($detailCount,25,(int) $filters['page']),
             'trend'=>$trend, 'comparison'=>$comparison, 'oversight'=>$oversight, 'dispositions'=>array_map('count',$dispositions),
-            'reviewActions'=>$oversight ? $reviewActions : null, 'repeatedReviews'=>$oversight ? $repeatedReviews : null, 'jobsAtRisk'=>count($warningJobs));
+            'reviewActions'=>$oversight ? $reviewActions : null, 'repeatedReviews'=>$oversight ? $repeatedReviews : null, 'jobsAtRisk'=>count($warningJobs),
+            'outcomes'=>$filters['view']==='overview' ? $this->getRecruitmentOutcomes($filters) : null);
+    }
+
+    /** R02: period-distinct recorded attainments, never inferred recruiter credit or conversion. */
+    private function getRecruitmentOutcomes($filters)
+    {
+        $definitions = array(
+            'submissions'=>array('id'=>PIPELINE_STATUS_SUBMITTED,'label'=>'Submissions recorded'),
+            'interviews'=>array('id'=>PIPELINE_STATUS_INTERVIEWING,'label'=>'Interview stage recorded'),
+            'offers'=>array('id'=>PIPELINE_STATUS_OFFERED,'label'=>'Offers recorded'),
+            'placements'=>array('id'=>PIPELINE_STATUS_PLACED,'label'=>'Placements recorded'));
+        $canRead = $_SESSION['CATS']->getAccessLevel('candidates.show') >= ACCESS_LEVEL_READ &&
+            $_SESSION['CATS']->getAccessLevel('joborders.show') >= ACCESS_LEVEL_READ;
+        // Named recruiter filters refer to current operational responsibility, not a known outcome actor.
+        $actorUnavailable = !in_array($filters['recruiter'], array('all','0'), true);
+        $enabled = array_column((new Pipelines())->getStatuses(), 'status', 'statusID');
+        $totals = array_fill_keys(array_keys($definitions), 0);
+        $available = array();
+        foreach ($definitions as $key=>&$definition)
+        {
+            $definition['configuredLabel'] = $enabled[$definition['id']] ?? null;
+            $available[$key] = $canRead && !$actorUnavailable && $definition['configuredLabel'] !== null;
+        }
+        unset($definition);
+        $comparison = self::operationsComparisonPeriod($filters);
+        $current = $previous = $totals;
+        $desks = array();
+        $deskNames = array_column((new Desks())->getAll(true), 'name', 'deskID');
+        $deskNames[0] = 'Unassigned / no Job Desk';
+        $choices = array('recruiter'=>array(0=>'Unknown event actor'), 'desk'=>array());
+        $trend = array();
+        for ($date=new DateTimeImmutable($filters['start']); $date->format('Y-m-d') <= $filters['end']; $date=$date->modify('+1 day'))
+            $trend[$date->format('Y-m-d')] = $totals;
+        $metricKeys = array_combine(array_column($definitions, 'id'), array_keys($definitions));
+        if ($canRead && !$actorUnavailable)
+        {
+            foreach ((new Pipelines())->getOutcomeRows($filters['start'], $filters['end'], array('summary'=>true)) as $row)
+            {
+                $key = $metricKeys[(int) $row['milestone']];
+                if (!$available[$key]) continue;
+                $desk = max(0, (int) $row['desk']);
+                $choices['desk'][$desk] = $deskNames[$desk] ?? ('Former Desk #' . $desk);
+                if ($filters['desk'] !== 'all' && (int) $filters['desk'] !== $desk) continue;
+                $count = (int) $row['pairs'];
+                $totals[$key] += $count;
+                if ($row['sourceDate'] <= $comparison['currentEnd']) $current[$key] += $count;
+                if (!isset($desks[$desk])) $desks[$desk] = array_fill_keys(array_keys($definitions),0);
+                $desks[$desk][$key] += $count;
+                $trend[$row['sourceDate']][$key] += $count;
+            }
+            foreach ((new Pipelines())->getOutcomeRows($comparison['previousStart'], $comparison['previousEnd'], array('summary'=>true)) as $row)
+            {
+                $key = $metricKeys[(int) $row['milestone']];
+                if (!$available[$key]) continue;
+                $desk = max(0, (int) $row['desk']);
+                $choices['desk'][$desk] = $deskNames[$desk] ?? ('Former Desk #' . $desk);
+                if ($filters['desk'] === 'all' || (int) $filters['desk'] === $desk) $previous[$key] += (int) $row['pairs'];
+            }
+        }
+        if ($filters['view'] === 'outcomes')
+        {
+            if ($actorUnavailable) throw new InvalidArgumentException('Outcome event actor is unavailable.');
+            if ($filters['desk'] !== 'all' && !isset($choices['desk'][(int) $filters['desk']]))
+                throw new InvalidArgumentException('Outcome Desk scope unavailable.');
+        }
+        asort($choices['desk']);
+        foreach ($desks as $id=>&$row) $row['name'] = $deskNames[$id] ?? ('Former Desk #' . $id);
+        unset($row);
+        uasort($desks, fn($a,$b) => strcmp($a['name'],$b['name']));
+        $changes = array();
+        foreach ($totals as $key=>$count)
+            $changes[$key] = array('current'=>$current[$key], 'previous'=>$previous[$key],
+                'absolute'=>$current[$key]-$previous[$key],
+                'percent'=>$previous[$key]>0 ? 100*($current[$key]-$previous[$key])/$previous[$key] : null);
+        $pager = new Pager($totals[$filters['milestone']],25,(int) $filters['page']);
+        $details = array();
+        if ($filters['view'] === 'outcomes' && $available[$filters['milestone']])
+        {
+            $options = array('milestone'=>$definitions[$filters['milestone']]['id'], 'sort'=>$filters['outcomeSort'],
+                'direction'=>$filters['outcomeDirection'], 'page'=>(int) $pager->getCurrentPage());
+            if ($filters['desk'] !== 'all') $options['desk'] = (int) $filters['desk'];
+            foreach ((new Pipelines())->getOutcomeRows($filters['start'], $filters['end'], $options) as $row)
+            {
+                $row['deskName'] = $deskNames[max(0,(int) $row['desk'])] ?? ('Former Desk #' . (int) $row['desk']);
+                $details[] = $row;
+            }
+        }
+        $weeks = array();
+        foreach ($trend as $date=>$counts)
+        {
+            $week = (new DateTimeImmutable($date))->modify('monday this week');
+            $name = $week->format('Y-m-d');
+            if ($name < $filters['start'] || $week->modify('+6 days')->format('Y-m-d') > $filters['end']) $name .= ' (partial)';
+            if (!isset($weeks[$name])) $weeks[$name] = array_fill_keys(array_keys($definitions),0) + array('name'=>$name);
+            foreach ($counts as $key=>$count) $weeks[$name][$key] += $count;
+        }
+        return array('definitions'=>$definitions, 'available'=>$available, 'totals'=>$totals,
+            'comparison'=>$comparison, 'changes'=>$changes, 'desks'=>$desks, 'choices'=>$choices,
+            'trend'=>$trend, 'weeks'=>array_values($weeks), 'details'=>$details, 'pager'=>$pager, 'actorUnavailable'=>$actorUnavailable,
+            'timeZoneOffset'=>(float) $_SESSION['CATS']->getTimeZoneOffset());
     }
 
     /**

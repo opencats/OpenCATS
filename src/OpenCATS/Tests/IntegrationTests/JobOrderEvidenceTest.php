@@ -64,7 +64,13 @@ class JobOrderEvidenceTest extends DatabaseTestCase
         $this->db->query("UPDATE joborder SET first_actionable_at = '$stamp' WHERE joborder_id = $genuine");
         foreach (array(array('Active', 0), array('On Hold', 0), array('Active', 0), array('Closed', 1), array('Active', 1), array('Active', 0)) as [$status, $flag])
         {
-            self::assertTrue($this->editJob($genuine, $status, $flag));
+            if ($status === 'Active' && \JobOrderStatuses::requiresReopening($this->row($genuine)['status']))
+            {
+                self::assertFalse($this->editJob($genuine, $status, $flag));
+                $jobs = new \JobOrders();
+                self::assertTrue($jobs->reopen($genuine,'1',$jobs->getForPipeline($genuine)['reopenVersion']));
+            }
+            else self::assertTrue($this->editJob($genuine, $status, $flag));
             self::assertSame($stamp, $this->row($genuine)['firstActionableAt']);
         }
     }
@@ -98,7 +104,13 @@ class JobOrderEvidenceTest extends DatabaseTestCase
             $this->db->query('UPDATE joborder SET first_actionable_at = NULL, status = ' . $this->db->makeQueryString($status) . ' WHERE joborder_id = ' . $id);
             self::assertTrue($this->editJob($id, $status, 0));
             self::assertNull($this->row($id)['firstActionableAt']);
-            self::assertTrue($this->editJob($id, 'Active', 0));
+            if (\JobOrderStatuses::requiresReopening($status))
+            {
+                self::assertFalse($this->editJob($id, 'Active', 0));
+                $jobs = new \JobOrders();
+                self::assertTrue($jobs->reopen($id,'1',$jobs->getForPipeline($id)['reopenVersion']));
+            }
+            else self::assertTrue($this->editJob($id, 'Active', 0));
             if ($status === 'Active') self::assertNull($this->row($id)['firstActionableAt']);
             else self::assertNotNull($this->row($id)['firstActionableAt']);
         }
@@ -184,8 +196,11 @@ class JobOrderEvidenceTest extends DatabaseTestCase
         $this->db->query('ALTER TABLE joborder DROP COLUMN first_actionable_at');
         eval(substr(\CATSSchema::get()[400], 4));
         self::assertSame($fresh, $readColumns());
-        $this->editJob($id, 'Closed');
-        $this->editJob($id);
+        self::assertTrue($this->editJob($id, 'Closed'));
+        self::assertFalse($this->editJob($id)); // Completed jobs require explicit reopening.
+        self::assertNull($this->row($id)['firstActionableAt']);
+        $jobs = new \JobOrders();
+        self::assertTrue($jobs->reopen($id, '1', $jobs->getForPipeline($id)['reopenVersion']));
         $stamp = $this->row($id)['firstActionableAt'];
         self::assertNotNull($stamp);
         eval(substr(\CATSSchema::get()[400], 4));

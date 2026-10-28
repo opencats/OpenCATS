@@ -76,4 +76,35 @@ class JobOrderEvidenceAuthorizationTest extends AuthorizationTestCase
         self::assertFalse(JobOrderStatuses::isActionable('Custom'));
         self::assertFalse(JobOrderStatuses::isActionable('On Hold'));
     }
+    public function testReopeningRequiresNativeCSRFBeforeAnyWrite(): void
+    {
+        $this->loggedIn = true;
+        $_GET['a'] = 'reopen';
+        $_POST = array('jobOrderID'=>'7','newVacancies'=>'1','expectedVersion'=>str_repeat('a',64),'csrfToken'=>'invalid');
+        ob_start();
+        try { $this->ui(JobOrdersUI::class)->handleRequest(); $result=json_decode(ob_get_contents(),true); }
+        finally { ob_end_clean(); }
+        self::assertFalse($result['success']);
+        self::assertSame(array(),$this->queries);
+    }
+
+    public function testReopeningRejectsArrayVacanciesAndReportsBeginFailureWithoutWriting(): void
+    {
+        $this->loggedIn = true;
+        $this->session->method('isCSRFTokenValid')->willReturn(true);
+        $this->db->method('getAssoc')->willReturn(array('jobOrderID'=>7,'status'=>'Full','isAdminHidden'=>'0'));
+        $_GET['a']='reopen';
+        foreach (array(array('1'),'1') as $value)
+        {
+            $_POST=array('jobOrderID'=>'7','newVacancies'=>$value,'expectedVersion'=>str_repeat('a',64),'csrfToken'=>'fixture');
+            ob_start();
+            try { $this->ui(JobOrdersUI::class)->handleRequest(); $result=json_decode(ob_get_contents(),true); }
+            finally { ob_end_clean(); }
+            self::assertFalse($result['success']);
+            self::assertFalse($result['reload']);
+            self::assertStringContainsString(is_array($value) ? 'whole number' : 'Unable to begin',$result['message']);
+            self::assertSame(array(),$this->queries);
+        }
+    }
+
 }

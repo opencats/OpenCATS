@@ -21,7 +21,7 @@ async function setViewport(width,height) {
     await command('POST',`/session/${session}/window/rect`,{width:width+(width-inner.width),height:height+(height-inner.height)});
     assert.deepEqual(await execute('return {width:innerWidth,height:innerHeight}'),{width,height});
 }
-const technical=/\b(actor|warning subjects?|personal suppression|effective disposition|native source responsibility|source scope|W0[12378]|R0[1468])\b|Stage 7|evidence hash/i;
+const technical=/\b(warning subjects?|personal suppression|effective disposition|native source responsibility|source scope|W0[12378]|R0[1468])\b|Stage 7|evidence hash/i;
 async function verifyPresentation() {
     const state=await execute(`const root=document.querySelector('.reports-operations');
         return {text:root.innerText, summary: Array.from(root.querySelectorAll(':scope > .row')[0].querySelectorAll('.card')).map(card=>card.innerText),
@@ -38,7 +38,7 @@ async function verifyPresentation() {
     for (const label of ['Recorded activity','Outstanding tasks','Current job orders','Records needing attention']) assert.ok(state.summary.some(text=>text.includes(label)));
     assert.deepEqual(state.dates,[state.range==='custom',state.range==='custom']);
     assert.equal(state.about,false);
-    assert.deepEqual(state.tabs,['Overview','Activity & Engagement','Desk Workload','Follow-up & Candidate Care','Warnings & Follow-up']);
+    assert.deepEqual(state.tabs,['Overview','Activity & Engagement','Desk Workload','Follow-up & Candidate Care','Warnings & Follow-up','Recruitment Progress & Outcomes']);
     assert.ok(state.text.includes('your eligible accounts only, not all company accounts'));
     assert.ok(state.text.includes('must not be added together'));
 }
@@ -122,7 +122,7 @@ try {
             assert.ok(text.includes('No submission recorded; Job recruiter needs attention'));
             assert.ok(text.includes('Warnings & Follow-up — Records Needing Attention'));
         }
-        if (fixture==='jobs') assert.ok(text.includes('Desk Workload — Current Jobs'));
+        if (fixture==='jobs') assert.ok(text.includes('Desk Workload — Active Jobs'));
         if (fixture==='busy') assert.ok(text.includes('Follow-up & Candidate Care — Outstanding Tasks'));
         if (fixture==='activity') {
             assert.ok(text.includes('Call: not reached')); assert.ok(text.includes('Status change'));
@@ -161,6 +161,47 @@ try {
         assert.deepEqual(dates,[range==='custom',range==='custom']);
     }
     assert.equal(await execute("document.querySelector('#operations-about').open=true; return document.querySelector('#operations-about').innerText.includes('including resets')"),true);
+    for (const [width,height] of [[1440,900],[1920,1080],[390,844]]) {
+        await setViewport(width,height);
+        await command('POST',`/session/${session}/url`,{url:base+'/outcomes.html'});
+        assert.equal(await execute('return document.documentElement.scrollWidth<=innerWidth'),true,'Outcomes layout has no page overflow');
+        await verifyCharts();
+        const state=await execute(`return {headings:Array.from(document.querySelectorAll('h2')).map(el=>el.textContent),
+            counts:Array.from(document.querySelectorAll('#outcomes-title + div .h4')).map(el=>el.textContent.trim()),
+            comparison:Array.from(document.querySelector('[aria-label="Recruitment outcome period comparisons"]').tBodies[0].rows).map(tr=>Array.from(tr.children).map(el=>el.textContent.trim())),
+            actors:Array.from(document.querySelector('[aria-label="Contributing recruitment outcomes"]').tBodies[0].rows).map(tr=>tr.children[6].textContent),
+            chartTypes:['outcomes-trend','outcomes-desks'].map(id=>Chart.getChart(document.querySelector('#'+id+' canvas')).config.type),
+            images:document.querySelector('[aria-label="Contributing recruitment outcomes"]').querySelectorAll('img').length,
+            sortLinks:Array.from(document.querySelector('[aria-label="Contributing recruitment outcomes"]').querySelectorAll('thead a')).map(a=>a.href),
+            outcomeLinks:Array.from(document.querySelector('[aria-label="Outcome milestones"]').querySelectorAll('a')).map(a=>a.href),
+            filterBottom:document.querySelector('[aria-label="Operational reports"]').getBoundingClientRect().bottom};`);
+        assert.deepEqual(state.counts,['48','18','6','4']);
+        assert.deepEqual(state.chartTypes,['line','bar']);
+        assert.equal(state.images,0,'Unsafe candidate name stays text');
+        assert.ok(state.actors.every(actor=>actor==='Unknown'));
+        state.comparison.forEach(row=>{
+            assert.equal(Number(row[1]),Number(row[2]));
+            assert.equal(Number(row[4]),Number(row[2])-Number(row[3]));
+        });
+        assert.ok(state.sortLinks.every(url=>url.includes('view=outcomes') && url.includes('outcomeSort=')));
+        assert.ok(state.outcomeLinks.every(url=>url.includes('milestone=') && url.includes('range=month')));
+        if (width>=1280) assert.ok(state.filterBottom<height,'Outcome navigation remains above fold');
+        writeFileSync(resolve(output,`outcomes-${width}.png`),Buffer.from(await command('GET',`/session/${session}/screenshot`),'base64'));
+        await execute("document.querySelector('#outcomes-records').scrollIntoView({behavior:'instant',block:'start'});");
+        writeFileSync(resolve(output,`outcomes-records-${width}.png`),Buffer.from(await command('GET',`/session/${session}/screenshot`),'base64'));
+    }
+    for (const kind of ['empty','unavailable','busy']) {
+        await setViewport(1440,900);
+        await command('POST',`/session/${session}/url`,{url:base+'/outcomes-'+kind+'.html'});
+        await verifyCharts();
+        const state=await execute(`return {text:document.body.innerText, charts:document.querySelectorAll('[id^="outcomes-"] .oc-chart-data').length,
+            rows:document.querySelector('[aria-label="Contributing recruitment outcomes"]')?.tBodies[0].rows.length,
+            values:Array.from(document.querySelectorAll('#outcomes-title + div .h4')).map(el=>el.textContent.trim())};`);
+        if(kind==='empty'){assert.deepEqual(state.values,['0','0','0','0']);assert.ok(state.text.includes('No recorded milestones match'));}
+        if(kind==='unavailable'){assert.deepEqual(state.values,['N/A','N/A','N/A','N/A']);assert.equal(state.charts,0);}
+        if(kind==='busy'){assert.equal(state.rows,25);assert.ok(state.text.includes('Next pairs'));}
+        writeFileSync(resolve(output,`outcomes-${kind}.png`),Buffer.from(await command('GET',`/session/${session}/screenshot`),'base64'));
+    }
     writeFileSync(resolve(output,'measurements.json'),JSON.stringify(measurements,null,2));
-    console.log('PASS: 13 fixtures; stacked workload/category charts, line trend, neutral Desk comparison, exact table reconciliation, filter/Unassigned/denied states and labelled urgency; 1440/1920/1280/390 viewports; legacy links retained.');
+    console.log('PASS: operational and outcomes fixtures; stacked workload/category charts, line trend, neutral Desk comparison, exact table reconciliation, filter/Unassigned/denied states and labelled urgency; 1440/1920/1280/390 viewports; legacy links retained.');
 } finally { if (session) await command('DELETE',`/session/${session}`); }

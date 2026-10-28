@@ -16,7 +16,7 @@ $overview = $this->priorityOverview ?? HomeUI::priorityOverview(array(), $this->
     <a class="home-summary-item<?php if ($overview['dueTodayTaskCount'] > 0) echo ' home-summary-today'; ?>" href="<?php echo Template::escapeAttr(CATSUtility::getIndexName() . '?m=tasks&status=open_work&due=today'); ?>"><strong><?php echo (int) $overview['dueTodayTaskCount']; ?></strong><span>Tasks due today</span></a>
     <a class="home-summary-item" href="<?php echo Template::escapeAttr($homeBase . '&a=priorities&filter=tasks'); ?>"><strong><?php echo (int) $this->myTaskCount; ?></strong><span>Open Tasks assigned to me</span></a>
     <a class="home-summary-item" href="<?php echo Template::escapeAttr($homeBase . '&a=priorities&filter=warnings'); ?>"><strong><?php echo $visibleWarningCount; ?></strong><span>Visible warning<?php echo $visibleWarningCount === 1 ? '' : 's'; ?><span class="d-block small">Including: <?php echo $recruitmentCount; ?> recruitment warning<?php echo $recruitmentCount === 1 ? '' : 's'; ?> &middot; <?php echo $clientFollowUpCount; ?> client follow-up<?php echo $clientFollowUpCount === 1 ? '' : 's'; ?></span></span></a>
-    <?php if (($this->homeJobs ?? null) !== null): ?><a class="home-summary-item" href="#home-current-jobs"><strong><?php echo (int) $this->homeJobs['total']; ?></strong><span>My current jobs</span></a><?php endif; ?>
+    <?php if (($this->homeJobs ?? null) !== null): ?><a class="home-summary-item" href="#home-current-jobs"><strong><?php echo (int) $this->homeJobs['total']; ?></strong><span>My active jobs</span></a><?php endif; ?>
 </section>
 <div class="home-workspace">
 <section class="card mb-2" aria-labelledby="prioritiesHeading" data-home-queue>

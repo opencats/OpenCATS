@@ -1,4 +1,4 @@
-<?php TemplateUtility::printModalHeader('Job Orders', 'js/sorttable.js', 'Add Candidate to This Job Order'); ?>
+<?php TemplateUtility::printModalHeader('Job Orders', array('vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js', 'js/sorttable.js', 'js/pipeline.js'), 'Add Candidate to This Job Order'); ?>
 <main class="container-fluid p-2 oc-joborder-considersearchmodal">
 
     <?php if (!$this->isFinishedMode): ?>
@@ -74,7 +74,7 @@
                         <?php endif; ?>
                         <?php if (!$data['inPipeline']): ?>
                         <td>
-                            <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=addToPipeline&amp;getback=getback" style="display:inline;">
+                            <form data-pipeline-add method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=addToPipeline&amp;getback=getback" style="display:inline;">
                                 <input type="hidden" name="postback" value="postback">
                                 <input type="hidden" name="jobOrderID" value="<?php echo($this->jobOrderID); ?>">
                                 <input type="hidden" name="candidateID" value="<?php $this->_($data['candidateID']); ?>">
@@ -85,7 +85,7 @@
                             &nbsp;
                         </td>
                         <td>
-                            <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=addToPipeline&amp;getback=getback" style="display:inline;">
+                            <form data-pipeline-add method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=addToPipeline&amp;getback=getback" style="display:inline;">
                                 <input type="hidden" name="postback" value="postback">
                                 <input type="hidden" name="jobOrderID" value="<?php echo($this->jobOrderID); ?>">
                                 <input type="hidden" name="candidateID" value="<?php $this->_($data['candidateID']); ?>">

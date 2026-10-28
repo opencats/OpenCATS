@@ -39,7 +39,7 @@ $recordStatus = function ($row) use ($conditionLabels) {
 $deskLabel = fn($name) => $name === 'Unassigned / no Job Desk' ? 'Unassigned / no linked job desk' : $name;
 // Keep charts bounded to comparison dimensions, while retaining Unassigned when present.
 $chartRows = function ($dimension, $limit, $metric) use ($op, $deskLabel) {
-    $rows = $op['groups'][$dimension];
+    $rows = array_filter($op['groups'][$dimension], fn($row) => $row[$metric] > 0);
     uasort($rows, fn($a,$b) => ($metric==='tasks' ? $b['overdue'] <=> $a['overdue'] : 0) ?: ($b[$metric] <=> $a[$metric]) ?: strcmp($a['name'],$b['name']));
     $unassigned = $rows[0] ?? null;
     if ($unassigned !== null) unset($rows[0]);
@@ -71,41 +71,57 @@ $rowCue = function ($row) use ($f) {
 <section aria-labelledby="operations-title" class="reports-operations mb-3">
 <header class="oc-page-header mb-2">
     <h1 id="operations-title" class="h4 fw-semibold mb-1">Recruitment Operations</h1>
-    <p class="small text-body-secondary mb-1"><?php echo $e($f['recruiter'] === 'all' ? 'All recruiters you can report on' : $op['choices']['recruiter'][(int) $f['recruiter']]); ?> · <?php echo $e($f['desk'] === 'all' ? 'All job desks you can report on' : $op['choices']['desk'][(int) $f['desk']]); ?>.</p>
-    <p class="small mb-0">Activity recorded <?php echo $e($f['start'] . ' to ' . $f['end']); ?>. Workload and follow-up figures are current as of <?php echo $e(DateUtility::getAdjustedDate('Y-m-d')); ?>.</p>
+    <p class="small text-body-secondary mb-1"><?php echo $e($f['view']==='outcomes' ? 'Recorded event actors: Unknown' : ($f['recruiter'] === 'all' ? 'All recruiters you can report on' : $op['choices']['recruiter'][(int) $f['recruiter']])); ?> · <?php echo $e($f['desk'] === 'all' ? 'All job desks you can report on' : $op['choices']['desk'][(int) $f['desk']]); ?>.</p>
+    <p class="small mb-0">Recorded events cover <?php echo $e($f['start'] . ' to ' . $f['end']); ?>. Workload and follow-up figures are current as of <?php echo $e(DateUtility::getAdjustedDate('Y-m-d')); ?>.</p>
     <p class="small mb-0"><strong>Coverage:</strong> jobs and tasks you can access; client-relationship follow-up covers your eligible accounts only, not all company accounts.</p>
 </header>
 <form method="get" action="<?php echo Template::escapeAttr(CATSUtility::getIndexName()); ?>" class="card card-body p-2 mb-2">
     <input type="hidden" name="m" value="reports"><input type="hidden" name="a" value="reports">
     <input type="hidden" name="view" value="<?php echo Template::escapeAttr($f['view']); ?>">
+    <?php if ($f['view']==='outcomes'): foreach (array('milestone','outcomeSort','outcomeDirection') as $key): ?>
+    <input type="hidden" name="<?php echo $key; ?>" value="<?php echo Template::escapeAttr($f[$key]); ?>">
+    <?php endforeach; endif; ?>
     <div class="row g-2 align-items-end">
         <div class="col-6 col-md"><label class="form-label small mb-1" for="ops-range">Period</label><select id="ops-range" name="range" class="form-select form-select-sm">
         <?php foreach (array('week'=>'This week','month'=>'This month','quarter'=>'This quarter','custom'=>'Custom') as $key=>$label): ?><option value="<?php echo $key; ?>" <?php if ($f['range']===$key) echo 'selected'; ?>><?php echo $label; ?></option><?php endforeach; ?>
         </select></div>
         <div class="col-6 col-md" data-operations-custom-date><label class="form-label small mb-1" for="ops-start">From</label><input id="ops-start" type="date" name="start" class="form-control form-control-sm" value="<?php echo Template::escapeAttr($f['start']); ?>"></div>
         <div class="col-6 col-md" data-operations-custom-date><label class="form-label small mb-1" for="ops-end">Through</label><input id="ops-end" type="date" name="end" class="form-control form-control-sm" value="<?php echo Template::escapeAttr($f['end']); ?>"></div>
-        <?php foreach (array('recruiter'=>'Recruiter','desk'=>'Job desk') as $key=>$label): ?>
+        <?php foreach (array('recruiter'=>$f['view']==='outcomes'?'Event actor':($f['view']==='activity'?'Recorded by':'Recruiter'),'desk'=>'Job desk') as $key=>$label): ?>
         <div class="col-6 col-md"><label class="form-label small mb-1" for="ops-<?php echo $key; ?>"><?php echo $label; ?></label><select id="ops-<?php echo $key; ?>" name="<?php echo $key; ?>" class="form-select form-select-sm"><option value="all">All available</option>
-        <?php foreach ($op['choices'][$key] as $id=>$name): ?><option value="<?php echo (int) $id; ?>" <?php if ($f[$key] !== 'all' && (int) $f[$key] === (int) $id) echo 'selected'; ?>><?php echo $e($key === 'desk' ? $deskLabel($name) : $name); ?></option><?php endforeach; ?></select></div>
+        <?php foreach ($op['choices'][$key] as $id=>$name): ?><option value="<?php echo (int) $id; ?>" <?php if ($f[$key] !== 'all' && (int) $f[$key] === (int) $id) echo 'selected'; ?>><?php echo $e($key === 'desk' ? $deskLabel($name) : $name); ?></option><?php endforeach; ?>
+</select></div>
         <?php endforeach; ?>
         <div class="col-12 col-md-auto"><button class="btn btn-sm btn-success" type="submit">Apply filters</button></div>
     </div>
 </form>
 <nav class="d-flex flex-wrap gap-2 mb-2" aria-label="Operational reports">
-<?php foreach (array('overview'=>'Overview','activity'=>'Activity & Engagement','jobs'=>'Desk Workload','tasks'=>'Follow-up & Candidate Care','warnings'=>'Warnings & Follow-up') as $view=>$label): ?>
-<a class="btn btn-sm <?php echo $view===$f['view'] ? 'btn-success' : 'btn-outline-secondary'; ?>" <?php if ($view===$f['view']) echo 'aria-current="page"'; ?> href="<?php echo Template::escapeAttr($url(array('view'=>$view,'page'=>'1'))); ?>"><?php echo $label; ?></a>
+<?php foreach (array('overview'=>'Overview','activity'=>'Activity & Engagement','jobs'=>'Desk Workload','tasks'=>'Follow-up & Candidate Care','warnings'=>'Warnings & Follow-up','outcomes'=>'Recruitment Progress & Outcomes') as $view=>$label): ?>
+<a class="btn btn-sm <?php echo $view===$f['view'] ? 'btn-success' : 'btn-outline-secondary'; ?>" <?php if ($view===$f['view']) echo 'aria-current="page"'; ?> href="<?php echo Template::escapeAttr($url(array('view'=>$view,'page'=>'1','recruiter'=>$view==='outcomes' || $f['view']==='outcomes' ? 'all' : $f['recruiter'],'desk'=>$view==='outcomes' || $f['view']==='outcomes' ? 'all' : $f['desk']))); ?>"><?php echo $label; ?></a>
 <?php endforeach; ?>
 </nav>
+<?php if ($f['view']==='outcomes'): include __DIR__ . '/Outcomes.tpl'; else: ?>
 <div class="row g-2 mb-2">
-<?php foreach (array('activity'=>'Recorded activity','tasks'=>'Outstanding tasks','jobs'=>'Current job orders','warnings'=>'Records needing attention') as $key=>$label): ?>
+<?php foreach (array('activity'=>'Recorded activity','tasks'=>'Outstanding tasks','jobs'=>'Active Job Orders','warnings'=>'Records needing attention') as $key=>$label): ?>
 <div class="col-6 col-xl-3"><div class="card h-100"><div class="card-body py-2 px-3"><div class="small"><?php echo $label; ?></div><div class="h4 mb-0"><?php if ($op['available'][$key]): ?><a href="<?php echo Template::escapeAttr($url(array('view'=>$key,'page'=>'1'))); ?>"><?php echo $value($key); ?></a><?php else: ?>N/A<?php endif; ?></div>
 <div class="small text-body-secondary"><?php echo !$op['available'][$key] ? 'Not available with your access' :
     ($key==='tasks' ? $op['totals']['overdue'] . ' past due · current' :
     ($key==='warnings' ? 'Current · each record counted once' :
-    ($key==='jobs' ? 'Current · open job workload' : 'Selected dates · includes status changes'))); ?></div>
+    ($key==='jobs' ? 'Current · Active job workload' : 'Selected dates · includes status changes'))); ?></div>
 </div></div></div>
 <?php endforeach; ?>
 </div>
+<?php if ($f['view']==='overview' && isset($op['outcomes'])): $out=$op['outcomes']; ?>
+<section class="card mb-2" aria-labelledby="outcomes-overview"><div class="card-body p-2">
+<h2 id="outcomes-overview" class="h6 mb-1"><a href="<?php echo Template::escapeAttr($url(array('view'=>'outcomes','page'=>'1','recruiter'=>'all'))); ?>">Recruitment outcomes</a></h2>
+<p class="small mb-1">Selected dates · distinct candidate–job pairs per recorded milestone. Event actor Unknown; current Job Desk classification.</p>
+<div class="d-flex flex-wrap gap-3 small">
+<?php foreach ($out['definitions'] as $key=>$definition): ?><span><?php echo $e($definition['label']); ?>: <strong><?php echo $out['available'][$key] ? $out['totals'][$key] : 'N/A'; ?></strong><?php if ($out['available'][$key]): ?> · comparable current <?php echo $out['changes'][$key]['current']; ?> · previous <?php echo $out['changes'][$key]['previous']; ?> · change <?php echo ($out['changes'][$key]['absolute']>0?'+':'').$out['changes'][$key]['absolute']; ?><?php endif; ?></span><?php endforeach; ?>
+</div>
+<?php if ($out['actorUnavailable']): ?><p class="small mb-0">Outcome attribution is unavailable for the selected recruiter. Open outcomes to inspect Unknown event actors.</p><?php endif; ?>
+<p class="small text-body-secondary mb-0">Comparisons use <?php echo $e($out['comparison']['currentStart'].' to '.$out['comparison']['currentEnd']); ?> versus <?php echo $e($out['comparison']['previousStart'].' to '.$out['comparison']['previousEnd']); ?>; today may be incomplete. <?php if ($out['comparison']['currentEnd']<$f['end']): ?>Both comparison windows are capped to the shorter previous period.<?php endif; ?> Placements are recorded statuses, not confirmed starts.</p>
+</div></section>
+<?php endif; ?>
 <div class="row g-2 mb-2">
 <section class="col-12 col-xl-8" aria-labelledby="ops-workload"><div class="card h-100">
 <h2 class="card-header h6 mb-0" id="ops-workload">Recruiter & Desk Workload</h2>
@@ -117,9 +133,9 @@ $rowCue = function ($row) use ($f) {
 <p class="small mb-2"><?php echo count($taskRows); ?> of <?php echo count($op['groups']['recruiter']); ?> recruiters shown, ordered by overdue then outstanding work; Unassigned is retained where present. <a href="<?php echo Template::escapeAttr($url(array('view'=>'tasks','page'=>'1'))); ?>">Inspect outstanding Tasks</a></p>
 <?php else: ?><p>N/A — Task figures are not available with your access.</p><?php endif; ?>
 <?php elseif ($f['view']==='jobs'): ?>
-<h3 class="h6 mb-1">Open Job Orders by Desk</h3>
+<h3 class="h6 mb-1">Active Job Orders by Desk</h3>
 <?php if ($op['available']['jobs']): $jobRows=$chartRows('desk',10,'jobs'); echo Charts::render('operations-desk-workload', Charts::operationsJobs($jobRows)); ?>
-<p class="small mb-2"><?php echo count($jobRows); ?> of <?php echo count($op['groups']['desk']); ?> desks shown. Use a Desk filter to inspect its current jobs.</p>
+<p class="small mb-2"><?php echo count($jobRows); ?> of <?php echo count($op['groups']['desk']); ?> desks shown. Use a Desk filter to inspect its Active jobs.</p>
 <?php else: ?><p>N/A — Job figures are not available with your access.</p><?php endif; ?>
 <?php elseif ($f['view']==='activity'): ?>
 <h3 class="h6 mb-1">Recorded activity by week</h3>
@@ -149,7 +165,7 @@ $chart = Charts::comparison('Recorded activity by week', $weekLabels, array_valu
 <?php else: ?><p>N/A — these figures are not available with your access.</p><?php endif; ?>
 <?php endif; ?>
 <details id="operations-comparisons"><summary class="small">Exact recruiter and Desk comparisons</summary>
-<p class="small text-body-secondary my-2">Attention records can involve more than one recruiter. Recruiter attention totals overlap and must not be added together.</p>
+<p class="small text-body-secondary my-2">Current recruiter rows show active users with contributing records. Totals and Desk breakdowns cover all permitted work, so current recruiter rows may not sum to those totals. Activity &amp; Engagement retains historical contributors. Attention records can involve more than one recruiter. Recruiter attention totals overlap and must not be added together.</p>
 <?php foreach (array('recruiter'=>'Recruiter','desk'=>'Job desk') as $dimension=>$label): ?>
 <div class="table-responsive"><table class="table table-sm table-striped align-middle mb-2"><caption class="visually-hidden"><?php echo $label; ?> workload for your selection</caption>
 <thead><tr><th scope="col"><?php echo $label; ?></th><th scope="col">Activity <span class="fw-normal small">(period)</span></th><th scope="col">Jobs</th><th scope="col">Tasks</th><th scope="col">Overdue</th><th scope="col">Needs attention</th></tr></thead><tbody>
@@ -179,7 +195,7 @@ $chart = Charts::comparison('Recorded activity by week', $weekLabels, array_valu
 <summary>About these figures</summary>
 <div class="pt-2">
 <p class="mb-1">Activity counts recorded events, including administrative and status changes, credited to the person who recorded them. Calls include calls not reached, talked calls, messages left and missed calls. “Calls: talked” counts only records explicitly marked as talked; emails and meetings do not prove delivery, attendance or qualifying engagement.</p>
-<p class="mb-1">Jobs use the existing Open-status group, including any configured On Hold or Full statuses. Tasks include open and in-progress work, attributed to the assignee. Job workload is attributed to the current recruiter, not whoever originally obtained the vacancy. Desk figures use the associated Job Order’s current Desk, including an explicitly linked recruitment pipeline for Tasks; Sector and a recruiter's own Desk membership do not allocate this work.</p>
+<p class="mb-1">Jobs count authorised Active Job Orders only. Status alone does not establish a genuine available vacancy; Full and Closed records remain accessible through native searches. Tasks include open and in-progress work, attributed to the assignee. Job workload is attributed to the current recruiter, not whoever originally obtained the vacancy. Desk figures use the associated Job Order’s current Desk, including an explicitly linked recruitment pipeline for Tasks; Sector and a recruiter's own Desk membership do not allocate this work.</p>
 <p class="mb-1">Records needing attention count each Task, Job Order or Company once. One record can have multiple warning issues and responsible recruiters. Recruiter attention rows can overlap; use the filtered total rather than adding rows. Client-relationship coverage stays limited to your eligible accounts. Missing permissions show N/A, not zero.</p>
 <p class="mb-1">Review figures count separate issues on currently flagged records. Reminder and temporary Close counts can overlap across reviewers. “Requiring another review” means the review date has arrived or the underlying information has changed. “Reviewed more than once” counts issues with multiple decisions in the selected dates, including different reviewers. Decisions count individual History actions, including resets; they do not count resolved records or all past issues.</p>
 <p class="mb-0">Workload is current, not a historical trend. Job progress warnings require recorded recruitment-cycle information. Unknown dates remain Unknown. Historical Activity uses current record access and the linked Job’s current Desk. Historical backlog, inferred candidate contact dates and unverified outcomes are unavailable. Record and review links open a separate tab; the review screen uses its own filters and 30-day decision window.</p>
@@ -197,10 +213,10 @@ $chart = Charts::comparison('Recorded activity by week', $weekLabels, array_valu
 </div></section>
 <?php endif; ?>
 <?php if ($f['view']!=='overview'): ?>
-<section class="card"><h2 class="card-header h6 mb-0"><?php echo $e(array('activity'=>'Recorded Activity — Details','jobs'=>'Desk Workload — Current Jobs','tasks'=>'Follow-up & Candidate Care — Outstanding Tasks','warnings'=>'Warnings & Follow-up — Records Needing Attention')[$f['view']]); ?></h2>
+<section class="card"><h2 class="card-header h6 mb-0"><?php echo $e(array('activity'=>'Recorded Activity — Details','jobs'=>'Desk Workload — Active Jobs','tasks'=>'Follow-up & Candidate Care — Outstanding Tasks','warnings'=>'Warnings & Follow-up — Records Needing Attention')[$f['view']]); ?></h2>
 <div class="card-body p-2">
 <?php if ($f['view']==='tasks'): ?><p class="small">Outstanding tasks include work not started and work in progress. Past-due tasks need follow-up; missing due dates are shown as Unknown.</p><?php endif; ?>
-<?php if ($f['view']==='jobs'): ?><p class="small">Current jobs by recruiter and job desk. Created dates show when records were added; see Warnings & Follow-up for jobs flagged for attention.</p><?php endif; ?>
+<?php if ($f['view']==='jobs'): ?><p class="small">Active jobs by recruiter and job desk. Created dates show when records were added; see Warnings & Follow-up for jobs flagged for attention.</p><?php endif; ?>
 <?php if (!$op['available'][$f['view']]): ?><p role="status">N/A — these figures are not available with your access.</p><?php else: ?>
 <p class="small">Open a record to investigate. Links open another tab and keep your report filters here.</p>
 <div class="table-responsive"><table class="table table-sm table-striped"><thead><tr><th scope="col">Record</th><th scope="col"><?php echo $f['view']==='activity' ? 'Recorded by' : 'Recruiter / responsible person'; ?></th><th scope="col">Job Desk</th><th scope="col"><?php echo $f['view']==='tasks' ? 'Due date' : ($f['view']==='jobs' ? 'Created' : 'Recorded / issue date'); ?></th><th scope="col">Activity / follow-up</th></tr></thead><tbody>
@@ -213,5 +229,6 @@ $chart = Charts::comparison('Recorded activity by week', $weekLabels, array_valu
 <a class="ms-auto" href="<?php echo Template::escapeAttr($url(array('view'=>'overview','page'=>'1'))); ?>">Return to overview</a></nav>
 <?php endif; ?>
 </div></section>
+<?php endif; ?>
 <?php endif; ?>
 </section>

@@ -165,6 +165,12 @@ class JobOrderStatuses
         return $status === 'Active' && in_array('Active', self::getAll()['Open'] ?? array(), true);
     }
 
+    /** Completed requirements need an explicit new vacancy count before reuse. */
+    public static function requiresReopening($status)
+    {
+        return in_array($status, array('Full', 'Closed'), true);
+    }
+
     public static function getDefaultStatus(){
         if(defined('JOB_ORDER_STATUS_DEFAULT')){
             return JOB_ORDER_STATUS_DEFAULT;

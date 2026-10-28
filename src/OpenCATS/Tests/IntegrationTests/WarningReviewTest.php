@@ -856,4 +856,16 @@ RUNNER
         $this->db->query('ALTER TABLE warning_review DROP PRIMARY KEY');
         $this->rejected(function () use ($db) { eval(substr(\CATSSchema::get()[402], 4)); });
     }
+    public function testOversightRetainsValidAuditWhenCurrentReviewStateIsAbsent(): void
+    {
+        $this->save($this->snapshot());
+        $before=$this->reviews->getOversight('W07');
+        self::assertSame(1,$before['events']);
+        $this->db->query('DELETE FROM warning_review'); // Disposable fixture only; audit remains authoritative.
+        $after=$this->reviews->getOversight('W07');
+        self::assertSame($before['events'],$after['events']);
+        self::assertSame($before['eventCounts'],$after['eventCounts']);
+        self::assertSame(array(),array_filter($after['rows'],fn($row)=>$row['state']!==null));
+    }
+
 }

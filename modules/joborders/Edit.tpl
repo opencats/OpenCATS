@@ -298,11 +298,16 @@
                                         if ($this->data['status'] == $status){
                                             $selected = "selected ";
                                         }
-                                        echo('<option '.$selected.'value="'.$status.'">'.$status.'</option>');
+                                        $disabled = JobOrderStatuses::requiresReopening($this->data['status']) && $status === 'Active' ? 'disabled ' : '';
+                                        echo('<option '.$selected.$disabled.'value="'.Template::escapeAttr($status).'">'.Template::escapeHtml($status).'</option>');
                                     }
                                     echo("</optgroup>");
                                 }?>
                             </select>
+                            <?php if (JobOrderStatuses::requiresReopening($this->data['status'])): ?>
+                            <a class="btn btn-sm btn-outline-secondary mt-1" href="<?php echo Template::escapeAttr(CATSUtility::getIndexName() . '?m=joborders&a=reopen&jobOrderID=' . (int) $this->data['jobOrderID']); ?>">Reopen Job Order</a>
+                            <div class="form-text">Save other edits before reopening with a new vacancy count.</div>
+                            <?php endif; ?>
                         </div>
 
                         <div class="col-sm-4 col-lg-2 fw-semibold">

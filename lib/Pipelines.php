@@ -35,68 +35,101 @@ class Pipelines
      */
     public function add($candidateID, $jobOrderID, $userID = 0)
     {
-        $sql = sprintf(
-            "SELECT
-                COUNT(candidate_id) AS candidateIDCount
-            FROM
-                candidate_joborder
-            WHERE
-                candidate_id = %s
-            AND
-                joborder_id = %s",
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_db->makeQueryInteger($jobOrderID)
-        );
-        $rs = $this->_db->getAssoc($sql);
-
-        if (empty($rs))
+        if (!is_scalar($jobOrderID) || !ctype_digit((string) $jobOrderID) || (int) $jobOrderID <= 0 ||
+            !is_scalar($candidateID) || !ctype_digit((string) $candidateID) || (int) $candidateID <= 0) return false;
+        if (!$this->_db->beginTransaction()) return false;
+        try
         {
+            $this->_db->getAssoc('SELECT joborder_id FROM joborder WHERE joborder_id = ' .
+                $this->_db->makeQueryInteger($jobOrderID) . ' FOR UPDATE');
+            include_once(LEGACY_ROOT . '/lib/JobOrders.php');
+            $jobOrders = new JobOrders();
+            if ((string) $userID === '0')
+            {
+                // Career Portal applications have no recruiter user ID or staff session.
+                $job = $jobOrders->get($jobOrderID);
+                if (!$job || empty($job['public']) || !empty($job['isAdminHidden']))
+                    throw new RuntimeException('Public Job Order unavailable.');
+            }
+            else
+            {
+                $job = $jobOrders->getForPipeline($jobOrderID);
+            }
+            if (JobOrderStatuses::requiresReopening($job['status']))
+                throw new RuntimeException('Reopen the Job Order before adding candidates.');
+            $sql = sprintf(
+                "SELECT
+                    COUNT(candidate_id) AS candidateIDCount
+                FROM
+                    candidate_joborder
+                WHERE
+                    candidate_id = %s
+                AND
+                    joborder_id = %s",
+                $this->_db->makeQueryInteger($candidateID),
+                $this->_db->makeQueryInteger($jobOrderID)
+            );
+            $rs = $this->_db->getAssoc($sql);
+
+            if (empty($rs))
+            {
+                $this->_db->rollbackTransaction(); return false;
+            }
+
+            $count = $rs['candidateIDCount'];
+            if ($count > 0)
+            {
+                /* Candidate already exists in the pipeline. */
+                $this->_db->rollbackTransaction(); return false;
+            }
+
+            $extraFields = '';
+            $extraValues = '';
+
+            if (!eval(Hooks::get('PIPELINES_ADD_SQL')))
+            {
+                $this->_db->rollbackTransaction();
+                return false;
+            }
+
+            $sql = sprintf(
+                "INSERT INTO candidate_joborder (
+                    joborder_id,
+                    candidate_id,
+                    status,
+                    added_by,
+                    date_created,
+                    date_modified%s
+                )
+                VALUES (
+                    %s,
+                    %s,
+                    100,
+                    %s,
+                    NOW(),
+                    NOW()%s
+                )",
+                $extraFields,
+                $this->_db->makeQueryInteger($jobOrderID),
+                $this->_db->makeQueryInteger($candidateID),
+                $this->_db->makeQueryInteger($userID),
+                $extraValues
+            );
+
+            $queryResult = $this->_db->query($sql);
+            if (!$queryResult)
+            {
+                $this->_db->rollbackTransaction(); return false;
+            }
+
+            if (!$this->_db->commitTransaction()) throw new RuntimeException('Unable to save pipeline addition.');
+            return true;
+        }
+        catch (Throwable $e)
+        {
+            $this->_db->rollbackTransaction();
             return false;
         }
-
-        $count = $rs['candidateIDCount'];
-        if ($count > 0)
-        {
-            /* Candidate already exists in the pipeline. */
-            return false;
-        }
-
-        $extraFields = '';
-        $extraValues = '';
-
-        if (!eval(Hooks::get('PIPELINES_ADD_SQL'))) return;
-
-        $sql = sprintf(
-            "INSERT INTO candidate_joborder (
-                joborder_id,
-                candidate_id,
-                status,
-                added_by,
-                date_created,
-                date_modified%s
-            )
-            VALUES (
-                %s,
-                %s,
-                100,
-                %s,
-                NOW(),
-                NOW()%s
-            )",
-            $extraFields,
-            $this->_db->makeQueryInteger($jobOrderID),
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_db->makeQueryInteger($userID),
-            $extraValues
-        );
-
-        $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -691,6 +724,78 @@ class Pipelines
         return CandidateAuthorization::canAccessCandidateRecord($record) &&
             ($record['isJobOrderAdminHidden'] != 1 ||
              $_SESSION['CATS']->getAccessLevel('joborders.hidden') >= ACCESS_LEVEL_SA);
+    }
+
+    /** Retained milestone attainments, one row per candidate/Job/stage in the window.
+     * Uses the same Candidate/Job show and hidden-record rules as getAccessMap().
+     * EXISTS avoids multiplying history when legacy duplicate relationships exist.
+     */
+    public function getOutcomeRows($start, $end, $options = array())
+    {
+        foreach (array($start, $end) as $date)
+            if (!is_string($date) || !DateUtility::isValidDatabaseDateTime($date . ' 00:00:00'))
+                throw new InvalidArgumentException('Invalid outcome period.');
+        if ($start > $end || DateUtility::getCalendarDaysBetween($start, $end) > 366)
+            throw new InvalidArgumentException('Invalid outcome period.');
+        if (!isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn() ||
+            $_SESSION['CATS']->getUserID() <= 0) return;
+        foreach (array('reports.show', 'candidates.show', 'joborders.show') as $action)
+            if ($_SESSION['CATS']->getAccessLevel($action) < ACCESS_LEVEL_READ) return;
+        $sorts = array('date'=>'firstRecorded', 'candidate'=>'title', 'job'=>'jobTitle', 'repeats'=>'repeats');
+        $sort = $options['sort'] ?? 'date';
+        $direction = $options['direction'] ?? 'desc';
+        if (!isset($sorts[$sort]) || !in_array($direction, array('asc','desc'), true))
+            throw new InvalidArgumentException('Invalid outcome ordering.');
+        foreach (array('milestone','desk','page') as $key)
+            if (isset($options[$key]) && (!is_int($options[$key]) || $options[$key] < ($key==='desk' ? 0 : 1)))
+                throw new InvalidArgumentException('Invalid outcome selection.');
+        if (isset($options['milestone']) && !in_array($options['milestone'], array(400,500,600,800), true))
+            throw new InvalidArgumentException('Invalid outcome milestone.');
+        $offset = (int) ((float) $_SESSION['CATS']->getTimeZoneOffset() * 3600);
+        $from = date('Y-m-d H:i:s', strtotime($start . ' 00:00:00') - $offset);
+        $until = date('Y-m-d H:i:s', strtotime($end . ' 00:00:00 +1 day') - $offset);
+        $where = 'h.status_to IN (400,500,600,800) AND h.status_from <> h.status_to
+            AND h.date >= ' . $this->_db->makeQueryString($from) . '
+            AND h.date < ' . $this->_db->makeQueryString($until) . ' AND h.date <= NOW()
+            AND EXISTS (SELECT 1 FROM candidate_joborder p WHERE p.candidate_id=h.candidate_id AND p.joborder_id=h.joborder_id)';
+        if ($_SESSION['CATS']->getAccessLevel('candidates.hidden') < ACCESS_LEVEL_SA)
+            $where .= ' AND COALESCE(c.is_admin_hidden,0) <> 1';
+        if ($_SESSION['CATS']->getAccessLevel('joborders.hidden') < ACCESS_LEVEL_SA)
+            $where .= ' AND COALESCE(j.is_admin_hidden,0) <> 1';
+        if (isset($options['milestone'])) $where .= ' AND h.status_to=' . $options['milestone'];
+        if (isset($options['desk'])) $where .= ' AND COALESCE(j.desk_id,0)=' . $options['desk'];
+        $summary = ($options['summary'] ?? false) === true;
+        $after = array(0,0,0);
+        do
+        {
+            $paged = isset($options['page']);
+            $sql = "SELECT h.candidate_id AS candidateID, h.joborder_id AS jobID, h.status_to AS milestone,
+                MIN(h.date) AS firstRecorded,
+                DATE(DATE_ADD(MIN(h.date), INTERVAL " . $offset . " SECOND)) AS sourceDate,
+                COUNT(*) AS repeats, CONCAT_WS(' ',c.first_name,c.last_name) AS title,
+                j.title AS jobTitle, j.desk_id AS desk, j.is_speculative AS isSpeculative
+                FROM candidate_joborder_status_history h
+                INNER JOIN candidate c ON c.candidate_id=h.candidate_id
+                INNER JOIN joborder j ON j.joborder_id=h.joborder_id
+                WHERE " . $where . ($paged || $summary ? '' : ' AND (h.candidate_id,h.joborder_id,h.status_to) > (' . implode(',', $after) . ')') . '
+                GROUP BY h.candidate_id,h.joborder_id,h.status_to,c.first_name,c.last_name,j.title,j.desk_id,j.is_speculative';
+            if ($summary)
+            {
+                // Aggregate the date-bounded pair population once, rather than regrouping it for every page.
+                $sql = 'SELECT milestone,desk,sourceDate,COUNT(*) AS pairs FROM (' . $sql .
+                    ') AS attained GROUP BY milestone,desk,sourceDate ORDER BY sourceDate,milestone,desk';
+                foreach ($this->_db->getAllAssoc($sql) as $row) yield $row;
+                return;
+            }
+            $sql .= ' ORDER BY ' . ($paged ? $sorts[$sort] . ' ' . strtoupper($direction) . ', ' : '') .
+                'h.candidate_id,h.joborder_id,h.status_to LIMIT ' . ($paged ? '25 OFFSET ' . (($options['page'] - 1) * 25) : '200');
+            $rows = $this->_db->getAllAssoc($sql);
+            foreach ($rows as $row)
+            {
+                $after = array((int) $row['candidateID'],(int) $row['jobID'],(int) $row['milestone']);
+                yield $row;
+            }
+        } while (!$paged && count($rows) === 200);
     }
 
     /** Batch form of canAccess for bounded model collections; no cached permissions. */

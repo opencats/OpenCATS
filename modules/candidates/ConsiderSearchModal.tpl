@@ -1,4 +1,4 @@
-<?php TemplateUtility::printModalHeader('Candidates', array(), 'Add Candidates to Job Order'); ?>
+<?php TemplateUtility::printModalHeader('Candidates', array('vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js', 'js/pipeline.js'), 'Add Candidates to Job Order'); ?>
 <main class="container-fluid p-2 oc-candidate-considersearchmodal">
 
     <?php if (!$this->isFinishedMode): ?>
@@ -72,7 +72,7 @@
                             <td><?php $this->_($data['jobID']); ?></td>
                             <td>
                                 <?php if (!$data['inPipeline']): ?>
-                                    <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addToPipeline&amp;getback=getback" style="display:inline;">
+                                    <form data-pipeline-add method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addToPipeline&amp;getback=getback" style="display:inline;">
                                         <input type="hidden" name="postback" value="postback">
                                         <input type="hidden" name="candidateIDArrayStored" value="<?php echo($this->candidateIDArrayStored); ?>">
                                         <input type="hidden" name="jobOrderID" value="<?php $this->_($data['jobOrderID']); ?>">
@@ -127,7 +127,7 @@
                             <td><?php $this->_($data['jobID']); ?></td>
                             <td>
                                 <?php if (!$data['inPipeline']): ?>
-                                    <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addToPipeline&amp;getback=getback" style="display:inline;">
+                                    <form data-pipeline-add method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addToPipeline&amp;getback=getback" style="display:inline;">
                                         <input type="hidden" name="postback" value="postback">
                                         <input type="hidden" name="candidateIDArrayStored" value="<?php echo($this->candidateIDArrayStored); ?>">
                                         <input type="hidden" name="jobOrderID" value="<?php $this->_($data['jobOrderID']); ?>">

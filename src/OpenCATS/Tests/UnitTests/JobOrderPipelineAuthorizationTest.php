@@ -13,6 +13,10 @@ class JobOrderPipelineAuthorizationTest extends AuthorizationTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->loggedIn = true;
+        $this->db->method('beginTransaction')->willReturn(true);
+        $this->db->method('commitTransaction')->willReturn(true);
+        $this->db->method('rollbackTransaction')->willReturn(true);
         require_once './lib/DataGrid.php';
         require_once './modules/joborders/JobOrdersUI.php';
         $_GET['a'] = 'addToPipeline';
@@ -29,6 +33,7 @@ class JobOrderPipelineAuthorizationTest extends AuthorizationTestCase
     {
         $this->accessLevel = $admin ? ACCESS_LEVEL_SA : ACCESS_LEVEL_EDIT;
         $this->db->method('getAssoc')->willReturnCallback(function ($sql) use ($hidden) {
+            if (str_contains($sql, 'joborder.title AS title')) return array('jobOrderID'=>7,'status'=>'Active','isAdminHidden'=>'0');
             if (str_contains($sql, 'candidateIDCount')) return array('candidateIDCount' => 0);
             return array('candidateID' => 42, 'isAdminHidden' => $hidden ? '1' : '0');
         });

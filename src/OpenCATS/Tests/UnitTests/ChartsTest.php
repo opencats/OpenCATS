@@ -112,4 +112,17 @@ class ChartsTest extends TestCase
         $this->assertDirectoryDoesNotExist($root . '/lib/artichow');
         $this->assertFileDoesNotExist($root . '/modules/graphs/GraphsUI.php');
     }
+    public function testRecruitmentOutcomesKeepMilestonesSeparateAndExactValuesAccessible()
+    {
+        $definitions=array('submissions'=>array('label'=>'Submissions recorded'),'placements'=>array('label'=>'Placements recorded'));
+        $rows=array(array('name'=>'Desk <unsafe>', 'submissions'=>2,'placements'=>3));
+        $chart=Charts::recruitmentOutcomes($rows,$definitions);
+        self::assertSame(array(array(2),array(3)),array_column($chart['datasets'],'data'));
+        self::assertArrayNotHasKey('stacked',$chart);
+        self::assertArrayNotHasKey('percentages',$chart);
+        self::assertStringNotContainsString('<unsafe>',Charts::render('outcomes',$chart));
+        $trend=Charts::recruitmentOutcomes($rows,$definitions,true);
+        self::assertSame('line',$trend['type']);
+        self::assertFalse($trend['horizontal']);
+    }
 }

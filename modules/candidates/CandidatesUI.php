@@ -1661,7 +1661,7 @@ class CandidatesUI extends UserInterface
     private function onAddToPipeline()
     {
         /* Bail out if we don't have a valid job order ID. */
-        if (!$this->isRequiredIDValid('jobOrderID', $_POST))
+        if (!isset($_POST['jobOrderID']) || !is_scalar($_POST['jobOrderID']) || !$this->isRequiredIDValid('jobOrderID', $_POST))
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
         }
@@ -1669,7 +1669,7 @@ class CandidatesUI extends UserInterface
         if (isset($_POST['candidateID']))
         {
             /* Bail out if we don't have a valid candidate ID. */
-            if (!$this->isRequiredIDValid('candidateID', $_POST))
+            if (!isset($_POST['candidateID']) || !is_scalar($_POST['candidateID']) || !$this->isRequiredIDValid('candidateID', $_POST))
             {
                 CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
             }
@@ -1678,7 +1678,7 @@ class CandidatesUI extends UserInterface
         }
         else
         {
-            if (!isset($_POST['candidateIDArrayStored']) || !$this->isRequiredIDValid('candidateIDArrayStored', $_POST, true))
+            if (!isset($_POST['candidateIDArrayStored']) || !is_scalar($_POST['candidateIDArrayStored']) || !$this->isRequiredIDValid('candidateIDArrayStored', $_POST, true))
             {
                 CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidateIDArrayStored parameter.');
                 return;
@@ -1695,7 +1695,7 @@ class CandidatesUI extends UserInterface
             /* Validate each ID */
             foreach ($candidateIDArray as $index => $candidateID)
             {
-                if (!$this->isRequiredIDValid($index, $candidateIDArray))
+                if (!is_scalar($candidateID) || !$this->isRequiredIDValid($index, $candidateIDArray))
                 {
                     echo ($dataItemID);
 
@@ -1712,6 +1712,20 @@ class CandidatesUI extends UserInterface
         }
 
         $jobOrderID  = $_POST['jobOrderID'];
+
+        try
+        {
+            $pipelineJob = (new JobOrders())->getForPipeline($jobOrderID);
+        }
+        catch (RuntimeException $e)
+        {
+            CommonErrors::fatalModal(COMMONERROR_PERMISSION, $this, 'Job Order unavailable or permission denied.');
+        }
+        if (JobOrderStatuses::requiresReopening($pipelineJob['status']))
+        {
+            CATSUtility::transferRelativeURI('m=joborders&a=reopen&jobOrderID=' . (int) $jobOrderID);
+            return;
+        }
 
         if (!eval(Hooks::get('CANDIDATE_ADD_TO_PIPELINE_PRE'))) return;
 

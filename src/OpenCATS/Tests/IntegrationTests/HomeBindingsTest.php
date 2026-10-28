@@ -63,7 +63,7 @@ class HomeBindingsTest extends DatabaseTestCase
         self::assertNull($model->getHomeAccounts());
     }
 
-    public function testCurrentJobsMatchNativeOpenGroupOwnerOrRecruiterAndHiddenACL(): void
+    public function testCurrentJobsMatchActiveOwnerOrRecruiterAndHiddenACL(): void
     {
         $this->db->query("INSERT INTO joborder (company_id,title,owner,recruiter,status,is_admin_hidden,date_created) VALUES
             ($this->company,'Recruiter job',2,1,'On Hold',0,NOW()),
@@ -73,14 +73,14 @@ class HomeBindingsTest extends DatabaseTestCase
             ($this->company,'Hidden owned',1,1,'Active',1,NOW())");
         $model = new \JobOrders();
         $result = $model->getHomeCurrent(2);
-        self::assertSame(3, $result['total']);
-        self::assertCount(2, $result['rows']);
-        self::assertSame(array('Full owned','Recruiter job'), array_column($result['rows'],'title'));
-        self::assertSame('5', $model->getHomeCurrent(10)['rows'][2]['daysOld']);
+        self::assertSame(1, $result['total']);
+        self::assertCount(1, $result['rows']);
+        self::assertSame(array('Active owned job'), array_column($result['rows'],'title'));
+        self::assertSame('5', $model->getHomeCurrent(10)['rows'][0]['daysOld']);
         $this->overrides['companies.show'] = 0;
-        self::assertSame(array(null,null,null), array_column($model->getHomeCurrent(10)['rows'],'companyName'));
+        self::assertSame(array(null), array_column($model->getHomeCurrent(10)['rows'],'companyName'));
         $this->overrides['joborders.hidden'] = ACCESS_LEVEL_SA;
-        self::assertSame(4, $model->getHomeCurrent()['total']);
+        self::assertSame(2, $model->getHomeCurrent()['total']);
         $this->overrides['joborders.list'] = 0;
         self::assertNull($model->getHomeCurrent());
     }

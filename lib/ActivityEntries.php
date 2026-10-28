@@ -64,9 +64,10 @@ class ActivityEntries
                 WHEN 100 THEN TRIM(CONCAT_WS(' ', c.first_name, c.last_name))
                 WHEN 300 THEN TRIM(CONCAT_WS(' ', ct.first_name, ct.last_name))
                 WHEN 200 THEN co.name
+                WHEN 400 THEN j.title
             END AS subjectName,
             DATE_FORMAT(a.date_occurred, '" . str_replace('%%', '%', $this->_mysqlDateTimeFormat) . "') AS dateCreated,
-            t.short_description AS typeDescription, u.first_name AS enteredByFirstName, u.last_name AS enteredByLastName
+            CASE WHEN a.data_item_type=400 AND a.type=800 THEN 'Status change' ELSE t.short_description END AS typeDescription, u.first_name AS enteredByFirstName, u.last_name AS enteredByLastName
             FROM activity a LEFT JOIN activity_type t ON t.activity_type_id = a.type
             LEFT JOIN user u ON u.user_id = a.entered_by
             LEFT JOIN candidate c ON a.data_item_type = 100 AND c.candidate_id = a.data_item_id
@@ -96,7 +97,8 @@ class ActivityEntries
                 a.data_item_type AS dataItemType, a.data_item_id AS dataItemID, a.joborder_id AS jobID,
                 j.desk_id AS desk, DATE(DATE_ADD(a.date_occurred, INTERVAL " . (int) ($offset * 3600) . " SECOND)) AS sourceDate,
                 CASE a.data_item_type WHEN 100 THEN CONCAT_WS(' ',c.first_name,c.last_name)
-                    WHEN 200 THEN co.name WHEN 300 THEN CONCAT_WS(' ',ct.first_name,ct.last_name) END AS title
+                    WHEN 200 THEN co.name WHEN 300 THEN CONCAT_WS(' ',ct.first_name,ct.last_name)
+                    WHEN 400 THEN j.title END AS title
                 FROM activity a
                 LEFT JOIN candidate c ON a.data_item_type=100 AND c.candidate_id=a.data_item_id
                 LEFT JOIN company co ON a.data_item_type=200 AND co.company_id=a.data_item_id
@@ -117,7 +119,8 @@ class ActivityEntries
         $jobHidden = $_SESSION['CATS']->getAccessLevel('joborders.hidden') >= ACCESS_LEVEL_SA ? '' : ' AND COALESCE(j.is_admin_hidden,0) <> 1';
         return "((a.data_item_type=100 AND " . $can('candidates.show') . " AND c.candidate_id IS NOT NULL" . $candidateHidden . ")
             OR (a.data_item_type=200 AND " . $can('companies.show') . " AND co.company_id IS NOT NULL)
-            OR (a.data_item_type=300 AND " . $can('contacts.show') . " AND ct.contact_id IS NOT NULL))
+            OR (a.data_item_type=300 AND " . $can('contacts.show') . " AND ct.contact_id IS NOT NULL)
+            OR (a.data_item_type=400 AND a.data_item_id=a.joborder_id AND " . $can('joborders.show') . " AND j.joborder_id IS NOT NULL" . $jobHidden . "))
             AND (COALESCE(a.joborder_id,0)<=0 OR (" . $can('joborders.show') . " AND j.joborder_id IS NOT NULL" . $jobHidden . "))";
     }
 
@@ -201,14 +204,14 @@ class ActivityEntries
         $activityEntryID = $this->_db->getLastInsertID();
 
         $history = new History();
-        $history->storeHistoryData(
+        if (!$history->storeHistoryData(
             $dataItemType,
             $dataItemID,
             'ACTIVITY',
             '(NEW)',
             $activityNotes,
             '(USER) Added activity.'
-        );
+        )) return -1;
 
         /* Update the last-modified timestamp for the "parent" Data Item. */
         $this->_updateDataItemModified($dataItemID, $dataItemType);
@@ -560,7 +563,7 @@ class ActivityEntries
                 ) AS dateCreated,
                 activity.date_occurred AS dateCreatedSort,
                 activity.type AS type,
-                activity_type.short_description AS typeDescription,
+                CASE WHEN activity.data_item_type=400 AND activity.type=800 THEN 'Status change' ELSE activity_type.short_description END AS typeDescription,
                 entered_by_user.first_name AS enteredByFirstName,
                 entered_by_user.last_name AS enteredByLastName,
                 IF(

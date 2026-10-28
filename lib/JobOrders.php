@@ -41,7 +41,7 @@ class JobOrders
     public $extraFields;
 
 
-    /** Current = native configured Open statuses; actor is owner or recruiter. */
+    /** Active vacancy preview; actor is owner or recruiter. */
     public function getHomeCurrent($limit = 3)
     {
         if (!is_int($limit) || $limit < 1 || $limit > 10) throw new InvalidArgumentException('Invalid preview size.');
@@ -49,7 +49,7 @@ class JobOrders
             $_SESSION['CATS']->getAccessLevel('joborders.list') < ACCESS_LEVEL_READ ||
             $_SESSION['CATS']->getAccessLevel('joborders.show') < ACCESS_LEVEL_READ) return null;
         $userID = (int) $_SESSION['CATS']->getUserID();
-        $where = 'j.status IN ' . JobOrderStatuses::getOpenStatusSQL() .
+        $where = (JobOrderStatuses::isActionable('Active') ? "j.status = 'Active'" : '1=0') .
             ' AND (j.owner = ' . $userID . ' OR j.recruiter = ' . $userID . ')';
         if ($_SESSION['CATS']->getAccessLevel('joborders.hidden') < ACCESS_LEVEL_SA)
             $where .= ' AND COALESCE(j.is_admin_hidden, 0) <> 1';
@@ -65,12 +65,13 @@ class JobOrders
 
 
     /** Same record visibility and configured Open statuses as native Job lists. */
-    public function getOperationsRows()
+    public function getOperationsRows($activeOnly = false)
     {
         if (!isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn() || $_SESSION['CATS']->getUserID() <= 0 ||
             $_SESSION['CATS']->getAccessLevel('joborders.list') < ACCESS_LEVEL_READ ||
             $_SESSION['CATS']->getAccessLevel('joborders.show') < ACCESS_LEVEL_READ) return;
-        $where = 'status IN ' . JobOrderStatuses::getOpenStatusSQL();
+        $where = $activeOnly ? (JobOrderStatuses::isActionable('Active') ? "status = 'Active'" : '1=0') :
+            'status IN ' . JobOrderStatuses::getOpenStatusSQL();
         if ($_SESSION['CATS']->getAccessLevel('joborders.hidden') < ACCESS_LEVEL_SA)
             $where .= ' AND COALESCE(is_admin_hidden,0) <> 1';
         $after = 0;
@@ -81,6 +82,79 @@ class JobOrders
                 $where . ' AND joborder_id > ' . $after . ' ORDER BY joborder_id LIMIT 200');
             foreach ($rows as $row) { $after = (int) $row['id']; yield $row; }
         } while (count($rows) === 200);
+    }
+
+    /** Native pipeline visibility, shared by reopening and both association entry points. */
+    public function getForPipeline($jobOrderID, $forReopening = false)
+    {
+        if (!is_scalar($jobOrderID) || !ctype_digit((string) $jobOrderID) || (int) $jobOrderID <= 0 ||
+            !isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn() || $_SESSION['CATS']->getUserID() <= 0 ||
+            $_SESSION['CATS']->getAccessLevel('pipelines.addToPipeline') < ACCESS_LEVEL_EDIT ||
+            $_SESSION['CATS']->getAccessLevel('joborders.show') < ACCESS_LEVEL_READ ||
+            ($forReopening && ($_SESSION['CATS']->getAccessLevel('joborders.edit') < ACCESS_LEVEL_EDIT ||
+                $_SESSION['CATS']->getAccessLevel('pipelines.addActivity') < ACCESS_LEVEL_EDIT)))
+            throw new RuntimeException('Job Order unavailable or permission denied.');
+        $record = $this->get($jobOrderID);
+        if (!$record || ($record['isAdminHidden'] == 1 &&
+            $_SESSION['CATS']->getAccessLevel('joborders.hidden') < ACCESS_LEVEL_SA))
+            throw new RuntimeException('Job Order unavailable or permission denied.');
+        if ($forReopening || JobOrderStatuses::requiresReopening($record['status']))
+        {
+            $version = $this->_db->getAssoc('SELECT date_modified,
+                (SELECT MAX(history_id) FROM history WHERE data_item_type = 400
+                    AND data_item_id = j.joborder_id AND the_field = \'status\') AS statusHistoryID
+                FROM joborder j WHERE joborder_id = ' . $this->_db->makeQueryInteger($jobOrderID));
+            $record['reopenVersion'] = hash('sha256', json_encode(array($record, $version)));
+        }
+        return $record;
+    }
+
+    /** One explicit Full/Closed -> Active transition; History and Activity commit together. */
+    public function reopen($jobOrderID, $vacancies, $expectedVersion)
+    {
+        if ((!is_string($vacancies) && !is_int($vacancies)) ||
+            !preg_match('/^[1-9][0-9]{0,3}$/D', (string) $vacancies))
+            throw new InvalidArgumentException('Enter a whole number of new vacancies from 1 to 9999.');
+        if (!is_string($expectedVersion) || !preg_match('/^[a-f0-9]{64}$/D', $expectedVersion))
+            throw new InvalidArgumentException('Reload the Job Order before reopening it.');
+        $this->getForPipeline($jobOrderID, true);
+        if (!JobOrderStatuses::isActionable('Active')) throw new RuntimeException('Active status is unavailable.');
+        if (!$this->_db->beginTransaction()) throw new RuntimeException('Unable to begin reopening.');
+        try
+        {
+            $this->_db->getAssoc('SELECT joborder_id FROM joborder WHERE joborder_id = ' .
+                $this->_db->makeQueryInteger($jobOrderID) . ' FOR UPDATE');
+            $before = $this->getForPipeline($jobOrderID, true);
+            if (!JobOrderStatuses::requiresReopening($before['status']) ||
+                !hash_equals($before['reopenVersion'], $expectedVersion))
+                throw new RuntimeException('This Job Order has changed or has already been reopened. Reload its current state.');
+            $total = $before['openings'];
+            $available = $before['openingsAvailable'];
+            if (!ctype_digit((string) $total) || !ctype_digit((string) $available) || $available > $total ||
+                (int) $total - (int) $available > 2147483647 - (int) $vacancies)
+                throw new RuntimeException('Existing vacancy capacity needs review before this Job Order can be reopened.');
+            $total = (int) $total - (int) $available + (int) $vacancies;
+            if (!$this->_db->query("UPDATE joborder SET status = 'Active', openings = " . $total .
+                ', openings_available = ' . (int) $vacancies .
+                ', first_actionable_at = IF(is_speculative = 0 AND first_actionable_at IS NULL, NOW(), first_actionable_at), date_modified = NOW() WHERE joborder_id = ' .
+                $this->_db->makeQueryInteger($jobOrderID), true))
+                throw new RuntimeException('Unable to reopen the Job Order.');
+            $after = $this->get($jobOrderID);
+            unset($before['reopenVersion']);
+            if (!(new History())->storeHistoryChanges(DATA_ITEM_JOBORDER, $jobOrderID, $before, $after))
+                throw new RuntimeException('Unable to record Job Order History.');
+            include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
+            if ((new ActivityEntries())->add($jobOrderID, DATA_ITEM_JOBORDER, ACTIVITY_STATUS_CHANGE,
+                'Moved Job to Active. New vacancies: ' . (int) $vacancies . '.', $_SESSION['CATS']->getUserID(), $jobOrderID) <= 0)
+                throw new RuntimeException('Unable to record Job Order Activity.');
+            if (!$this->_db->commitTransaction()) throw new RuntimeException('Unable to commit reopening.');
+            return true;
+        }
+        catch (Throwable $e)
+        {
+            $this->_db->rollbackTransaction();
+            throw $e;
+        }
     }
 
     /** Field-only administrative handover; caller must authorise and lock the record. */
@@ -244,6 +318,11 @@ class JobOrders
         $openings, $openingsAvailable, $salary, $city, $state, $startDate, $status, $recruiter,
         $owner, $public, $email, $emailAddress, $department, $questionnaire = false, $country = false, $deskID = false, $sectorID = false, $isSpeculative = null)
     {
+        if ($status === 'Active')
+        {
+            $current = $this->get($jobOrderID);
+            if ($current && JobOrderStatuses::requiresReopening($current['status'])) return false;
+        }
         // Evaluate the old row inside the same write, before status/classification assignments.
         // NULL means an existing caller omitted classification; preserve the stored value.
         $speculativeValue = $isSpeculative === null ? 'is_speculative' :
@@ -350,9 +429,11 @@ class JobOrders
             $this->_db->makeQueryInteger($jobOrderID)
         );
 
+        if ($status === 'Active') $sql .= " AND status NOT IN ('Full', 'Closed')";
         $preHistory = $this->get($jobOrderID);
         $queryResult = $this->_db->query($sql);
         $postHistory = $this->get($jobOrderID);
+        if ($status === 'Active' && JobOrderStatuses::requiresReopening($postHistory['status'])) return false;
 
         /* Store history. */
         $history = new History();

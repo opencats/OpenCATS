@@ -122,20 +122,26 @@ class Tasks
         do
         {
             $jobs = $this->_db->getAllAssoc('SELECT j.joborder_id AS jobOrderID, j.title, j.owner, j.recruiter,
-                j.is_hot AS isHot, j.is_admin_hidden AS isAdminHidden, j.first_actionable_at AS actionable,
+                j.is_hot AS isHot, j.is_admin_hidden AS isAdminHidden, j.recruitment_baseline AS actionable,
                 EXISTS(SELECT 1 FROM candidate_joborder_status_history h WHERE h.joborder_id = j.joborder_id
-                    AND h.status_to = ' . PIPELINE_STATUS_SUBMITTED . ' AND h.date >= j.first_actionable_at) AS submitted,
+                    AND h.status_to = ' . PIPELINE_STATUS_SUBMITTED . ' AND h.date >= j.recruitment_baseline) AS submitted,
                 (SELECT MAX(h.date) FROM candidate_joborder_status_history h WHERE h.joborder_id = j.joborder_id
-                    AND h.status_to IN (' . $milestones . ') AND h.date >= j.first_actionable_at) AS progress
-                FROM joborder j WHERE j.status = \'Active\' AND j.is_speculative = 0
-                AND j.first_actionable_at IS NOT NULL AND j.first_actionable_at <= ' . $clock . $hiddenJob . '
+                    AND h.status_to IN (' . $milestones . ') AND h.date >= j.recruitment_baseline) AS progress
+                FROM (SELECT source.*, GREATEST(source.first_actionable_at,
+                    COALESCE((SELECT MAX(h.set_date) FROM history h
+                        WHERE h.data_item_type = 400 AND h.data_item_id = source.joborder_id
+                        AND h.the_field = \'status\' AND h.new_value = \'Active\'
+                        AND h.previous_value IN (\'Full\', \'Closed\')), source.first_actionable_at)) AS recruitment_baseline
+                    FROM joborder source WHERE source.status = \'Active\' AND source.is_speculative = 0
+                        AND source.first_actionable_at IS NOT NULL) j WHERE j.status = \'Active\' AND j.is_speculative = 0
+                AND j.recruitment_baseline IS NOT NULL AND j.recruitment_baseline <= ' . $clock . $hiddenJob . '
                 AND NOT EXISTS(SELECT 1 FROM candidate_joborder p LEFT JOIN candidate c ON c.candidate_id = p.candidate_id
                     WHERE p.joborder_id = j.joborder_id AND (c.candidate_id IS NULL' . $hiddenCandidate . '))
                 AND NOT EXISTS(SELECT 1 FROM candidate_joborder_status_history h LEFT JOIN candidate c ON c.candidate_id = h.candidate_id
                     WHERE h.joborder_id = j.joborder_id AND h.status_to IN (' . $milestones . ')
                     AND (h.date < \'1000-01-01 00:00:00\' OR MONTH(h.date) = 0 OR DAY(h.date) = 0
                         OR LAST_DAY(h.date) IS NULL OR DAY(h.date) > DAY(LAST_DAY(h.date)) OR h.date > ' . $clock . '
-                        OR (h.date >= j.first_actionable_at AND (c.candidate_id IS NULL' . $hiddenCandidate . '))))
+                        OR (h.date >= j.recruitment_baseline AND (c.candidate_id IS NULL' . $hiddenCandidate . '))))
                 AND j.joborder_id > ' . $lastID . ($jobOrderID === null ? '' : ' AND j.joborder_id = ' . $jobOrderID) . '
                 ORDER BY j.joborder_id LIMIT 200');
             if (!$jobs) break;

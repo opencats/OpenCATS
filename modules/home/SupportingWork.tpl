@@ -15,7 +15,7 @@
 <?php endif; ?>
 <?php if (($this->homeJobs ?? null) !== null): ?>
 <section class="col-12 col-lg-4" aria-labelledby="home-current-jobs"><div class="card h-100"><div class="card-body p-3">
-<h2 class="h6 mb-1" id="home-current-jobs" tabindex="-1">My current jobs</h2>
+<h2 class="h6 mb-1" id="home-current-jobs" tabindex="-1">My active jobs</h2>
 <p class="small text-body-secondary mb-2">Owner or recruiter &middot; <?php echo count($this->homeJobs['rows']); ?> of <?php echo (int) $this->homeJobs['total']; ?></p>
 <ul class="list-unstyled mb-2">
 <?php foreach ($this->homeJobs['rows'] as $job): ?>
@@ -24,7 +24,7 @@
 <span class="d-block"><?php echo Template::escapeHtml($job['status']); ?><?php if ($job['daysOld'] !== null && $job['daysOld'] >= 0): ?> &middot; Created <?php echo (int) $job['daysOld']; ?> calendar days ago<?php endif; ?></span></li>
 <?php endforeach; ?>
 </ul>
-<?php if (!$this->homeJobs['rows']): ?><p class="text-body-secondary">No current jobs in this view.</p><?php endif; ?>
+<?php if (!$this->homeJobs['rows']): ?><p class="text-body-secondary">No active jobs in this view.</p><?php endif; ?>
 <a href="<?php echo Template::escapeAttr(CATSUtility::getIndexName() . '?m=joborders'); ?>">All Job Orders</a>
 </div></div></section>
 <?php endif; ?>

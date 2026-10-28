@@ -117,11 +117,31 @@ class Charts
     public static function operationsJobs($rows)
     {
         $rows = array_values($rows);
-        $chart = self::comparison('Open Job Orders by Desk', array_column($rows,'name'), array_column($rows,'jobs'),
+        $chart = self::comparison('Active Job Orders by Desk', array_column($rows,'name'), array_column($rows,'jobs'),
             "Current snapshot. Uses each Job Order's own Desk; volume alone is neither good nor bad.");
         $chart['compact'] = true;
-        $chart['datasets'][0]['label'] = 'Open Job Orders';
+        $chart['datasets'][0]['label'] = 'Active Job Orders';
         $chart['datasets'][0]['backgroundColor'] = '#0d6efd';
+        return $chart;
+    }
+
+    /** R02 presentation of period-distinct pairs; no funnel or inferred credit. */
+    public static function recruitmentOutcomes($rows, $definitions, $trend = false)
+    {
+        $rows = array_values($rows);
+        $chart = self::comparison($trend ? 'Recorded milestones by week' : 'Recorded milestones by current Job Desk',
+            array_column($rows,'name'), array(), $trend ?
+            'First attainment per candidate–job pair and stage in the selected period. Partial weeks are labelled; stages are not a conversion cohort.' :
+            'Current Job Desk classification of recorded candidate–job milestones. Grouped bars are not additive stages or performance ratings.');
+        $chart['horizontal'] = !$trend;
+        $chart['compact'] = !$trend;
+        if ($trend) $chart['type'] = 'line';
+        $chart['datasets'] = array();
+        $colours = array('submissions'=>'#2e8b57','interviews'=>'#0d6efd','offers'=>'#36454f','placements'=>'#765aa7');
+        foreach ($definitions as $key=>$definition)
+            $chart['datasets'][] = array('label'=>$definition['label'],
+                'data'=>array_map(fn($row)=>(int) $row[$key],$rows), 'tension'=>0, 'fill'=>false,
+                'backgroundColor'=>$colours[$key], 'borderColor'=>$colours[$key]);
         return $chart;
     }
 
