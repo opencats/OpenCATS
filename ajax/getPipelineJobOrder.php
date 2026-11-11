@@ -38,10 +38,24 @@ $sortDirection  = trim(htmlspecialchars($_REQUEST['sortDirection']));
 $indexFile      = trim(htmlspecialchars($_REQUEST['indexFile']));
 $isPopup        = $_REQUEST['isPopup'] == 1 ? true : false;
 
-$_SESSION['CATS']->setPipelineEntriesPerPage($entriesPerPage);
+if ($_SESSION['CATS']->getAccessLevel('joborders.show') < ACCESS_LEVEL_READ ||
+    $_SESSION['CATS']->getAccessLevel('candidates.show') < ACCESS_LEVEL_READ)
+{
+    $interface->outputXMLErrorPage(-1, 'Job order is unavailable.');
+    die();
+}
 
 $jobOrders = new JobOrders();
 $jobOrdersData = $jobOrders->get($jobOrderID);
+if (empty($jobOrdersData) ||
+    ($jobOrdersData['isAdminHidden'] == 1 &&
+     $_SESSION['CATS']->getAccessLevel('joborders.hidden') < ACCESS_LEVEL_SA))
+{
+    $interface->outputXMLErrorPage(-1, 'Job order is unavailable.');
+    die();
+}
+
+$_SESSION['CATS']->setPipelineEntriesPerPage($entriesPerPage);
 
 /* Get an array of the pipeline data. */
 $pipelines = new Pipelines();

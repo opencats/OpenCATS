@@ -136,6 +136,66 @@ class ActivityPipelineAuthorizationTest extends TestCase
         $this->assertMutation($result, false, '');
     }
 
+    public static function jobOrderPipelineReaders(): array
+    {
+        return array(
+            'hidden job order denied to staff' => array(1, ACCESS_LEVEL_EDIT, array(), false),
+            'hidden job order allowed to administrator' => array(1, ACCESS_LEVEL_SA, array(), true),
+            'visible job order allowed to reader' => array(0, ACCESS_LEVEL_READ, array(), true),
+            'missing job order' => array(null, ACCESS_LEVEL_EDIT, array(), false),
+            'job order read denied' => array(0, ACCESS_LEVEL_EDIT, array('joborders.show' => 0), false),
+            'candidate read denied' => array(0, ACCESS_LEVEL_EDIT, array('candidates.show' => 0), false)
+        );
+    }
+
+    #[DataProvider('jobOrderPipelineReaders')]
+    public function testJobOrderPipelineChecksReadAccessBeforeLoadingRows($hidden, $level, $acl, $allowed): void
+    {
+        $visible = array(
+            'candidateID' => 42, 'candidateJobOrderID' => 13, 'isAdminHidden' => 0,
+            'firstName' => 'VisibleCandidate', 'lastName' => 'Example', 'submitted' => 0,
+            'isHotCandidate' => 0, 'addedByFirstName' => 'Test', 'addedByLastName' => 'User',
+            'attachmentPresent' => 0, 'isDuplicateCandidate' => 0, 'ratingValue' => 3,
+            'state' => '', 'dateCreated' => 'Today', 'status' => 'Submitted',
+            'lastActivity' => 'Visible pipeline notes'
+        );
+        $private = array_replace($visible, array('candidateID' => 43, 'candidateJobOrderID' => 14,
+            'isAdminHidden' => 1, 'firstName' => 'HiddenCandidate', 'lastActivity' => 'Hidden pipeline notes'));
+        $result = $this->request(array(
+            'endpoint' => 'getPipelineJobOrder', 'level' => $level, 'acl' => $acl,
+            'parent' => $hidden === null ? array() : array('isAdminHidden' => $hidden),
+            'rows' => array($visible, $private),
+            'request' => array('joborderID' => '7', 'page' => '0', 'entriesPerPage' => '20',
+                'sortBy' => '', 'sortDirection' => '', 'indexFile' => 'index.php', 'isPopup' => '0')
+        ));
+
+        if (!$allowed)
+        {
+            self::assertStringContainsString('<errorcode>-1</errorcode>', $result['output']);
+            self::assertStringNotContainsString('VisibleCandidate', $result['output']);
+            self::assertStringNotContainsString('Visible pipeline notes', $result['output']);
+            self::assertCount(empty($acl) ? 1 : 0, $result['reads']);
+            self::assertSame(array(), $result['writes']);
+            return;
+        }
+
+        self::assertStringContainsString('VisibleCandidate', $result['output']);
+        self::assertStringContainsString('Visible pipeline notes', $result['output']);
+        self::assertCount(2, $result['reads']);
+        self::assertCount(1, $result['writes']);
+        self::assertStringContainsString('pipeline_entries_per_page', $result['writes'][0]);
+        if ($level === ACCESS_LEVEL_SA)
+        {
+            self::assertStringContainsString('HiddenCandidate', $result['output']);
+            self::assertStringContainsString('Hidden pipeline notes', $result['output']);
+        }
+        else
+        {
+            self::assertStringNotContainsString('HiddenCandidate', $result['output']);
+            self::assertStringNotContainsString('Hidden pipeline notes', $result['output']);
+        }
+    }
+
     public static function detailReaders(): array
     {
         return array(array(false), array(true));

@@ -74,7 +74,7 @@ $_POST = array('activityID' => '42', 'candidateJobOrderID' => '42', 'rating' => 
     'type' => '400', 'jobOrderID' => 'NULL', 'notes' => 'Updated by a colleague',
     'date' => '10-02-26', 'hour' => '01', 'minute' => '00', 'ampm' => 'PM',
     'csrfToken' => $session->getCSRFToken());
-$_REQUEST = $_POST;
+$_REQUEST = array_replace($_POST, $scenario['request'] ?? array());
 ob_start();
 register_shutdown_function(function () use ($db, &$issues) {
     $output = ob_get_clean();
@@ -83,7 +83,7 @@ register_shutdown_function(function () use ($db, &$issues) {
         'issues' => $issues, 'fatal' => error_get_last()), JSON_THROW_ON_ERROR);
 });
 $endpoint = $scenario['endpoint'];
-if (!in_array($endpoint, array('editActivity', 'deleteActivity', 'setCandidateJobOrderRating', 'getPipelineDetails'), true))
+if (!in_array($endpoint, array('editActivity', 'deleteActivity', 'setCandidateJobOrderRating', 'getPipelineDetails', 'getPipelineJobOrder'), true))
 {
     throw new InvalidArgumentException('Unsupported test endpoint.');
 }
