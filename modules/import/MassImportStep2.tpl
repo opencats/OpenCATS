@@ -1,9 +1,3 @@
-<?php //FIXME: This goes in the UI. ?>
-<?php if (isset($_SESSION['CATS_PARSE_TEMP']) && is_array($_SESSION['CATS_PARSE_TEMP'])): ?>
-    <?php $currentDocument = count($_SESSION['CATS_PARSE_TEMP']); ?>
-<?php else: ?>
-    <?php $currentDocument = 0; ?>
-<?php endif; ?>
 <div class="text-center my-4 fw-semibold" role="status">
 Please wait whilst OpenCATS processes your resume documents...
 <br />
@@ -16,20 +10,23 @@ Please wait whilst OpenCATS processes your resume documents...
 <br />
 
 <p class="text-center text-break">Processing:
-    <span id="fileName" class="fw-semibold">"<?php echo (isset($this->files) && isset($this->files[$currentDocument])) ? $this->files[$currentDocument]['realName'] : ''; ?>"</span>...
+    <span id="fileName" class="fw-semibold"></span>...
 </p>
 
 <script type="text/javascript">
-    var currentDocument = <?php echo $currentDocument; ?>;
-
-    <?php if (isset($this->files) && !empty($this->files)): ?>
-        setProgressBar(
-            <?php echo number_format($currentDocument / count($this->files) * 100, 0); ?>,
-            '<?php echo addslashes($this->files[$currentDocument]['realName']); ?>'
-        );
-    <?php endif; ?>
-
-    <?php echo $this->js; ?>
+    var currentDocument = 0;
+    documents = <?php
+        $queue = array();
+        foreach ($this->files as $documentID => $file)
+        {
+            $queue[] = array('id' => $documentID, 'name' => $file['realName']);
+        }
+        echo json_encode($queue, JSON_HEX_TAG | JSON_INVALID_UTF8_SUBSTITUTE);
+    ?>;
+    if (documents.length)
+    {
+        setProgressBar(0, documents[0].name);
+    }
 
     startDocumentParsing();
 </script>

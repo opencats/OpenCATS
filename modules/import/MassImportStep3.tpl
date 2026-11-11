@@ -50,7 +50,7 @@
         ?>
         <span id="data_<?php echo $i; ?>_column_0" class="hiddenDataColumn">
             <a href="?m=import&a=massImportEdit&documentID=<?php echo $doc['id']; ?>">
-            <i><?php echo strlimit($doc['realName'], 25); ?></i> <span class="small text-body-secondary">(<?php echo number_format(@filesize($doc['name'])/1024); ?> KB)</span>
+            <i><?php echo strlimit($doc['realName'], 25); ?></i> <span class="small text-body-secondary">(<?php echo number_format($doc['size']/1024); ?> KB)</span>
             </a>
         </span>
         <span id="data_<?php echo $i; ?>_column_1" class="hiddenDataColumn"><?php echo isset($doc['firstName']) ? strlimit($doc['firstName'], 10) : ''; ?> <?php echo isset($doc['lastName']) ? strlimit($doc['lastName'], 10) : '&nbsp;'; ?>&nbsp;</span>

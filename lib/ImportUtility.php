@@ -17,7 +17,7 @@
 class ImportUtility
 {
     // FIXME: Document me.
-    public static function getDirectoryFiles($dirName)
+    public static function getDirectoryFiles($dirName, $skipLinks = false)
     {
         $files = array();
         
@@ -32,14 +32,19 @@ class ImportUtility
             if ($file == '.' || $file == '..') continue;
             $fileName = $dirName . '/' . $file;
 
+            if ($skipLinks && is_link($fileName)) continue;
+
             if (is_dir($fileName))
             {
-                $mp = self::getDirectoryFiles($fileName);
-                $tmp = array_merge($files, $mp);
-                $files = $tmp;
+                $subdirectoryFiles = self::getDirectoryFiles($fileName, $skipLinks);
+                if (is_array($subdirectoryFiles))
+                {
+                    $files = array_merge($files, $subdirectoryFiles);
+                }
             }
             else
             {
+                if ($skipLinks && !is_file($fileName)) continue;
                 if (!($info = stat($fileName))) continue;
                 $fileSize = filesize($fileName);
 

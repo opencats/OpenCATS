@@ -1385,47 +1385,87 @@ class ImportUI extends UserInterface
         $this->_template->display('./modules/import/ImportResumesBulk.tpl');
     }
 
+    private function requireMassImportAccess()
+    {
+        if (empty($_SESSION['CATS']))
+        {
+            CommonErrors::fatal(COMMONERROR_NOTLOGGEDIN, $this);
+        }
+
+        if ($this->getUserAccessLevel('import.massImport') < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'You do not have permission to import '
+                . 'mass resume documents.'
+            );
+        }
+    }
+
+    private function resolveMassImportPath($uploadDir, $fileName)
+    {
+        clearstatcache(true);
+        $root = realpath($uploadDir);
+        $path = realpath($fileName);
+
+        if ($root === false || $path === false ||
+            !str_starts_with($path, rtrim($root, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR) ||
+            !is_file($path))
+        {
+            return false;
+        }
+
+        return $path;
+    }
+
+    private function getMassImportFile($documentID)
+    {
+        if (!is_string($documentID) ||
+            ($_SESSION['CATS_MASS_IMPORT']['userID'] ?? null) !== $this->_userID ||
+            !isset($_SESSION['CATS_MASS_IMPORT']['files'][$documentID]))
+        {
+            return null;
+        }
+
+        $file = $_SESSION['CATS_MASS_IMPORT']['files'][$documentID];
+        $uploadDir = FileUtility::getUploadPath('massimport');
+        if ($uploadDir === false || $this->resolveMassImportPath($uploadDir, $file['name']) !== $file['path'])
+        {
+            return null;
+        }
+
+        return $file;
+    }
+
     /**
-     * AJAX:
-     *   This function is called by the javascript progress bar page (step 2) of the
-     *   mass resume importer. It parses the resume set in $_POST and saves the
-     *   results to a temporary session.
+     * Convert the queued resume identified by the current import session.
      */
     public function massImportDocument()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+        $this->requireMassImportAccess();
+
+        $documentID = $_GET['documentID'] ?? null;
+        $file = $this->getMassImportFile($documentID);
+        if ($file === null)
         {
             echo 'Fail';
             return;
         }
 
-        if (isset($_GET['name'])) $name = $_GET['name']; else { echo 'Fail'; return; }
-        if (isset($_GET['realName'])) $realName = $_GET['realName']; else { echo 'Fail'; return; }
-        if (isset($_GET['ext'])) $ext = $_GET['ext']; else { echo 'Fail'; return; }
-        if (isset($_GET['cTime'])) $cTime = intval($_GET['cTime']); else { echo 'Fail'; return; }
-        if (isset($_GET['type'])) $type = intval($_GET['type']); else { echo 'Fail'; return; }
-
-        if (!isset($_SESSION['CATS_PARSE_TEMP']))
+        if (isset($_SESSION['CATS_PARSE_TEMP'][$documentID]))
         {
-            $_SESSION['CATS_PARSE_TEMP'] = array();
+            echo $_SESSION['CATS_PARSE_TEMP'][$documentID]['success'] ? 'Ok' : 'Fail';
+            return;
         }
 
-        $mp = array(
-            'name' => $name,
-            'realName' => $realName,
-            'ext' => $ext,
-            'type' => $type,
-            'cTime' => $cTime,
-        );
+        $type = $file['type'];
+        $mp = array('success' => false);
 
         $doc2text = new DocumentToText();
         $pu = new ParseUtility();
         $parsingEnabled = true;
 
-        if ($doc2text->convert($name, $type) === false)
+        if ($doc2text->convert($file['path'], $type) === false)
         {
-            $mp['success'] = false;
-            $_SESSION['CATS_PARSE_TEMP'][] = $mp;
+            $_SESSION['CATS_PARSE_TEMP'][$documentID] = $mp;
             echo 'Fail';
             return;
         }
@@ -1453,14 +1493,14 @@ class ImportUI extends UserInterface
 
         if ($parsingEnabled)
         {
-            $parseData = $pu->documentParse($realName, strlen($contents), 'application/text',
+            $parseData = $pu->documentParse($file['realName'], strlen($contents), 'application/text',
                 $contents
             );
             $mp['parse'] = $parseData;
         }
 
         $mp['success'] = true;
-        $_SESSION['CATS_PARSE_TEMP'][] = $mp;
+        $_SESSION['CATS_PARSE_TEMP'][$documentID] = $mp;
 
         echo 'Ok';
         return;
@@ -1468,17 +1508,11 @@ class ImportUI extends UserInterface
 
     public function massImportEdit()
     {
-        if (isset($_GET['documentID']))
-        {
-            $documentID = intval($_GET['documentID']);
-        }
-        else
-        {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this);
-        }
+        $this->requireMassImportAccess();
 
-        list($documents, $success, $failed) = $this->getMassImportDocuments();
-        if (!count($documents))
+        $documentID = $_GET['documentID'] ?? null;
+        $documents = $this->getMassImportDocuments();
+        if (!is_string($documentID) || !isset($documents[$documentID]))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this);
         }
@@ -1486,12 +1520,10 @@ class ImportUI extends UserInterface
         if (isset($_GET['postback']) && $_GET['postback'] == '1')
         {
             // User is saving changes
-            if (!isset($_SESSION['CATS_PARSE_TEMP'][$documentID]['parse']))
-                $_SESSION['CATS_PARSE_TEMP'][$documentID]['parse'] = array(
-                    'firstName' => '', 'lastName' => '', 'address' => '', 'city' => '', 'state' => '',
-                    'zipCode' => '', 'email' => '', 'phone' => '', 'skills' => '', 'education' => '',
-                    'experience' => ''
-            );
+            if (!is_array($_SESSION['CATS_PARSE_TEMP'][$documentID]['parse'] ?? null))
+            {
+                $_SESSION['CATS_PARSE_TEMP'][$documentID]['parse'] = array();
+            }
             if (isset($_POST['firstName']))
                 $_SESSION['CATS_PARSE_TEMP'][$documentID]['parse']['first_name'] = $_POST['firstName'];
             if (isset($_POST['lastName']))
@@ -1520,34 +1552,15 @@ class ImportUI extends UserInterface
             return;
         }
 
-        $document = null;
-        foreach ($documents as $doc)
-        {
-            if ($doc['id'] == $documentID)
-            {
-                $document = $doc;
-            }
-        }
-
         $this->_template->assign('active', $this);
-        $this->_template->assign('document', $document);
+        $this->_template->assign('document', $documents[$documentID]);
         $this->_template->assign('documentID', $documentID);
         $this->_template->display('./modules/import/MassImportEdit.tpl');
     }
 
     public function massImport($step = 1)
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-        {
-            CommonErrors::fatal(COMMONERROR_NOTLOGGEDIN, $this);
-        }
-
-        if ($this->getUserAccessLevel('import.massImport') < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'You do not have permission to import '
-                . 'mass resume documents.'
-            );
-        }
+        $this->requireMassImportAccess();
 
         // Figure out what stage of the process we're on
         if (isset($_GET['step']) && ($step = intval($_GET['step'])) >= 1 && $step <= 4) {}
@@ -1556,9 +1569,9 @@ class ImportUI extends UserInterface
 
         if ($step == 1)
         {
-            if (isset($_SESSION['CATS_PARSE_TEMP'])) unset($_SESSION['CATS_PARSE_TEMP']);
+            unset($_SESSION['CATS_PARSE_TEMP'], $_SESSION['CATS_MASS_IMPORT']);
             $uploadDir = FileUtility::getUploadPath('massimport');
-            $files = ImportUtility::getDirectoryFiles($uploadDir);
+            $files = $uploadDir === false ? array() : ImportUtility::getDirectoryFiles($uploadDir, true);
             if (is_array($files) && count($files))
             {
                 // User already has files for upload
@@ -1587,9 +1600,9 @@ class ImportUI extends UserInterface
             /**
              * Step 1: Find any uploaded files and get them into an array.
              */
-            if (isset($_SESSION['CATS_PARSE_TEMP'])) unset($_SESSION['CATS_PARSE_TEMP']);
+            unset($_SESSION['CATS_PARSE_TEMP'], $_SESSION['CATS_MASS_IMPORT']);
             $uploadDir = FileUtility::getUploadPath('massimport');
-            $files = ImportUtility::getDirectoryFiles($uploadDir);
+            $files = $uploadDir === false ? array() : ImportUtility::getDirectoryFiles($uploadDir, true);
             if ($files === -1 || !is_array($files) || !count($files))
             {
                 $this->_template->assign('errorMessage', 'You didn\'t upload any files or there was a '
@@ -1599,30 +1612,30 @@ class ImportUI extends UserInterface
                 );
 
                 $this->_template->assign('files', array());
-                $this->_template->assign('js', '');
             }
             else
             {
                 if (!eval(Hooks::get('MASS_IMPORT_SPACE_CHECK'))) return;
 
-                // Build the javascript to handle the ajax parsing (for progress bar)
-                $js = '';
-                foreach ($files as $fileData)
+                $records = array();
+                foreach ($files as $file)
                 {
-                    $js .= sprintf('addDocument(\'%s\', \'%s\', \'%s\', %d, %d);%s',
-                        addslashes($fileData['name']), addslashes($fileData['realName']), addslashes($fileData['ext']),
-                        $fileData['type'], $fileData['cTime'], "\n"
-                    );
+                    $path = $this->resolveMassImportPath($uploadDir, $file['name']);
+                    if ($path !== false)
+                    {
+                        $file['path'] = $path;
+                        $records[bin2hex(random_bytes(16))] = $file;
+                    }
                 }
 
-                $this->_template->assign('files', $files);
-                $this->_template->assign('js', $js);
+                $_SESSION['CATS_MASS_IMPORT'] = array('userID' => $this->_userID, 'files' => $records);
+                $this->_template->assign('files', $records);
             }
         }
         else if ($step == 3)
         {
             // Make sure the processed files exists, is an array, and is not empty
-            list($documents, $success, $failed) = $this->getMassImportDocuments();
+            $documents = $this->getMassImportDocuments();
             if (!count($documents))
             {
                 $this->_template->assign('errorMessage', 'None of the files you uploaded were able '
@@ -1630,7 +1643,7 @@ class ImportUI extends UserInterface
                 );
             }
 
-            $this->_template->assign('documents', $documents);
+            $this->_template->assign('documents', array_values($documents));
         }
         else if ($step == 4)
         {
@@ -1658,18 +1671,22 @@ class ImportUI extends UserInterface
             $this->_template->assign('importedFailed', $importedFailed);
             $this->_template->assign('importedDuplicates', $importedDuplicates);
 
-            unset($_SESSION['CATS_PARSE_TEMP']);
+            unset($_SESSION['CATS_PARSE_TEMP'], $_SESSION['CATS_MASS_IMPORT']);
         }
         else if ($step == 99)
         {
             // User wants to delete all files in their upload folder
             $uploadDir = FileUtility::getUploadPath('massimport');
-            $files = ImportUtility::getDirectoryFiles($uploadDir);
+            $files = $uploadDir === false ? array() : ImportUtility::getDirectoryFiles($uploadDir, true);
             if (is_array($files) && count($files))
             {
                 foreach ($files as $file)
                 {
-                    @unlink($file['name']);
+                    $path = $this->resolveMassImportPath($uploadDir, $file['name']);
+                    if ($path !== false)
+                    {
+                        @unlink($path);
+                    }
                 }
             }
             echo 'Ok';
@@ -1692,41 +1709,28 @@ class ImportUI extends UserInterface
 
     private function getMassImportCandidates()
     {
-        $db = DatabaseConnection::getInstance();
-
-        // Find the files the user has uploaded and put them in an array
-        if (isset($_SESSION['CATS']) && !empty($_SESSION['CATS']))
-        {
-            $userID = $_SESSION['CATS']->getUserID();
-        }
-        else
-        {
-            CommonErrors::fatal(COMMONERROR_NOTLOGGEDIN, $this);
-        }
-
-        list($documents, $success, $failed) = $this->getMassImportDocuments();
+        $documents = $this->getMassImportDocuments();
         if (!count($documents))
         {
-            return array( array(), array(), array(), array() );
+            return array(array(), array(), array(), array());
         }
 
+        $db = DatabaseConnection::getInstance();
+        $userID = $this->_userID;
         $importedCandidates = array();
         $importedDocuments = array();
         $importedFailed = array();
         $importedDuplicates = array();
 
-        for ($ind=0; $ind<count($_SESSION['CATS_PARSE_TEMP']); $ind++)
+        foreach ($_SESSION['CATS_PARSE_TEMP'] as $documentID => $result)
         {
-            $doc = $_SESSION['CATS_PARSE_TEMP'][$ind];
-
-            // Get parsed information instead (if available)
-            for ($ind2=0; $ind2<count($documents); $ind2++)
+            $file = $this->getMassImportFile($documentID);
+            if ($file === null)
             {
-                if ($documents[$ind2]['id'] == $ind)
-                {
-                    $doc = $documents[$ind2];
-                }
+                continue;
             }
+
+            $doc = $file + ($documents[$documentID] ?? $result);
 
             if (isset($doc['success']) && $doc['success'])
             {
@@ -1844,7 +1848,7 @@ class ImportUI extends UserInterface
 
                             // Success, attach resume to candidate as attachment
                             $ac = new AttachmentCreator();
-                            if ($ac->createFromFile(DATA_ITEM_CANDIDATE, $candidateID, $doc['name'], $doc['realName'],
+                            if ($ac->createFromFile(DATA_ITEM_CANDIDATE, $candidateID, $doc['path'], $doc['realName'],
                                 '', true, true))
                             {
                                 // FIXME: error checking on fail?
@@ -1870,7 +1874,7 @@ class ImportUI extends UserInterface
                         );
                         if (FileUtility::isUploadFileSafe('massimport', $doc['name']))
                         {
-                            @unlink($doc['name']);
+                            @unlink($doc['path']);
                         }
                         $candidateAdded = true;
                     }
@@ -1904,7 +1908,7 @@ class ImportUI extends UserInterface
                                 $brExists = true;
                                 if (FileUtility::isUploadFileSafe('massimport', $doc['name']))
                                 {
-                                    @unlink($doc['name']);
+                                    @unlink($doc['path']);
                                 }
                                 break;
                             }
@@ -1916,7 +1920,7 @@ class ImportUI extends UserInterface
                         $error = false;
                         $attachmentCreator = new AttachmentCreator();
                         $attachmentCreator->createFromFile(
-                            DATA_ITEM_BULKRESUME, 0, $doc['name'], $doc['realName'], '', true, true
+                            DATA_ITEM_BULKRESUME, 0, $doc['path'], $doc['realName'], '', true, true
                         );
 
                         if ($attachmentCreator->isError())
@@ -1968,7 +1972,7 @@ class ImportUI extends UserInterface
                                 // Delete the temporary file
                                 if (FileUtility::isUploadFileSafe('massimport', $doc['name']))
                                 {
-                                    @unlink($doc['name']);
+                                    @unlink($doc['path']);
                                 }
                                 break;
                             }
@@ -1986,7 +1990,7 @@ class ImportUI extends UserInterface
                 // Make sure it's a safe filename to delete and located in the site's upload directory
                 if (FileUtility::isUploadFileSafe('massimport', $doc['name']))
                 {
-                    @unlink($doc['name']);
+                    @unlink($doc['path']);
                 }
             }
         }
@@ -1999,72 +2003,66 @@ class ImportUI extends UserInterface
         if (!isset($_SESSION['CATS_PARSE_TEMP']) || empty($_SESSION['CATS_PARSE_TEMP']) ||
             !is_array($_SESSION['CATS_PARSE_TEMP']))
         {
-            return array(array(), 0, 0);
+            return array();
         }
-
-        $mp = $_SESSION['CATS_PARSE_TEMP'];
 
         // Clean up the documents for the next stage
         $documents = array();
-        $failed = $success = 0;
-        for ($ind=0; $ind<count($mp); $ind++)
+        foreach ($_SESSION['CATS_PARSE_TEMP'] as $documentID => $result)
         {
-            $doc = $mp[$ind];
-
-            if (isset($doc['success']) && $doc['success'])
+            $file = $this->getMassImportFile($documentID);
+            if ($file === null || empty($result['success']))
             {
-                if (isset($doc['parse']) && is_array($doc['parse']))
-                {
-                    if (isset($doc['parse'][$id = 'first_name']))
-                        $doc['firstName'] = $doc['parse'][$id]; else $doc['firstName'] = '';
-                    if (isset($doc['parse'][$id = 'last_name']))
-                        $doc['lastName'] = $doc['parse'][$id]; else $doc['lastName'] = '';
-                    if (isset($doc['parse'][$id = 'us_address']))
-                        $doc['address'] = $doc['parse'][$id]; else $doc['address'] = '';
-                    if (isset($doc['parse'][$id = 'address2']))
-                        $doc['address2'] = $doc['parse'][$id];
-                    else if (isset($doc['parse'][$id = 'address_line_2']))
-                        $doc['address2'] = $doc['parse'][$id];
-                    else if (isset($doc['parse'][$id = 'addressLineTwo']))
-                        $doc['address2'] = $doc['parse'][$id];
-                    else if (isset($doc['parse'][$id = 'address_line_two']))
-                        $doc['address2'] = $doc['parse'][$id];
-                    else
-                        $doc['address2'] = '';
-                    if (isset($doc['parse'][$id = 'city']))
-                        $doc['city'] = $doc['parse'][$id]; else $doc['city'] = '';
-                    if (isset($doc['parse'][$id = 'state']))
-                        $doc['state'] = $doc['parse'][$id]; else $doc['state'] = '';
-                    if (isset($doc['parse'][$id = 'zip_code']))
-                        $doc['zipCode'] = $doc['parse'][$id]; else $doc['zipCode'] = '';
-                    if (isset($doc['parse'][$id = 'email_address']))
-                        $doc['email'] = $doc['parse'][$id]; else $doc['email'] = '';
-                    if (isset($doc['parse'][$id = 'phone_number']))
-                        $doc['phone'] = $doc['parse'][$id]; else $doc['phone'] = '';
-                    if (isset($doc['parse'][$id = 'education']))
-                        $doc['education'] = $doc['parse'][$id]; else $doc['education'] = '';
-                    if (isset($doc['parse'][$id = 'skills']))
-                        $doc['skills'] = $doc['parse'][$id]; else $doc['skills'] = '';
-                    if (isset($doc['parse'][$id = 'experience']))
-                        $doc['experience'] = $doc['parse'][$id]; else $doc['experience'] = '';
-                }
+                continue;
+            }
+
+            $doc = $file + $result;
+            if (isset($doc['parse']) && is_array($doc['parse']))
+            {
+                if (isset($doc['parse'][$id = 'first_name']))
+                    $doc['firstName'] = $doc['parse'][$id]; else $doc['firstName'] = '';
+                if (isset($doc['parse'][$id = 'last_name']))
+                    $doc['lastName'] = $doc['parse'][$id]; else $doc['lastName'] = '';
+                if (isset($doc['parse'][$id = 'us_address']))
+                    $doc['address'] = $doc['parse'][$id]; else $doc['address'] = '';
+                if (isset($doc['parse'][$id = 'address2']))
+                    $doc['address2'] = $doc['parse'][$id];
+                else if (isset($doc['parse'][$id = 'address_line_2']))
+                    $doc['address2'] = $doc['parse'][$id];
+                else if (isset($doc['parse'][$id = 'addressLineTwo']))
+                    $doc['address2'] = $doc['parse'][$id];
+                else if (isset($doc['parse'][$id = 'address_line_two']))
+                    $doc['address2'] = $doc['parse'][$id];
                 else
-                {
-                    $doc['firstName'] = $doc['lastName'] = $doc['address'] = $doc['city'] =
-                        $doc['state'] = $doc['zipCode'] = $doc['email'] = $doc['phone'] =
-                        $doc['education'] = $doc['skills'] = $doc['experience'] = '';
                     $doc['address2'] = '';
-                }
-                $doc['id'] = $ind;
-                $documents[] = $doc;
-                $success++;
+                if (isset($doc['parse'][$id = 'city']))
+                    $doc['city'] = $doc['parse'][$id]; else $doc['city'] = '';
+                if (isset($doc['parse'][$id = 'state']))
+                    $doc['state'] = $doc['parse'][$id]; else $doc['state'] = '';
+                if (isset($doc['parse'][$id = 'zip_code']))
+                    $doc['zipCode'] = $doc['parse'][$id]; else $doc['zipCode'] = '';
+                if (isset($doc['parse'][$id = 'email_address']))
+                    $doc['email'] = $doc['parse'][$id]; else $doc['email'] = '';
+                if (isset($doc['parse'][$id = 'phone_number']))
+                    $doc['phone'] = $doc['parse'][$id]; else $doc['phone'] = '';
+                if (isset($doc['parse'][$id = 'education']))
+                    $doc['education'] = $doc['parse'][$id]; else $doc['education'] = '';
+                if (isset($doc['parse'][$id = 'skills']))
+                    $doc['skills'] = $doc['parse'][$id]; else $doc['skills'] = '';
+                if (isset($doc['parse'][$id = 'experience']))
+                    $doc['experience'] = $doc['parse'][$id]; else $doc['experience'] = '';
             }
             else
             {
-                $failed++;
+                $doc['firstName'] = $doc['lastName'] = $doc['address'] = $doc['city'] =
+                    $doc['state'] = $doc['zipCode'] = $doc['email'] = $doc['phone'] =
+                    $doc['education'] = $doc['skills'] = $doc['experience'] = '';
+                $doc['address2'] = '';
             }
+            $doc['id'] = $documentID;
+            $documents[$documentID] = $doc;
         }
-        return array($documents, $success, $failed);
+        return $documents;
     }
 
     private static function splitAddressForImport($address, $address2 = '')

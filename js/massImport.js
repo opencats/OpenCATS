@@ -5,12 +5,7 @@ var parseURL = "?m=import&a=massImportDocument";
 var parseSent = 0;
 var parseReceived = 0;
 
-// Maintain seperate arrays for clarity (versus a big multi-dimensional one)
-var documentName = Array();
-var documentRealName = Array();
-var documentExt = Array();
-var documentType = Array();
-var documentCTime = Array();
+var documents = [];
 
 function goStep4()
 {
@@ -26,18 +21,9 @@ function setProgressBar(x, fileName)
     var fileNameObj = document.getElementById("fileName");
     var width = Math.max(0, Math.min(100, isFinite(x) ? x : 0));
 
-    fileNameObj.innerHTML = fileName;
+    fileNameObj.textContent = fileName;
     barObj.style.width = width + "%";
     document.getElementById("statusBarContainer").setAttribute("aria-valuenow", width);
-}
-
-function addDocument(name, realName, ext, type, cTime)
-{
-    documentName.push(name);
-    documentRealName.push(realName);
-    documentExt.push(ext);
-    documentType.push(type);
-    documentCTime.push(cTime);
 }
 
 function startDocumentParsing()
@@ -48,7 +34,7 @@ function startDocumentParsing()
     }
     else
     {
-        if (currentDocument >= documentName.length)
+        if (currentDocument >= documents.length)
         {
             // Process is complete.
             //alert('Success: ' + documentOk + '  Failed: ' + documentFail);
@@ -115,11 +101,8 @@ function parseDocument()
     var ajaxObj;
     var d = new Date();
     
-    var url = parseURL + "&name=" + urlEncode(documentName[currentDocument])
-        + "&realName=" + urlEncode(documentRealName[currentDocument])
-        + "&ext=" + urlEncode(documentExt[currentDocument])
-        + "&type=" + urlEncode(documentType[currentDocument])
-        + "&cTime=" + urlEncode(documentCTime[currentDocument]);
+    var resume = documents[currentDocument];
+    var url = parseURL + "&documentID=" + encodeURIComponent(resume.id);
 
     // FIXME: USE CATS AJAX CODE!
     try
@@ -160,8 +143,8 @@ function parseDocument()
                 documentFail++;
             }
             parsingBlock = false;
-            setProgressBar(Math.floor(currentDocument / (documentName.length-1) * 100.0), documentRealName[currentDocument]);
             currentDocument++;
+            setProgressBar(Math.floor(currentDocument / documents.length * 100), resume.name);
         }
     }
 
