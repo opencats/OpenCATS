@@ -11,15 +11,25 @@
 
             <header class="oc-page-header mb-2"><h1 class="h5 fw-semibold mb-0">Candidates: Questionnaire Results</h1></header>
 
-            <h2 class="h6 card-header bg-secondary-subtle py-1 px-2 fw-semibold mb-2"><?php echo $this->title; ?></h2>
+            <h2 class="h6 card-header bg-secondary-subtle py-1 px-2 fw-semibold mb-2"><?php echo Template::escapeHtml($this->title); ?></h2>
 
             <div>
                 <div class="row g-2 align-items-start mb-2">
                     <div class="col-12 col-sm">
-                        <button type="button" class="btn btn-sm btn-outline-secondary" value="<- Back to Candidate Profile" onclick="document.location.href='<?php echo CATSUtility::getIndexName(); ?>?m=candidates&a=show&candidateID=<?php echo $this->candidateID; ?>';"><- Back to Candidate Profile</button>
+                        <a class="btn btn-sm btn-outline-secondary" href="<?php echo Template::escapeUrl(CATSUtility::getIndexName() . '?m=candidates&a=show&candidateID=' . urlencode($this->candidateID)); ?>">&lt;- Back to Candidate Profile</a>
                     </div>
                     <div class="col-12 col-sm">
-                        <a href="<?php echo CATSUtility::getIndexName() . '?' . str_replace('print=no', 'print=yes', $_SERVER['QUERY_STRING']); ?>">
+                        <?php
+                        // Preserve the title through the controller's additional URL decoding.
+                        $printQuery = http_build_query(array(
+                            'm' => 'candidates',
+                            'a' => 'show_questionnaire',
+                            'candidateID' => $this->candidateID,
+                            'questionnaireTitle' => urlencode($this->title),
+                            'print' => 'yes',
+                        ), '', '&');
+                        ?>
+                        <a href="<?php echo Template::escapeUrl(CATSUtility::getIndexName() . '?' . $printQuery); ?>">
                         <img src="images/actions/print.gif">
                         Printer Friendly
                         </a>
@@ -36,14 +46,20 @@
                     <div class="col-12 col-sm">
                         <span>
                         <b>Candidate Information:</b><br>
-                        <?php echo $this->cData['lastName'] . ', ' . $this->cData['firstName']; ?><br>
-                        <?php echo $this->cData['address']; ?><br>
+                        <?php echo Template::escapeHtml($this->cData['lastName'] . ', ' . $this->cData['firstName']); ?><br>
+                        <?php echo Template::escapeHtml($this->cData['address']); ?><br>
                         <?php if (!empty($this->cData['address2'])): ?>
-                            <?php echo $this->cData['address2']; ?><br>
+                            <?php echo Template::escapeHtml($this->cData['address2']); ?><br>
                         <?php endif; ?>
-                        <?php echo ($str = $this->cData['city'] . ' ' . $this->cData['state'] . ' ' . $this->cData['zip']) . strlen($str) > 2 ? '<br />' : ''; ?>
-                        <?php echo ($str = $this->cData['phoneHome'] . ' ' . $this->cData['phoneWork'] . ' ' . $this->cData['phoneCell']) . strlen($str) > 2 ? '<br />' : ''; ?>
-                        <a href="mailto:<?php echo ($str = $this->cData['email1']); ?>"><?php echo $this->cData['email1']; ?></a><?php echo strlen($str) > 0 ? '<br />' : ''; ?>
+                        <?php $location = trim($this->cData['city'] . ' ' . $this->cData['state'] . ' ' . $this->cData['zip']); ?>
+                        <?php if ($location !== ''): ?>
+                            <?php echo Template::escapeHtml($location); ?><br>
+                        <?php endif; ?>
+                        <?php $phones = trim($this->cData['phoneHome'] . ' ' . $this->cData['phoneWork'] . ' ' . $this->cData['phoneCell']); ?>
+                        <?php if ($phones !== ''): ?>
+                            <?php echo Template::escapeHtml($phones); ?><br>
+                        <?php endif; ?>
+                        <a href="<?php echo Template::escapeUrl('mailto:' . $this->cData['email1']); ?>"><?php echo Template::escapeHtml($this->cData['email1']); ?></a><?php echo strlen($this->cData['email1'] ?? '') > 0 ? '<br />' : ''; ?>
                         <br>
                         </span>
                     </div>
@@ -51,7 +67,7 @@
                         <span>
                         <b>Notes:</b>
                         <br>
-                        <?php echo $this->cData['notes']; ?>
+                        <?php echo nl2br(Template::escapeHtml($this->cData['notes'])); ?>
                         <div class="mb-2"></div>
                         <b>Will Relocate:</b><br>
                         <?php echo $this->cData['canRelocate'] ? 'Yes' : 'No'; ?>
@@ -62,7 +78,7 @@
             <div class="mb-2"></div>
 
             <h2 class="h5">
-            <?php echo $this->qData[0]['questionnaireDescription']; ?>
+            <?php echo Template::escapeHtml($this->qData[0]['questionnaireDescription'] ?? ''); ?>
             </h2>
 
             <div class="mb-2"></div>
@@ -72,8 +88,8 @@
             <?php foreach ($this->qData as $question): ?>
                 <?php $highlight = !$highlight; ?>
                 <tr>
-                    <td><?php echo $question['questionText']; ?></td>
-                    <td><?php echo $question['answerText']; ?></td>
+                    <td><?php echo Template::escapeHtml($question['questionText']); ?></td>
+                    <td><?php echo Template::escapeHtml($question['answerText']); ?></td>
                 </tr>
 
             <?php endforeach; ?>
@@ -82,7 +98,7 @@
             <?php if (isset($this->resumeText) && !empty($this->resumeText)): ?>
             <div class="mb-2"></div>
             <div>
-            <b><?php echo $this->cData['firstName'] . ' ' . $this->cData['lastName']; ?>'s Resume:</b>
+            <b><?php echo Template::escapeHtml($this->cData['firstName'] . ' ' . $this->cData['lastName']); ?>'s Resume:</b>
             <br>
             <div>
             <?php echo $this->resumeText; ?>
