@@ -301,6 +301,32 @@ class CareersUI extends UserInterface
                 die();
             }
 
+            // Validate the attachment before updating any candidate information.
+            $attachmentsLib = new Attachments();
+            $attachmentID = false;
+            if (array_key_exists('attachmentID', $_POST))
+            {
+                if ((!is_string($_POST['attachmentID']) && !is_int($_POST['attachmentID']))
+                    || !$this->isOptionalIDValid('attachmentID', $_POST)
+                    || filter_var($_POST['attachmentID'], FILTER_VALIDATE_INT,
+                        array('options' => array('min_range' => -1))) === false)
+                {
+                    CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid attachment ID.');
+                }
+
+                $attachmentID = (string) $_POST['attachmentID'] !== '-1' ? $_POST['attachmentID'] : false;
+                if ($attachmentID !== false)
+                {
+                    $attachment = $attachmentsLib->get($attachmentID);
+                    if (!isset($attachment['dataItemType'], $attachment['dataItemID'])
+                        || $attachment['dataItemType'] != DATA_ITEM_CANDIDATE
+                        || $attachment['dataItemID'] != $candidate['candidateID'])
+                    {
+                        CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid attachment ID.');
+                    }
+                }
+            }
+
             // Get the fields (if included in the template) to update
             $fields = array('firstName', 'lastName', 'email1', 'phoneHome', 'phoneCell', 'phoneWork', 'address', 'address2',
                 'country', 'city', 'state', 'zip', 'keySkills', 'currentEmployer', 'bestTimeToCall'
@@ -327,19 +353,6 @@ class CareersUI extends UserInterface
             }
             $fieldValues['country'] = $country;
 
-            // Get the attachment to replace (if exists)
-            $attachmentID = false;
-            if (isset($_POST['attachmentID']))
-            {
-                if (!$this->isOptionalIDValid('attachmentID', $_POST))
-                {
-                    CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid attachment ID.');
-                }
-
-                $attachmentID = $_POST['attachmentID'] != '-1' ? $_POST['attachmentID'] : false;
-            }
-
-            $attachmentsLib = new Attachments();
             $candidatesLib = new Candidates();
 
             // Update the candidate's information
@@ -387,7 +400,10 @@ class CareersUI extends UserInterface
                 if ($uploadPath !== false)
                 {
                     // Replace most current resume with new uploaded resume
-                    $attachmentsLib->delete($attachmentID, true);
+                    if ($attachmentID !== false)
+                    {
+                        $attachmentsLib->delete($attachmentID, true);
+                    }
                     $attachmentCreator = new AttachmentCreator();
                     $attachmentCreator->createFromFile(DATA_ITEM_CANDIDATE, $candidate['candidateID'],
                         $uploadPath, false, '', true, true
