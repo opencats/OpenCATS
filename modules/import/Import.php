@@ -123,7 +123,7 @@ class Import
                 import
             WHERE
                 import.import_id = %s",
-            $importID
+            $this->_db->makeQueryInteger($importID)
         );
 
         $rs = $this->_db->getAssoc($sql);

@@ -186,9 +186,11 @@ class ImportUI extends UserInterface
     */
     private function viewErrors()
     {
-        $importID = $_GET['importID'];
+        $importID = $_GET['importID'] ?? null;
 
-        if ($importID <= 0 || $importID == '')
+        if ((!is_string($importID) && !is_int($importID)) ||
+            !$this->isRequiredIDValid('importID', $_GET) ||
+            (int) $importID <= 0)
         {
             $this->import();
             return;
