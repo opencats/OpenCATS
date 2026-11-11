@@ -850,8 +850,8 @@ Scenario Outline: Lists module actions
   | READONLY    | GET  | index.php?m=lists&a=addToListFromDatagridModal |      |
   | READONLY    | GET  | index.php?m=lists&a=removeFromListDatagrid     | not  |
   | READONLY    | GET  | index.php?m=lists&a=deleteStaticList           | not  |
-  | READONLY    | POST | index.php?m=lists&a=removeFromListDatagrid     |      |
-  | READONLY    | POST | index.php?m=lists&a=deleteStaticList           |      |
+  | READONLY    | POST | index.php?m=lists&a=removeFromListDatagrid     | not  |
+  | READONLY    | POST | index.php?m=lists&a=deleteStaticList           | not  |
   | READONLY    | GET  | index.php?m=lists&a=listByView                 |      |
   | EDIT        | GET  | index.php?m=lists&a=showList                   |      |
   | EDIT        | GET  | index.php?m=lists&a=quickActionAddToListModal  |      |
