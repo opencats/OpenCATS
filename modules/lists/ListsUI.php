@@ -290,6 +290,12 @@ class ListsUI extends UserInterface
      */
     private function removeFromListDatagrid()
     {
+        if ($this->getUserAccessLevel('lists') < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatalModal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            return;
+        }
+
         /* Bail out if we don't have a valid type. */
         if (!$this->isRequiredIDValid('dataItemType', $_POST))
         {
@@ -352,6 +358,12 @@ class ListsUI extends UserInterface
      */
     private function onDeleteStaticList()
     {
+        if ($this->getUserAccessLevel('lists') < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatalModal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            return;
+        }
+
         /* Bail out if we don't have a valid type. */
         if (!$this->isRequiredIDValid('savedListID', $_POST))
         {
