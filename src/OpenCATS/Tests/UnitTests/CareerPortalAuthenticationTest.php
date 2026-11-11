@@ -15,6 +15,8 @@ class CareerPortalAuthenticationTest extends TestCase
     private $template;
     private $queries = array();
     private $match = true;
+    private $questionnaireID = 0;
+    private $registrationEnabled = '1';
     private $registration = '<input-email><input-lastName><input-zip><input-rememberMe><input-submit>';
 
     protected function setUp(): void
@@ -59,7 +61,8 @@ class CareerPortalAuthenticationTest extends TestCase
         if (preg_match('/FROM\s+user\b/', $sql)) return array('userID' => 1);
         if (str_contains($sql, 'FROM site')) return array('name' => 'Test site');
         if (preg_match('/FROM\s+site\b/', $sql)) return array('name' => 'Test site');
-        if (preg_match('/FROM\s+joborder\b/', $sql)) return array('public' => 1, 'title' => 'Test job', 'questionnaireID' => 0);
+        if (preg_match('/FROM\s+joborder\b/', $sql)) return array('public' => 1, 'title' => 'Test job', 'questionnaireID' => $this->questionnaireID);
+        if (preg_match('/FROM\s+career_portal_questionnaire\b/', $sql)) return array('questionnaireID' => $this->questionnaireID);
         return array();
     }
 
@@ -67,12 +70,13 @@ class CareerPortalAuthenticationTest extends TestCase
     {
         $this->queries[] = $sql;
         if (str_starts_with($sql, 'SHOW COLUMNS')) return array(array('Field' => 'last_name'), array('Field' => 'zip'));
-        if (preg_match('/FROM\s+settings\b/', $sql)) return array(array('setting' => 'enabled', 'value' => '1'), array('setting' => 'candidateRegistration', 'value' => '1'));
+        if (preg_match('/FROM\s+settings\b/', $sql)) return array(array('setting' => 'enabled', 'value' => '1'), array('setting' => 'candidateRegistration', 'value' => $this->registrationEnabled));
         if (str_contains($sql, 'career_portal_template')) {
             $values = array('Content - Candidate Registration' => $this->registration,
                 'Content - Candidate Profile' => '<input-firstName><input-email1><input-submit>',
                 'Content - Apply for Position' => '<input-firstName><input-email><input-captcha req>',
                 'Content - Main' => '<registeredCandidate><registeredLogin>',
+                'Content - Thanks for your Submission' => 'Thank you for your submission for <title>',
                 'Content - Search Results' => '<registeredCandidate>',
                 'Header' => '', 'Footer' => '', 'CSS' => '');
             return array_map(fn($key, $value) => array('setting' => $key, 'value' => $value), array_keys($values), array_values($values));
@@ -282,6 +286,36 @@ class CareerPortalAuthenticationTest extends TestCase
             self::assertSame('candidate update reached', $exception->getMessage());
         }
         self::assertStringNotContainsString('SELECT candidate_id FROM candidate', implode("\n", $this->queries));
+    }
+
+    public static function anonymousApplicationJobs(): array
+    {
+        return array(
+            'with questionnaire' => array(1, '1'),
+            'without questionnaire or registration' => array(0, '0')
+        );
+    }
+
+    #[DataProvider('anonymousApplicationJobs')]
+    public function testAnonymousEmailMatchKeepsSubmissionResponseWithoutWrites($questionnaireID, $registrationEnabled): void
+    {
+        $this->questionnaireID = $questionnaireID;
+        $this->registrationEnabled = $registrationEnabled;
+        $_GET = array('p' => 'onApplyToJobOrder');
+        if ($questionnaireID)
+        {
+            $_GET['questionnairePostBack'] = '1';
+        }
+        $_POST = array('ID' => '42', 'firstName' => 'Career', 'lastName' => 'Applicant',
+            'email' => 'candidate@example.com', 'captcha' => 'abcd');
+        $this->db->method('query')->willReturnCallback(function ($sql) {
+            self::fail('Unexpected query after an unverified email match: ' . $sql);
+        });
+
+        $this->invoke('careersPage');
+
+        self::assertMatchesRegularExpression('/candidate\.email1\s*=.*candidate@example\.com/', implode("\n", $this->queries));
+        self::assertSame('Thank you for your submission for Test job', $this->template->template['Content']);
     }
 
     public function testNewApplicantRouteRetainsApplicationForm(): void

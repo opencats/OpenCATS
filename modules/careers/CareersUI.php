@@ -1674,13 +1674,15 @@ class CareersUI extends UserInterface
             $source = 'Online Careers Website';
         }
 
+        $candidates = new Candidates();
+        if ($candidateID === false && $candidates->getIDByEmail($email) > 0)
+        {
+            // An email match is not a verified identity. Keep the normal portal response.
+            return;
+        }
+
         $users = new Users();
         $automatedUser = $users->getAutomatedUser();
-
-        /* Find if another user with same e-mail exists. If so, update the user
-         * to contain the new information.
-         */
-        $candidates = new Candidates();
 
         if ($candidateID !== false)
         {
@@ -1699,12 +1701,6 @@ class CareersUI extends UserInterface
             $candidates->extraFields->setValuesOnEdit($candidateID);
         }
         else
-        {
-            // Lookup the candidate by e-mail, use that candidate instead if found (but don't update profile)
-            $candidateID = $candidates->getIDByEmail($email);
-        }
-
-        if ($candidateID === false || $candidateID < 0)
         {
             /* New candidate. */
             $candidateID = $candidates->add(
