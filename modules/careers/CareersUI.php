@@ -418,8 +418,14 @@ class CareersUI extends UserInterface
         {
             $content = $template['Content - Candidate Registration'];
 
-            $jobID = intval($_GET['ID']);
-            $jobOrderData = $jobOrders->get($jobID);
+            $jobOrderData = $this->getPublicVacancy($jobOrders, $rs, $_GET['ID'] ?? null);
+            if ($jobOrderData === false)
+            {
+                $this->showUnavailableVacancy();
+                return;
+            }
+
+            $jobID = $jobOrderData['jobOrderID'];
             $jobTitleEscaped = htmlspecialchars((string) $jobOrderData['title'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
 
             $content = str_replace(array('<applyContent>','</applyContent>'), '', $content);
@@ -475,6 +481,16 @@ class CareersUI extends UserInterface
         }
         else if ($p == 'applyToJob' || isset($_POST[$id='applyToJobSubAction']) && $_POST[$id] != '')
         {
+            $jobID = $_GET['ID'] ?? $_POST['ID'] ?? null;
+            $jobOrderData = $this->getPublicVacancy($jobOrders, $rs, $jobID);
+            if ($jobOrderData === false)
+            {
+                $this->showUnavailableVacancy();
+                return;
+            }
+
+            $jobID = $jobOrderData['jobOrderID'];
+
             // Pre-populations
             $firstName = isset($_POST[$id='firstName']) ? $_POST[$id] : '';
             $lastName = isset($_POST[$id='lastName']) ? $_POST[$id] : '';
@@ -584,18 +600,6 @@ class CareersUI extends UserInterface
             }
 
             $template['Content'] = $template['Content - Apply for Position'];
-
-            // Force integer
-            // FIXME: Input validation, and use isRequiredIDValid() to check for / force integer.
-            $jobID = intval(isset($_GET['ID']) ? $_GET['ID'] : $_POST['ID']);
-
-            $jobOrderData = $jobOrders->get($jobID);
-            if (!isset($jobOrderData['public']) || $jobOrderData['public'] == 0)
-            {
-                // FIXME: Generate valid XHTML error pages. Create an error/fatal method!
-                echo '<html><body>This position is no longer available.  Please wait while we direct you to the job list...<script>setTimeout("document.location.href=\'?m=careers&&p=showAll\';", 1500);</script></body></html>';
-                die();
-            }
 
             /* Make JavaScript validation rules. */
             $validator = $this->_makeApplyValidator($template);
@@ -788,11 +792,11 @@ class CareersUI extends UserInterface
         }
         else if ($p == 'onApplyToJobOrder')
         {
-            if (!$this->isRequiredIDValid('ID', $_POST))
+            $jobOrderData = $this->getPublicVacancy($jobOrders, $rs, $_POST['ID'] ?? null);
+            if ($jobOrderData === false)
             {
-                // FIXME: Generate valid XHTML error pages. Create an error/fatal method!
-                echo '<html><body>This position is invalid or no longer available. Please wait while we direct you to the job list...<script>setTimeout("document.location.href=\'?m=careers&&p=showAll\';", 1500);</script></body></html>';
-                die();
+                $this->showUnavailableVacancy();
+                return;
             }
 
             if ($this->careerPortalTemplateRequiresCaptcha($template['Content - Apply for Position']))
@@ -813,8 +817,6 @@ class CareersUI extends UserInterface
              * Applicant has completed their application, check to see if a questionnaire
              * is tied to this job order. If so, present it.
              */
-            $jobID = intval($_POST['ID']);
-            $jobOrderData = $jobOrders->get($jobID);
             $questionnaireLib = new Questionnaire();
 
             $questionnaireID = $jobOrderData['questionnaireID'];
@@ -830,22 +832,13 @@ class CareersUI extends UserInterface
             // Check for postback (if the applicant has completed the questionnaire) or if no questionnaire exists
             if ((isset($_GET[$id='questionnairePostBack']) && $_GET[$id] == '1') || !$questionnaireID)
             {
-                // Continue on our merry way
-                $this->onApplyToJobOrder($candidateID);
-
-                $jobOrderData = $jobOrders->get($jobID);
-                if (!isset($jobOrderData['public']) || $jobOrderData['public'] == 0)
-                {
-                    // FIXME: Generate valid XHTML error pages. Create an error/fatal method!
-                    echo '<html><body>This position is no longer available.  Please wait while we direct you to the job list...<script>setTimeout("document.location.href=\'?m=careers&&p=showAll\';", 1500);</script></body></html>';
-                    die();
-                }
+                $this->onApplyToJobOrder($jobOrderData, $candidateID);
 
                 $template['Content'] = $template['Content - Thanks for your Submission'];
                 $jobTitleEscaped = htmlspecialchars((string) $jobOrderData['title'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
                 $jobDetailsUrl = CATSUtility::getIndexName() . '?m=careers'
                     . (isset($_GET['templateName']) ? '&templateName=' . urlencode($_GET['templateName']) : '')
-                    . '&p=showJob&ID=' . (string) $_POST['ID'];
+                    . '&p=showJob&ID=' . $jobOrderData['jobOrderID'];
                 $jobDetailsUrl = (string) $jobDetailsUrl;
                 if (preg_match('/^\s*javascript:/i', $jobDetailsUrl))
                 {
@@ -1109,17 +1102,32 @@ class CareersUI extends UserInterface
         return $candidate;
     }
 
-    private function candidateLogin($template, $jobOrders, $publicJobOrders)
+    private function getPublicVacancy($jobOrders, $publicJobOrders, $jobID)
     {
-        $jobID = $_GET['ID'] ?? null;
-        if ((!is_string($jobID) && !is_int($jobID)) || filter_var($jobID, FILTER_VALIDATE_INT, array('options' => array('min_range' => 1))) === false)
+        if ((!is_string($jobID) && !is_int($jobID)) ||
+            filter_var($jobID, FILTER_VALIDATE_INT, array('options' => array('min_range' => 1))) === false)
         {
             return false;
         }
+
         $jobID = (int) $jobID;
+        if (!in_array($jobID, array_column($publicJobOrders, 'jobOrderID')))
+        {
+            return false;
+        }
+
         $jobOrder = $jobOrders->get($jobID);
-        // Reuse the exact visibility rules used for the portal's vacancy listing.
-        if (empty($jobOrder['public']) || !in_array($jobID, array_column($publicJobOrders, 'jobOrderID')))
+        return empty($jobOrder['public']) ? false : $jobOrder;
+    }
+
+    private function showUnavailableVacancy()
+    {
+        echo '<html><body>This position is no longer available. Please wait while we direct you to the job list...<script>setTimeout("document.location.href=\'?m=careers&&p=showAll\';", 1500);</script></body></html>';
+    }
+
+    private function candidateLogin($template, $jobOrders, $publicJobOrders)
+    {
+        if ($this->getPublicVacancy($jobOrders, $publicJobOrders, $_GET['ID'] ?? null) === false)
         {
             return false;
         }
@@ -1599,26 +1607,11 @@ class CareersUI extends UserInterface
     }
 
     /* Called by Careers Page function to handle the processing of candidate input. */
-    private function onApplyToJobOrder($candidateID = false)
+    private function onApplyToJobOrder($jobOrderData, $candidateID)
     {
-        $jobOrders = new JobOrders();
+        $jobOrderID = $jobOrderData['jobOrderID'];
         $careerPortalSettings = new CareerPortalSettings();
 
-        if (!$this->isRequiredIDValid('ID', $_POST))
-        {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
-            return;
-        }
-
-        $jobOrderID = $_POST['ID'];
-
-        $jobOrderData = $jobOrders->get($jobOrderID);
-        if (!isset($jobOrderData['public']) || $jobOrderData['public'] == 0)
-        {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified job order could not be found.');
-            return;
-        }
-	    
         // NOTE: Careers Portal renders these values into HTML without consistent output escaping.
         // TODO (security/xss-hardening): Escape attributes/textarea/title consistently, then switch to getTrimmedInput().
         $lastName       = $this->getSanitisedInput('lastName', $_POST);

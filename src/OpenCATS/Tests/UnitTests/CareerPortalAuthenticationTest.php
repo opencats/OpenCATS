@@ -16,6 +16,9 @@ class CareerPortalAuthenticationTest extends TestCase
     private $queries = array();
     private $match = true;
     private $questionnaireID = 0;
+    private $vacancyState = 'listed';
+    private $existingApplication = false;
+    private $candidateEmail = 'candidate@example.com';
     private $registrationEnabled = '1';
     private $registration = '<input-email><input-lastName><input-zip><input-rememberMe><input-submit>';
 
@@ -37,9 +40,15 @@ class CareerPortalAuthenticationTest extends TestCase
         $_COOKIE = array('cats1cw' => '"email"="candidate@example.com""lastName"="Applicant""zip"="12345"');
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $_SERVER['QUERY_STRING'] = '';
+        $_SERVER['HTTP_HOST'] = 'example.test';
+        $_SERVER['REQUEST_URI'] = '/careers/?p=onApplyToJobOrder';
+        $_FILES = array();
         $this->db = $this->createStub(DatabaseConnection::class);
         (new ReflectionProperty(DatabaseConnection::class, '_instance'))->setValue(null, $this->db);
         $this->db->method('makeQueryString')->willReturnCallback(fn($value) => "'" . $value . "'");
+        $this->db->method('makeQueryStringOrNULL')->willReturnCallback(fn($value) => "'" . $value . "'");
+        $this->db->method('makeQueryIntegerOrNULL')->willReturnCallback(fn($value) => (string) (int) $value);
+        $this->db->method('getLastInsertID')->willReturn(7);
         $this->db->method('makeQueryInteger')->willReturnCallback(fn($value) => (string) $value);
         $this->db->method('getNumRows')->willReturnCallback(fn() => $this->match ? 1 : 0);
         $this->db->method('getAssoc')->willReturnCallback($this->candidateQueryResult(...));
@@ -50,6 +59,12 @@ class CareerPortalAuthenticationTest extends TestCase
         $this->template = new Template();
         $renderer = $this->createStub(Template::class);
         $renderer->method('assign')->willReturnCallback($this->template->assign(...));
+        $renderer->method('display')->willReturnCallback(function ($path) {
+            if ($path === './modules/settings/CareerPortalQuestionnaireShow.tpl')
+            {
+                echo 'Questionnaire fixture';
+            }
+        });
         (new ReflectionProperty(UserInterface::class, '_template'))->setValue($this->ui, $renderer);
     }
 
@@ -57,12 +72,27 @@ class CareerPortalAuthenticationTest extends TestCase
     {
         $this->queries[] = $sql;
         if (str_contains($sql, 'SELECT candidate_id FROM candidate')) return $this->match ? array('candidate_id' => 7) : array();
-        if (str_contains($sql, 'candidate.candidate_id AS candidateID')) return $this->candidate();
+        if (!$this->match && str_contains($sql, 'candidate.email1 =')) return array();
         if (preg_match('/FROM\s+user\b/', $sql)) return array('userID' => 1);
-        if (str_contains($sql, 'FROM site')) return array('name' => 'Test site');
-        if (preg_match('/FROM\s+site\b/', $sql)) return array('name' => 'Test site');
-        if (preg_match('/FROM\s+joborder\b/', $sql)) return array('public' => 1, 'title' => 'Test job', 'questionnaireID' => $this->questionnaireID);
-        if (preg_match('/FROM\s+career_portal_questionnaire\b/', $sql)) return array('questionnaireID' => $this->questionnaireID);
+        if (preg_match('/FROM\s+site\b/', $sql)) return array('name' => 'Test site', 'dateFormatDDMMYY' => 0);
+        if (preg_match('/FROM\s+candidate_joborder\b/', $sql))
+        {
+            if (str_contains($sql, 'COUNT(candidate_id)')) return array('candidateIDCount' => 0);
+            return $this->existingApplication ? array('candidateJobOrderID' => 8) : array();
+        }
+        if (str_contains($sql, 'candidate.candidate_id AS candidateID')) return $this->candidate();
+        if (preg_match('/FROM\s+joborder\b/', $sql))
+        {
+            return $this->vacancyState === 'missing' ? array() : array(
+                'jobOrderID' => 42, 'public' => (int) ($this->vacancyState !== 'private'),
+                'title' => 'Test job', 'questionnaireID' => $this->questionnaireID,
+                'ownerFullName' => 'Test owner', 'companyName' => 'Test company',
+                'owner_email' => 'owner@example.test', 'recruiter_email' => 'recruiter@example.test'
+            );
+        }
+        if (preg_match('/FROM\s+career_portal_questionnaire\b/', $sql)) return array(
+            'questionnaireID' => $this->questionnaireID, 'title' => 'Screening', 'description' => 'Application questions'
+        );
         return array();
     }
 
@@ -77,11 +107,28 @@ class CareerPortalAuthenticationTest extends TestCase
                 'Content - Apply for Position' => '<input-firstName><input-email><input-captcha req>',
                 'Content - Main' => '<registeredCandidate><registeredLogin>',
                 'Content - Thanks for your Submission' => 'Thank you for your submission for <title>',
-                'Content - Search Results' => '<registeredCandidate>',
+                'Content - Search Results' => '<numberOfSearchResults><registeredCandidate>',
+                'Content - Questionnaire' => '<questionnaire><submit>',
                 'Header' => '', 'Footer' => '', 'CSS' => '');
             return array_map(fn($key, $value) => array('setting' => $key, 'value' => $value), array_keys($values), array_values($values));
         }
-        if (preg_match('/FROM\s+joborder\b/', $sql)) return array(array('jobOrderID' => 42, 'departmentID' => 0, 'title' => 'Test job', 'city' => '', 'state' => '', 'country' => ''));
+        if (preg_match('/FROM\s+career_portal_questionnaire_question\b/', $sql))
+        {
+            return array(array(
+                'questionID' => 2, 'questionType' => QUESTIONNAIRE_QUESTION_TYPE_TEXT,
+                'questionText' => 'Availability', 'minimumLength' => 0, 'maximumLength' => 255, 'questionPosition' => 1
+            ));
+        }
+        if (preg_match('/FROM\s+joborder\b/', $sql))
+        {
+            self::assertStringContainsString('joborder.public = 1', $sql);
+            self::assertStringContainsString('joborder.is_admin_hidden = 0', $sql);
+            self::assertStringContainsString('joborder.status IN ' . JobOrderStatuses::getShareStatusSQL(), $sql);
+            return $this->vacancyState === 'listed' ? array(array(
+                'jobOrderID' => '42', 'departmentID' => 0, 'title' => 'Test job',
+                'city' => '', 'state' => '', 'country' => ''
+            )) : array();
+        }
         return array();
     }
 
@@ -98,7 +145,7 @@ class CareerPortalAuthenticationTest extends TestCase
             'currentEmployer', 'dateAvailable', 'currentPay', 'desiredPay', 'notes', 'webSite',
             'eeoGender', 'eeoEthnicType', 'eeoVeteranType', 'eeoDisabilityStatus'), '');
         return $candidate + array('candidateID' => 7, 'firstName' => 'Career', 'lastName' => 'Applicant',
-            'email1' => 'candidate@example.com', 'zip' => '12345', 'isActive' => 1, 'canRelocate' => 0, 'owner' => 1, 'isHot' => 0);
+            'email1' => $this->candidateEmail, 'zip' => '12345', 'isActive' => 1, 'canRelocate' => 0, 'owner' => 1, 'isHot' => 0);
     }
 
     private function invoke($method, ...$args)
@@ -326,6 +373,158 @@ class CareerPortalAuthenticationTest extends TestCase
         self::assertStringContainsString('value="new@example.com"', $this->template->template['Content']);
         self::assertArrayNotHasKey('careerPortalCandidateID', $_SESSION);
         $this->assertNoCandidateLookup();
+    }
+
+    public static function unavailableApplicationRoutes(): iterable
+    {
+        foreach (array('missing', 'private', 'hidden', 'status excluded') as $state)
+        {
+            yield "$state questionnaire" => array($state, 'onApplyToJobOrder', false);
+            yield "$state final submission" => array($state, 'onApplyToJobOrder', true);
+        }
+        yield 'hidden registration form' => array('hidden', 'candidateRegistration', false);
+        yield 'hidden resume preview' => array('hidden', 'applyToJob', false);
+    }
+
+    #[DataProvider('unavailableApplicationRoutes')]
+    public function testUnavailableVacanciesStopBeforeQuestionnaireOrWrites($state, $page, $postback): void
+    {
+        $this->vacancyState = $state;
+        $this->questionnaireID = 1;
+        $_SESSION['careerPortalCandidateID'] = 7;
+        $_GET['p'] = $page;
+        $_POST['ID'] = '42';
+        if ($postback)
+        {
+            $_GET['questionnairePostBack'] = '1';
+        }
+        if ($page === 'applyToJob')
+        {
+            $_POST['applyToJobSubAction'] = 'resumeParse';
+        }
+        $this->db->method('query')->willReturnCallback(fn() => self::fail('Unavailable vacancies must not cause writes.'));
+
+        ob_start();
+        try
+        {
+            $this->ui->handleRequest();
+            $response = ob_get_contents();
+        }
+        finally
+        {
+            ob_end_clean();
+        }
+
+        self::assertStringContainsString('This position is no longer available.', $response);
+        self::assertStringContainsString('p=showAll', $response);
+        self::assertStringNotContainsString('Test job', $response);
+        self::assertStringNotContainsString('career_portal_questionnaire', implode("\n", $this->queries));
+        self::assertArrayNotHasKey('Content', $this->template->template ?? array());
+        $this->assertNoCandidateLookup();
+    }
+
+    public function testListedVacancyStillRendersItsQuestionnaire(): void
+    {
+        $_GET['p'] = 'showAll';
+        $this->ui->handleRequest();
+        self::assertStringStartsWith('1', $this->template->template['Content']);
+
+        $this->questionnaireID = 1;
+        $_GET['p'] = 'onApplyToJobOrder';
+        $_POST['ID'] = '42';
+        $this->db->method('query')->willReturnCallback(fn() => self::fail('Questionnaire display must not write.'));
+
+        $this->ui->handleRequest();
+
+        self::assertSame(1, $this->template->questionnaireID);
+        self::assertStringContainsString('Questionnaire fixture', $this->template->template['Content']);
+        self::assertStringContainsString('questionnairePostBack=1', $this->template->template['Content']);
+        self::assertArrayNotHasKey('careerPortalCaptcha', $_SESSION);
+    }
+
+    public static function eligibleApplications(): iterable
+    {
+        yield 'new candidate' => array(false, false);
+        yield 'returning candidate' => array(true, false);
+        yield 'repeat application' => array(true, true);
+    }
+
+    #[DataProvider('eligibleApplications')]
+    public function testListedVacancyKeepsApplicationAndNotificationFlow($returning, $duplicate): void
+    {
+        require_once './lib/Session.php';
+        $staffSession = $this->createStub(CATSSession::class);
+        $staffSession->method('getUserID')->willReturn(1);
+        $_SESSION['CATS'] = $staffSession;
+        $this->match = $returning;
+        $this->existingApplication = $duplicate;
+        if ($returning)
+        {
+            $_SESSION['careerPortalCandidateID'] = 7;
+        }
+        $_GET['p'] = 'onApplyToJobOrder';
+        $_POST += array('ID' => '42', 'firstName' => 'Career');
+        if ($returning && !$duplicate)
+        {
+            $this->questionnaireID = 1;
+            // Keep the questionnaire's legacy profile update from invoking SMTP.
+            $this->candidateEmail = '';
+            $_GET['questionnairePostBack'] = '1';
+            $_POST['questionnaire1Question2'] = 'Available Monday';
+        }
+        $writes = array();
+        $this->db->method('query')->willReturnCallback(function ($sql) use (&$writes) {
+            $writes[] = $sql;
+            return true;
+        });
+
+        $checkout = getcwd();
+        $fixture = sys_get_temp_dir() . '/opencats-careers-' . bin2hex(random_bytes(8));
+        mkdir($fixture . '/upload/careerportaladd', 0700, true);
+        symlink($checkout . '/lib', $fixture . '/lib');
+        file_put_contents($fixture . '/upload/careerportaladd/resume.txt', 'Applicant resume fixture.');
+        $_POST['file'] = 'resume.txt';
+
+        chdir($fixture);
+        try
+        {
+            $this->ui->handleRequest();
+        }
+        finally
+        {
+            chdir($checkout);
+            $files = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($fixture, FilesystemIterator::SKIP_DOTS),
+                RecursiveIteratorIterator::CHILD_FIRST
+            );
+            foreach ($files as $file)
+            {
+                if ($file->isDir() && !$file->isLink())
+                {
+                    rmdir($file->getPathname());
+                }
+                else
+                {
+                    unlink($file->getPathname());
+                }
+            }
+            rmdir($fixture);
+        }
+
+        $sql = implode("\n", $writes);
+        self::assertMatchesRegularExpression($returning ? '/UPDATE\s+candidate\s+SET\s+is_active/' : '/INSERT INTO candidate\s*\(/', $sql);
+        self::assertSame(1, substr_count($sql, 'INSERT INTO attachment ('));
+        self::assertSame($duplicate ? 0 : 1, substr_count($sql, 'INSERT INTO candidate_joborder'));
+        self::assertStringContainsString($duplicate ? 'User re-applied' : 'User applied', $sql);
+        if ($this->questionnaireID)
+        {
+            self::assertStringContainsString('career_portal_questionnaire_history', $sql);
+            self::assertStringContainsString('Available Monday', $sql);
+        }
+        $reads = implode("\n", $this->queries);
+        self::assertStringContainsString('EMAIL_TEMPLATE_CANDIDATEAPPLY', $reads);
+        self::assertStringContainsString('EMAIL_TEMPLATE_CANDIDATEPORTALNEW', $reads);
+        self::assertSame('Thank you for your submission for Test job', $this->template->template['Content']);
     }
 
     public function testNoCredentialCookieWritersRemain(): void
