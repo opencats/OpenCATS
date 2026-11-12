@@ -14,6 +14,8 @@
  *  @package    CATS
  *  @subpackage Library
  */
+include_once(LEGACY_ROOT . '/lib/SchemaMigrationStatus.php');
+
 class ModuleUtility
 {
     /* Prevent this class from being instantiated. */
@@ -487,7 +489,11 @@ class ModuleUtility
 
         if ($moduleName === 'install' && ($currentVersion === NULL || $currentVersion === ''))
         {
-            /* A NULL install module version means the database came from cats_schema.sql and should not replay historical install migrations. */
+            /* This explicit installer/maintenance finalization is only for
+             * snapshot databases whose schema already matches the bundled
+             * baseline. It must not run during normal requests and is not
+             * proof that an unknown historical database state is current.
+             */
             $sql = sprintf(
                 "UPDATE
                     module_schema
@@ -500,6 +506,7 @@ class ModuleUtility
             );
             $db->query($sql);
 
+            SchemaMigrationStatus::clearCache();
             return;
         }
 
@@ -571,6 +578,11 @@ class ModuleUtility
             $rs = $db->query($sql);
 
             $currentVersion = $version;
+
+            if ($moduleName === 'install')
+            {
+                SchemaMigrationStatus::clearCache();
+            }
         }
     }
 }

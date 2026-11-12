@@ -144,7 +144,10 @@ class ExistingInstallFlowTest extends TestCase
         $fnBody = $this->extractJsFunction($this->jsSource, 'Installpage_maint');
         $this->assertNotEmpty($fnBody, 'Installpage_maint function body must be extractable');
 
-        $statusPos = $this->firstMatchPosition('/http\\.status\\s*==\\s*200/', $fnBody);
+        /* The status check is written either as an equality check on 200 or as
+         * an early return on any non-2xx response.
+         */
+        $statusPos = $this->firstMatchPosition('/http\\.status\\s*(?:==\\s*200|<\\s*200)/', $fnBody);
         $populatePos = $this->firstMatchPosition('/Installpage_populate\\s*\\(\\s*installMaintNextAction\\s*\\)/', $fnBody);
         $resetPos = $this->firstMatchPosition('/installMaintNextAction\\s*=\\s*[\'"]a=reindexResumes[\'"]\\s*;/', $fnBody);
 
