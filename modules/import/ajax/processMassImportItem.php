@@ -13,6 +13,7 @@ include_once(dirname(__DIR__, 3) . '/ajax/bootstrap.php');
 
 
 include_once(LEGACY_ROOT . '/lib/Attachments.php');
+include_once(LEGACY_ROOT . '/lib/ImportUtility.php');
 
 $interface = new SecureAJAXInterface();
 
@@ -21,15 +22,34 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST')
     die('Invalid request.');
 }
 
-if (!isset($_SESSION['CATS']->massImportFiles) ||
-    !isset($_SESSION['CATS']->massImportDirectory))
+if ($_SESSION['CATS']->getAccessLevel('import.bulkResumes') < ACCESS_LEVEL_SA)
 {
-    die ('No mass import in progress.');
+    $interface->outputXMLErrorPage(-1, ERROR_NO_PERMISSION);
+    return;
 }
 
-if (count($_SESSION['CATS']->massImportFiles) == 0)
+$queue = $_SESSION['CATS_LEGACY_BULK_RESUMES'] ?? null;
+if (($queue['userID'] ?? null) !== $interface->getUserID() ||
+    !is_array($queue['files'] ?? null))
 {
-    die ('done');
+    die('No mass import in progress.');
+}
+
+$files = &$_SESSION['CATS_LEGACY_BULK_RESUMES']['files'];
+if (!$files)
+{
+    die('done');
+}
+
+// Direct requests start outside the application root.
+if (!chdir(LEGACY_ROOT))
+{
+    die('No mass import in progress.');
+}
+$directoryRoot = ImportUtility::getLegacyBulkResumeDirectory();
+if ($directoryRoot === false)
+{
+    die('No mass import in progress.');
 }
 
 $dups = 0;
@@ -37,16 +57,24 @@ $success = 0;
 $processed = 0;
 // FIXME: Count failures.
 
-for ($i = 0; $i < 50; ++$i)
+for ($i = 0; $i < 50 && $files; ++$i)
 {
-    if (count($_SESSION['CATS']->massImportFiles) == 0)
+    $name = array_key_last($files);
+    $staged = array_pop($files);
+    ++$processed;
+
+    if (!is_string($name) || !is_string($staged['path'] ?? null))
     {
         continue;
     }
-    
-    $fileName = array_pop($_SESSION['CATS']->massImportFiles);
 
-    $fullFilename = $_SESSION['CATS']->massImportDirectory . '/' . $fileName;
+    $fullFilename = ImportUtility::resolveMassImportPath($directoryRoot, $name);
+    if ($fullFilename !== $staged['path'] ||
+        ($stat = @stat($fullFilename)) === false ||
+        $stat['dev'] !== ($staged['device'] ?? null) || $stat['ino'] !== ($staged['inode'] ?? null))
+    {
+        continue;
+    }
 
     $attachmentCreator = new AttachmentCreator();
     $attachmentID = $attachmentCreator->createFromFile(
@@ -69,8 +97,6 @@ for ($i = 0; $i < 50; ++$i)
     {
         ++$success;
     }
-    
-    ++$processed;
 }
 
 echo $dups, ',', $success, ',', $processed;

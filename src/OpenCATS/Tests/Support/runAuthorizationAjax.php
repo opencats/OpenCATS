@@ -62,18 +62,18 @@ class ACL_SETUP
 ACL_SETUP::$ACCESS_LEVEL_MAP = array('' => $scenario['acl'] ?? array());
 session_start();
 $session = new CATSSession();
-foreach (array('_isLoggedIn' => true, '_userID' => 10, '_accessLevel' => ($scenario['level'] ?? ACCESS_LEVEL_EDIT)) as $name => $value)
+foreach (array('_isLoggedIn' => ($scenario['loggedIn'] ?? true), '_userID' => 10, '_accessLevel' => ($scenario['level'] ?? ACCESS_LEVEL_EDIT)) as $name => $value)
 {
     (new ReflectionProperty(CATSSession::class, $name))->setValue($session, $value);
 }
 $_SESSION = array('CATS' => $session);
 $db = new AuthorizationFixtureDatabase($scenario);
 (new ReflectionProperty(DatabaseConnection::class, '_instance'))->setValue(null, $db);
-$_SERVER['REQUEST_METHOD'] = 'POST';
+$_SERVER['REQUEST_METHOD'] = $scenario['method'] ?? 'POST';
 $_POST = array('activityID' => '42', 'candidateJobOrderID' => '42', 'rating' => '3',
     'type' => '400', 'jobOrderID' => 'NULL', 'notes' => 'Updated by a colleague',
     'date' => '10-02-26', 'hour' => '01', 'minute' => '00', 'ampm' => 'PM',
-    'csrfToken' => $session->getCSRFToken());
+    'csrfToken' => ($scenario['validToken'] ?? true) ? $session->getCSRFToken() : 'invalid');
 $_REQUEST = array_replace($_POST, $scenario['request'] ?? array());
 ob_start();
 register_shutdown_function(function () use ($db, &$issues) {
@@ -83,6 +83,14 @@ register_shutdown_function(function () use ($db, &$issues) {
         'issues' => $issues, 'fatal' => error_get_last()), JSON_THROW_ON_ERROR);
 });
 $endpoint = $scenario['endpoint'];
+if ($endpoint === 'processMassImportItem')
+{
+    $_SESSION['CATS_LEGACY_BULK_RESUMES'] = $scenario['queue'];
+    $script = getcwd() . '/modules/import/ajax/processMassImportItem.php';
+    chdir($scenario['fixture']);
+    require $script;
+    return;
+}
 if (!in_array($endpoint, array('editActivity', 'deleteActivity', 'setCandidateJobOrderRating', 'getPipelineDetails', 'getPipelineJobOrder'), true))
 {
     throw new InvalidArgumentException('Unsupported test endpoint.');

@@ -52,7 +52,7 @@
                         <div class="col-12 col-md text-break">
                             <br />
                             <?php if (count($this->foundFiles) == 0): ?>
-                                CATS has not found any files to import in /upload/.
+                                CATS has not found any files to import in upload/bulkresumes/.
                 <br />
                             <?php else: ?>
                                 <span id="foundFilesSpan">

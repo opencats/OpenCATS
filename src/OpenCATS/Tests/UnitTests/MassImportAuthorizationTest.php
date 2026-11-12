@@ -5,6 +5,7 @@ use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 require_once __DIR__ . '/../Support/AuthorizationTestCase.php';
+require_once './constants.php';
 
 #[RunTestsInSeparateProcesses]
 #[PreserveGlobalState(false)]
@@ -83,6 +84,144 @@ class MassImportAuthorizationTest extends AuthorizationTestCase
         finally
         {
             ob_end_clean();
+        }
+    }
+
+    private function stageLegacyBulkResumes(): array
+    {
+        $_GET = array('a' => 'showMassImport');
+        $this->importer()->handleRequest();
+        return $_SESSION['CATS_LEGACY_BULK_RESUMES'];
+    }
+
+    private function processLegacyBulkResumes(?array $queue, array $request = array()): array
+    {
+        if (!is_link('lib'))
+        {
+            foreach (array('lib', 'constants.php', 'modules') as $path)
+            {
+                symlink($this->checkout . '/' . $path, $path);
+            }
+        }
+        $process = proc_open(array(PHP_BINARY, __DIR__ . '/../Support/runAuthorizationAjax.php'),
+            array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes, $this->checkout);
+        fwrite($pipes[0], json_encode($request + array(
+            'endpoint' => 'processMassImportItem', 'level' => ACCESS_LEVEL_SA,
+            'queue' => $queue, 'fixture' => $this->fixture
+        ), JSON_THROW_ON_ERROR));
+        fclose($pipes[0]);
+        $output = stream_get_contents($pipes[1]);
+        $stderr = stream_get_contents($pipes[2]);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+        self::assertSame(0, proc_close($process), $stderr . $output);
+        self::assertSame('', $stderr);
+        $result = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame(array(), $result['issues']);
+        return $result;
+    }
+
+    public function testLegacyBulkResumeStagingRequiresItsOwnAdministratorPermission(): void
+    {
+        $this->accessOverrides['import.massImport'] = ACCESS_LEVEL_SA;
+        $this->accessOverrides['import.bulkResumes'] = ACCESS_LEVEL_EDIT;
+        $_GET = array('a' => 'showMassImport');
+
+        $this->assertCommonError(COMMONERROR_PERMISSION, fn() => $this->importer()->handleRequest());
+
+        self::assertArrayNotHasKey('CATS_LEGACY_BULK_RESUMES', $_SESSION);
+        self::assertDirectoryDoesNotExist('upload/bulkresumes');
+    }
+
+    public function testLegacyBulkResumeProcessingUsesOnlyTheStagedResume(): void
+    {
+        $this->accessOverrides['import.bulkResumes'] = ACCESS_LEVEL_SA;
+        mkdir('upload/bulkresumes/nested', 0700, true);
+        file_put_contents('upload/bulkresumes/nested/resume.txt', 'Short resume fixture');
+        file_put_contents('upload/massimport/other.txt', self::RESUME);
+        symlink('../../massimport/other.txt', 'upload/bulkresumes/nested/linked.txt');
+
+        $queue = $this->stageLegacyBulkResumes();
+
+        self::assertSame(array('upload/bulkresumes/nested/resume.txt'), array_keys($queue['files']));
+        $result = $this->processLegacyBulkResumes($queue);
+        self::assertSame('0,1,1', $result['output']);
+        $writes = implode("\n", $result['writes']);
+        self::assertMatchesRegularExpression('/INSERT INTO attachment\s*\(/', $writes);
+        self::assertStringContainsString('Short resume fixture', $writes);
+        self::assertDoesNotMatchRegularExpression('/INSERT INTO candidate\b/', $writes);
+        self::assertFileExists('upload/massimport/other.txt');
+    }
+
+    public function testLegacyBulkResumeStagingDoesNotFollowALinkedStagingDirectory(): void
+    {
+        $this->accessLevel = ACCESS_LEVEL_SA;
+        file_put_contents('upload/massimport/resume.txt', self::RESUME);
+        symlink('massimport', 'upload/bulkresumes');
+
+        $queue = $this->stageLegacyBulkResumes();
+
+        self::assertSame(array(), $queue['files']);
+        $result = $this->processLegacyBulkResumes($queue);
+        self::assertSame('done', $result['output']);
+        self::assertSame(array(), $result['writes']);
+    }
+
+    public static function rejectedBulkProcessingRequests(): array
+    {
+        return array(
+            'no permission' => array(array('acl' => array('import.bulkResumes' => ACCESS_LEVEL_EDIT)), ERROR_NO_PERMISSION),
+            'logged out' => array(array('loggedIn' => false), 'You are not logged in'),
+            'GET' => array(array('method' => 'GET'), 'Invalid request.'),
+            'bad token' => array(array('validToken' => false), 'Invalid request.')
+        );
+    }
+
+    #[DataProvider('rejectedBulkProcessingRequests')]
+    public function testLegacyBulkResumeProcessingKeepsRequestAndPermissionChecks($request, $message): void
+    {
+        $this->accessLevel = ACCESS_LEVEL_SA;
+        mkdir('upload/bulkresumes', 0700);
+        file_put_contents('upload/bulkresumes/resume.txt', self::RESUME);
+        $result = $this->processLegacyBulkResumes($this->stageLegacyBulkResumes(), $request);
+
+        self::assertStringContainsString($message, $result['output']);
+        self::assertSame(array(), $result['writes']);
+        self::assertFileExists('upload/bulkresumes/resume.txt');
+    }
+
+    public function testLegacyBulkResumeProcessingRejectsStaleAndOutOfScopeQueueEntries(): void
+    {
+        $this->accessLevel = ACCESS_LEVEL_SA;
+        mkdir('upload/bulkresumes', 0700);
+        foreach (array('replaced', 'removed', 'linked', 'different') as $name)
+        {
+            file_put_contents('upload/bulkresumes/' . $name . '.txt', self::RESUME);
+        }
+        file_put_contents('upload/massimport/other.txt', self::RESUME);
+        $queue = $this->stageLegacyBulkResumes();
+
+        // Keep the old inode live so the replacement cannot reuse it.
+        rename('upload/bulkresumes/replaced.txt', 'upload/bulkresumes/old.txt');
+        file_put_contents('upload/bulkresumes/replaced.txt', 'Replacement resume');
+        unlink('upload/bulkresumes/removed.txt');
+        unlink('upload/bulkresumes/linked.txt');
+        symlink('../massimport/other.txt', 'upload/bulkresumes/linked.txt');
+        $queue['files']['upload/bulkresumes/different.txt']['path'] = realpath('upload/bulkresumes/old.txt');
+        $queue['files']['upload/massimport/other.txt'] = array('path' => realpath('upload/massimport/other.txt'));
+        $queue['files']['upload/bulkresumes/invalid.txt'] = null;
+
+        $result = $this->processLegacyBulkResumes($queue);
+        self::assertSame('0,0,6', $result['output']);
+        self::assertSame(array(), $result['writes']);
+        self::assertSame(array(), $result['reads']);
+        self::assertFileExists('upload/massimport/other.txt');
+
+        foreach (array(null, array('userID' => 99, 'files' => $queue['files'])) as $invalidQueue)
+        {
+            $result = $this->processLegacyBulkResumes($invalidQueue);
+            self::assertSame('No mass import in progress.', $result['output']);
+            self::assertSame(array(), $result['writes']);
         }
     }
 

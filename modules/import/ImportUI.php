@@ -1343,42 +1343,49 @@ class ImportUI extends UserInterface
     */
     function showMassImport()
     {
-        $directoryRoot = './upload/';
-        $foundFiles = array();
-        $numberOfFiles = 0;
-
-        $directoriesToWalk = array('');
-
-        while (count($directoriesToWalk) != 0)
+        if ($this->getUserAccessLevel('import.bulkResumes') < ACCESS_LEVEL_SA)
         {
-            $directoryName = array_pop($directoriesToWalk);
-            $fullDirectoryName = $directoryRoot . $directoryName;
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
+        }
 
-            if ($handle = @opendir($fullDirectoryName))
+        $directoryRoot = ImportUtility::getLegacyBulkResumeDirectory();
+        $foundFiles = array();
+        $directoriesToWalk = $directoryRoot === false ? array() : array($directoryRoot);
+
+        while ($directoriesToWalk)
+        {
+            $directory = array_pop($directoriesToWalk);
+            if ($handle = @opendir($directory))
             {
                 while (false !== ($file = readdir($handle)))
                 {
-                    $fileWithDirectory = $directoryName . $file;
-                    $fullFileWithDirectory = $fullDirectoryName . $file;
-
-                    if ($file != "." && $file != ".." && $file != ".svn" && filetype($fullFileWithDirectory) == "dir")
+                    $name = $directory . '/' . $file;
+                    if ($file === '.' || $file === '..' || $file === '.svn' || is_link($name))
                     {
-                        array_push ($directoriesToWalk, $fileWithDirectory . '/');
+                        continue;
                     }
-                    else if ($file != "." && $file != ".." && $file != ".svn")
+
+                    if (is_dir($name))
                     {
-                        $numberOfFiles++;
-                        $foundFiles[] = $directoryName . $file;
+                        $directoriesToWalk[] = $name;
+                    }
+                    else if (($path = ImportUtility::resolveMassImportPath($directoryRoot, $name)) !== false)
+                    {
+                        $stat = @stat($path);
+                        if ($stat !== false)
+                        {
+                            $foundFiles[$name] = array(
+                                'path' => $path, 'device' => $stat['dev'], 'inode' => $stat['ino']
+                            );
+                        }
                     }
                 }
                 closedir($handle);
             }
         }
 
-        sort($foundFiles);
-
-        $_SESSION['CATS']->massImportFiles = $foundFiles;
-        $_SESSION['CATS']->massImportDirectory = $directoryRoot;
+        ksort($foundFiles, SORT_STRING);
+        $_SESSION['CATS_LEGACY_BULK_RESUMES'] = array('userID' => $this->_userID, 'files' => $foundFiles);
 
         $this->_template->assign('active', $this);
         $this->_template->assign('foundFiles', $foundFiles);
@@ -1400,22 +1407,6 @@ class ImportUI extends UserInterface
         }
     }
 
-    private function resolveMassImportPath($uploadDir, $fileName)
-    {
-        clearstatcache(true);
-        $root = realpath($uploadDir);
-        $path = realpath($fileName);
-
-        if ($root === false || $path === false ||
-            !str_starts_with($path, rtrim($root, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR) ||
-            !is_file($path))
-        {
-            return false;
-        }
-
-        return $path;
-    }
-
     private function getMassImportFile($documentID)
     {
         if (!is_string($documentID) ||
@@ -1427,7 +1418,7 @@ class ImportUI extends UserInterface
 
         $file = $_SESSION['CATS_MASS_IMPORT']['files'][$documentID];
         $uploadDir = FileUtility::getUploadPath('massimport');
-        if ($uploadDir === false || $this->resolveMassImportPath($uploadDir, $file['name']) !== $file['path'])
+        if ($uploadDir === false || ImportUtility::resolveMassImportPath($uploadDir, $file['name']) !== $file['path'])
         {
             return null;
         }
@@ -1620,7 +1611,7 @@ class ImportUI extends UserInterface
                 $records = array();
                 foreach ($files as $file)
                 {
-                    $path = $this->resolveMassImportPath($uploadDir, $file['name']);
+                    $path = ImportUtility::resolveMassImportPath($uploadDir, $file['name']);
                     if ($path !== false)
                     {
                         $file['path'] = $path;
@@ -1682,7 +1673,7 @@ class ImportUI extends UserInterface
             {
                 foreach ($files as $file)
                 {
-                    $path = $this->resolveMassImportPath($uploadDir, $file['name']);
+                    $path = ImportUtility::resolveMassImportPath($uploadDir, $file['name']);
                     if ($path !== false)
                     {
                         @unlink($path);

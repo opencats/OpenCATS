@@ -16,6 +16,35 @@
  */
 class ImportUtility
 {
+    public static function getLegacyBulkResumeDirectory()
+    {
+        clearstatcache(true);
+
+        // A linked staging directory could point at another upload workflow.
+        if (is_link('upload/bulkresumes'))
+        {
+            return false;
+        }
+
+        return FileUtility::getUploadPath('bulkresumes');
+    }
+
+    public static function resolveMassImportPath($uploadDir, $fileName)
+    {
+        clearstatcache(true);
+        $root = realpath($uploadDir);
+        $path = realpath($fileName);
+
+        if ($root === false || $path === false ||
+            !str_starts_with($path, rtrim($root, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR) ||
+            !is_file($path))
+        {
+            return false;
+        }
+
+        return $path;
+    }
+
     // FIXME: Document me.
     public static function getDirectoryFiles($dirName, $skipLinks = false)
     {
