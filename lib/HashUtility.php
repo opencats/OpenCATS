@@ -43,7 +43,7 @@ class HashUtility
      *
      * This probably doesn't like files larger than 2GB.
      */
-    public function crc32File($filename, $forcePHPImplementation = false)
+    public static function crc32File($filename, $forcePHPImplementation = false)
     {
         /* PHP's hash_file() is faster if available (PHP 5.2.1+). */
         if (function_exists('hash_file') && !$forcePHPImplementation && false)
