@@ -5,6 +5,8 @@ services:
       ports:
           - "80:80"
           - "443:443"
+      volumes:
+        - ./nginx-opencats.conf:/etc/nginx/conf.d/basic.conf:ro
       volumes_from:
         - opencatsdata
 

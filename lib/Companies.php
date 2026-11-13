@@ -232,7 +232,7 @@ class Companies
         /* Find associated attachments. */
         $attachments = new Attachments();
         $attachmentsRS = $attachments->getAll(
-            DATA_ITEM_COMPANY, $companyID
+            DATA_ITEM_COMPANY, $companyID, false
         );
 
         /* Delete associated contacts. */

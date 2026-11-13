@@ -310,7 +310,7 @@ class CompaniesUI extends UserInterface
         /* Attachments */
         $attachments = new Attachments();
         $attachmentsRS = $attachments->getAll(
-            DATA_ITEM_COMPANY, $companyID
+            DATA_ITEM_COMPANY, $companyID, false
         );
 
         foreach ($attachmentsRS as $rowNumber => $attachmentsData)
@@ -1145,7 +1145,8 @@ class CompaniesUI extends UserInterface
         $attachment = $attachments->get($attachmentID);
         if (!isset($attachment['attachmentID']) ||
             $attachment['dataItemType'] != DATA_ITEM_COMPANY ||
-            $attachment['dataItemID'] != $companyID)
+            $attachment['dataItemID'] != $companyID ||
+            $attachment['contentType'] === 'catsbackup')
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid attachment ID.');
         }

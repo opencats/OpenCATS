@@ -267,7 +267,8 @@ class Attachments
         $sql = sprintf(
             "SELECT
                 directory_name AS directoryName,
-                stored_filename AS storedFileName
+                stored_filename AS storedFileName,
+                content_type AS contentType
             FROM
                 attachment
             WHERE
@@ -275,6 +276,11 @@ class Attachments
             $this->_db->makeQueryInteger($attachmentID)
         );
         $rs = $this->_db->getAssoc($sql);
+
+        if (($rs['contentType'] ?? null) === 'catsbackup' && !self::canDeleteBackup())
+        {
+            return false;
+        }
 
         $this->forceRemoteDeleteAttachment($attachmentID);
 
@@ -327,6 +333,11 @@ class Attachments
      */
     public function deleteAll($dataItemType, $dataItemID, $criteria = '')
     {
+        if (!self::canDeleteBackup())
+        {
+            $criteria .= " AND (content_type IS NULL OR content_type <> 'catsbackup')";
+        }
+
         /* Get all attachment IDs for the Data Item. */
         $sql = sprintf(
             "SELECT
@@ -355,7 +366,7 @@ class Attachments
         {
             /* Sanity check. Don't delete the whole attachments directory. */
             $directoryName = trim($row['directoryName']);
-            if (empty($directoryName) || $directoryName = '.')
+            if (empty($directoryName) || $directoryName === '.')
             {
                 continue;
             }
@@ -382,6 +393,12 @@ class Attachments
             $criteria
         );
         $this->_db->query($sql);
+    }
+
+    private static function canDeleteBackup()
+    {
+        return isset($_SESSION['CATS']) &&
+            $_SESSION['CATS']->getAccessLevel('settings.deleteBackup') >= ACCESS_LEVEL_SA;
     }
 
     /**
@@ -446,11 +463,18 @@ class Attachments
      *
      * @param flag Data Item type.
      * @param integer Data Item ID.
+     * @param bool|null Whether to select only backups, exclude them, or include both.
      * @return array Multi-dimensional associative array of attachments data, or
      *               array() if no records are present.
      */
-    public function getAll($dataItemType, $dataItemID)
+    public function getAll($dataItemType, $dataItemID, ?bool $backups = null)
     {
+        $criteria = match ($backups) {
+            true => " AND content_type = 'catsbackup'",
+            false => " AND (content_type IS NULL OR content_type <> 'catsbackup')",
+            null => ''
+        };
+
         $sql = sprintf(
             "SELECT
                 IF(ISNULL(text), 0, 1) AS hasText,
@@ -471,9 +495,11 @@ class Attachments
             WHERE
                 data_item_id = %s
             AND
-                data_item_type = %s",
+                data_item_type = %s
+                %s",
             $this->_db->makeQueryInteger($dataItemID),
-            $this->_db->makeQueryInteger($dataItemType)
+            $this->_db->makeQueryInteger($dataItemType),
+            $criteria
         );
         $rs = $this->_db->getAllAssoc($sql);
 

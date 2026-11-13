@@ -32,6 +32,12 @@ if (!isset($_POST['a']))
     die('No action.');
 }
 
+// Direct AJAX requests must use the same protected attachment directory as the dispatcher.
+if (!chdir(LEGACY_ROOT))
+{
+    die('Backup directory is unavailable.');
+}
+
 $action = $_POST['a'];
 
 $completedTasks = '';

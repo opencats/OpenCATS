@@ -59,6 +59,7 @@ class AuthorizationFixtureDatabase extends DatabaseConnection
         {
             return $sql === null ? (array) array_shift($this->backupRows) : $this->scenario['backup'];
         }
+        if (preg_match('/FROM\s+attachment\b/', $sql)) return $this->scenario['attachment'] ?? array();
         if (preg_match('/FROM\s+activity\b/', $sql)) return $this->scenario['activity'] ?? array();
         if (preg_match('/FROM\s+candidate_joborder\b/', $sql))
         {
@@ -101,7 +102,10 @@ $_REQUEST = array_replace($_POST, $scenario['request'] ?? array());
 ob_start();
 register_shutdown_function(function () use ($db, &$issues) {
     $output = ob_get_clean();
-    session_destroy();
+    if (session_status() === PHP_SESSION_ACTIVE)
+    {
+        session_destroy();
+    }
     echo json_encode(array('output' => $output, 'writes' => $db->writes, 'reads' => $db->reads,
         'issues' => $issues, 'fatal' => error_get_last()), JSON_THROW_ON_ERROR);
 });
@@ -116,6 +120,24 @@ if ($endpoint === 'backup')
     $script = getcwd() . '/modules/settings/ajax/backup.php';
     chdir($scenario['fixture']);
     require $script;
+    return;
+}
+if (in_array($endpoint, array('getAttachment', 'deleteBackup'), true))
+{
+    require_once './lib/UserInterface.php';
+    require_once './lib/Template.php';
+    require_once './modules/attachments/AttachmentsUI.php';
+    require_once './modules/settings/SettingsUI.php';
+    (new ReflectionProperty(CATSSession::class, '_siteCompanyID'))->setValue($session, 7);
+    $_SERVER['HTTP_HOST'] = 'example.test';
+    $_SERVER['PHP_SELF'] = '/index.php';
+    $_GET = array('a' => $endpoint, 'id' => '42',
+        'directoryNameHash' => md5($scenario['attachment']['directoryName']));
+    $_POST['postback'] = 'postback';
+    chdir($scenario['fixture']);
+
+    $ui = $endpoint === 'getAttachment' ? new AttachmentsUI() : new SettingsUI();
+    $ui->handleRequest();
     return;
 }
 if ($endpoint === 'processMassImportItem')

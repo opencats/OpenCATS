@@ -84,6 +84,12 @@ class AttachmentsUI extends UserInterface
             );
         }
         
+        if ($rs['contentType'] === 'catsbackup' &&
+            $this->getUserAccessLevel('settings.createBackup') < ACCESS_LEVEL_SA)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+
         $directoryName = $rs['directoryName'];
         $fileName      = $rs['storedFilename'];
         $filePath      = sprintf('attachments/%s/%s', $directoryName, $fileName);

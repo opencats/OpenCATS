@@ -2159,7 +2159,7 @@ class SettingsUI extends UserInterface
         /* Attachments */
         $attachments = new Attachments();
         $attachmentsRS = $attachments->getAll(
-            DATA_ITEM_COMPANY, $_SESSION['CATS']->getSiteCompanyID()
+            DATA_ITEM_COMPANY, $_SESSION['CATS']->getSiteCompanyID(), true
         );
 
         foreach ($attachmentsRS as $index => $data)
