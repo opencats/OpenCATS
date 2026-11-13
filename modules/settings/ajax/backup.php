@@ -129,7 +129,7 @@ if ($action == 'backup')
         die('Error: Invalid attachment ID.');
     }
 
-    $attachmentID    = $_POST['attachmentID'];
+    $backupAttachmentID = $_POST['attachmentID'];
     $attachmentsOnly = (isset($_POST['attachmentsOnly']) && !empty($_POST['attachmentsOnly']) &&
         $_POST['attachmentsOnly'] != 'false' && $_POST['attachmentsOnly'] != 'off');
     
@@ -139,6 +139,15 @@ if ($action == 'backup')
      * saved.
      */
     $directory = $_SESSION['CATS']->retrieveValueByName('backupDirectory');
+    $attachments = new Attachments();
+    $backup = $attachments->get($backupAttachmentID);
+    if (($backup['contentType'] ?? null) !== 'catsbackup' ||
+        $backup['dataItemType'] != DATA_ITEM_COMPANY ||
+        $backup['dataItemID'] != $_SESSION['CATS']->getSiteCompanyID() ||
+        $directory !== './attachments/' . $backup['directoryName'])
+    {
+        die('Error: Invalid attachment ID.');
+    }
 
     // FIXME: Show progress.
 
@@ -213,17 +222,21 @@ if ($action == 'backup')
         markCompleted('Compressing database for CATS restore...');
     }
 
-    /* Add all attachments to the archive. */
+    /* Add all attachments except the archive being written. */
     // FIXME: SQL shouldn't be trickling up to this layer.
 
     /* Get attachments metadata. */
-    $sql =
+    $sql = sprintf(
         "SELECT
             directory_name,
             stored_filename,
             attachment_id
         FROM
-            attachment";
+            attachment
+        WHERE
+            attachment_id <> %s",
+        $db->makeQueryInteger($backupAttachmentID)
+    );
     $db->query($sql);
     $totalAttachments = $db->getNumRows();
 
@@ -288,8 +301,7 @@ if ($action == 'backup')
     $md5sum   = @md5_file($zipFilePath);
     $fileSize = (int) @filesize($zipFilePath) / 1024;
 
-    $attachments = new Attachments();
-    $attachments->setSizeMD5($attachmentID, $fileSize, $md5sum);
+    $attachments->setSizeMD5($backupAttachmentID, $fileSize, $md5sum);
 
     echo '<html><head>',
          '<script type="text/javascript">parent.backupFinished();</script>',

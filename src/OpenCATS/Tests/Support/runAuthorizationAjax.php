@@ -28,14 +28,37 @@ class AuthorizationFixtureDatabase extends DatabaseConnection
     public $scenario;
     public $writes = array();
     public $reads = array();
+    private $backupRows = array();
 
     public function __construct($scenario) { $this->scenario = $scenario; }
     public function makeQueryString($value) { return "'" . addslashes((string) $value) . "'"; }
-    public function query($sql, $ignoreErrors = false) { $this->writes[] = $sql; return true; }
+    public function query($sql, $ignoreErrors = false)
+    {
+        if (($this->scenario['endpoint'] ?? '') === 'backup' && str_starts_with($sql, 'SELECT'))
+        {
+            $this->reads[] = $sql;
+            $this->backupRows = $this->scenario['rows'];
+            if (preg_match('/attachment_id <> (\d+)/', $sql, $matches))
+            {
+                $this->backupRows = array_values(array_filter($this->backupRows,
+                    fn($row) => (string) $row['attachment_id'] !== $matches[1]));
+            }
+        }
+        else
+        {
+            $this->writes[] = $sql;
+        }
+        return true;
+    }
+    public function getNumRows($query = null) { return count($this->backupRows); }
     public function getLastInsertID() { return 42; }
     public function getAssoc($sql = null)
     {
         $this->reads[] = $sql;
+        if (($this->scenario['endpoint'] ?? '') === 'backup')
+        {
+            return $sql === null ? (array) array_shift($this->backupRows) : $this->scenario['backup'];
+        }
         if (preg_match('/FROM\s+activity\b/', $sql)) return $this->scenario['activity'] ?? array();
         if (preg_match('/FROM\s+candidate_joborder\b/', $sql))
         {
@@ -83,6 +106,18 @@ register_shutdown_function(function () use ($db, &$issues) {
         'issues' => $issues, 'fatal' => error_get_last()), JSON_THROW_ON_ERROR);
 });
 $endpoint = $scenario['endpoint'];
+if ($endpoint === 'backup')
+{
+    (new ReflectionProperty(CATSSession::class, '_siteCompanyID'))->setValue($session, 7);
+    $session->storeValueByName('backupDirectory', './attachments/archive/');
+    $_POST['attachmentID'] = '42';
+    $_POST['a'] = 'backup';
+    $_POST['attachmentsOnly'] = 'true';
+    $script = getcwd() . '/modules/settings/ajax/backup.php';
+    chdir($scenario['fixture']);
+    require $script;
+    return;
+}
 if ($endpoint === 'processMassImportItem')
 {
     $_SESSION['CATS_LEGACY_BULK_RESUMES'] = $scenario['queue'];
