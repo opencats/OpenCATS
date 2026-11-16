@@ -210,4 +210,131 @@ class ActivityPipelineAuthorizationTest extends TestCase
         if ($admin) self::assertStringContainsString('Private notes', $result['output']);
         else self::assertStringNotContainsString('Private notes', $result['output']);
     }
+
+    public static function associationReaders(): array
+    {
+        return array(
+            'candidate read denied' => array(DATA_ITEM_CANDIDATE, 'candidates.show', false, false, false),
+            'company read denied' => array(DATA_ITEM_COMPANY, 'companies.show', false, false, false),
+            'contact read denied' => array(DATA_ITEM_CONTACT, 'contacts.show', false, false, false),
+            'job order read denied' => array(DATA_ITEM_COMPANY, 'joborders.show', false, false, false),
+            'hidden candidate denied' => array(DATA_ITEM_CANDIDATE, 'candidates.hidden', true, false, false),
+            'hidden candidate allowed to administrator' => array(DATA_ITEM_CANDIDATE, null, true, true, true),
+            'visible candidate' => array(DATA_ITEM_CANDIDATE, null, false, false, true),
+            'company associations' => array(DATA_ITEM_COMPANY, null, false, false, true),
+            'contact associations' => array(DATA_ITEM_CONTACT, null, false, false, true),
+            'administrator without hidden job order permission' => array(DATA_ITEM_CONTACT, 'joborders.hidden', false, true, true)
+        );
+    }
+
+    #[DataProvider('associationReaders')]
+    public function testRelatedJobOrdersMatchRecordVisibility($type, $deniedPermission, $hiddenParent, $admin, $allowed): void
+    {
+        $result = $this->request(array(
+            'endpoint' => 'getDataItemJobOrders',
+            'request' => array('dataItemID' => '7', 'dataItemType' => (string) $type),
+            'acl' => $deniedPermission === null ? array() : array($deniedPermission => 0),
+            'level' => $admin ? ACCESS_LEVEL_SA : ACCESS_LEVEL_READ,
+            'parent' => array('isAdminHidden' => (int) $hiddenParent),
+            'rows' => array(
+                array('jobOrderID' => 8, 'title' => 'Assigned visible', 'companyName' => 'Example & Sons',
+                    'isAssigned' => $type === DATA_ITEM_CONTACT ? '1' : null, 'isAdminHidden' => 0),
+                array('jobOrderID' => 9, 'title' => 'Private title', 'companyName' => 'Private company',
+                    'isAssigned' => '0', 'isAdminHidden' => 1),
+                array('jobOrderID' => 10, 'title' => 'Visible legacy', 'companyName' => 'Example & Sons',
+                    'isAssigned' => '0', 'isAdminHidden' => null)
+            )
+        ));
+        self::assertStringContainsString($allowed ? '<errorcode>0</errorcode>' : '<errorcode>-2</errorcode>', $result['output']);
+        self::assertSame(array(), $result['writes']);
+        if (!$allowed)
+        {
+            self::assertStringNotContainsString('<joborder>', $result['output']);
+            self::assertStringNotContainsString('Private', $result['output']);
+            self::assertCount($hiddenParent ? 1 : 0, $result['reads']);
+            return;
+        }
+
+        $xml = simplexml_load_string($result['output']);
+        $includeHidden = $admin && $deniedPermission !== 'joborders.hidden';
+        $ids = array_map('strval', $xml->xpath('/data/joborder/id'));
+        self::assertSame($includeHidden ? array('8', '9', '10') : array('8', '10'), $ids);
+        self::assertSame('Example & Sons', (string) $xml->joborder[0]->companyname);
+        if (!$includeHidden)
+        {
+            self::assertStringNotContainsString('Private', $result['output']);
+        }
+        $sql = end($result['reads']);
+        $visibility = 'joborder.is_admin_hidden <> 1 OR joborder.is_admin_hidden IS NULL';
+        self::assertSame(!$includeHidden, str_contains($sql, $visibility));
+        if ($type === DATA_ITEM_CONTACT)
+        {
+            self::assertMatchesRegularExpression('/ORDER BY\s+isAssigned DESC,\s+title ASC/', $sql);
+            self::assertSame('1', (string) $xml->joborder[0]->assigned);
+            self::assertSame('0', (string) $xml->joborder[count($ids) - 1]->assigned);
+        }
+        else
+        {
+            self::assertMatchesRegularExpression('/ORDER BY\s+title ASC/', $sql);
+            self::assertSame('0', (string) $xml->joborder[0]->assigned);
+        }
+    }
+
+    public static function invalidReadRequests(): array
+    {
+        return array(
+            'unauthenticated association' => array('getDataItemJobOrders', array('dataItemID' => '7', 'dataItemType' => '100'), false),
+            'invalid parent ID' => array('getDataItemJobOrders', array('dataItemID' => 'abc', 'dataItemType' => '100'), true),
+            'unsupported parent type' => array('getDataItemJobOrders', array('dataItemID' => '7', 'dataItemType' => '999'), true),
+            'array parent ID' => array('getDataItemJobOrders', array('dataItemID' => array('7'), 'dataItemType' => '100'), true),
+            'unauthenticated preview' => array('replaceTemplateTags', array('candidateID' => '7'), false),
+            'missing candidate ID' => array('replaceTemplateTags', array(), true),
+            'zero candidate ID' => array('replaceTemplateTags', array('candidateID' => '0'), true)
+        );
+    }
+
+    #[DataProvider('invalidReadRequests')]
+    public function testInvalidRelatedRecordRequestsFailBeforeDatabaseAccess($endpoint, $request, $loggedIn): void
+    {
+        $result = $this->request(array('endpoint' => $endpoint, 'request' => $request, 'loggedIn' => $loggedIn));
+        self::assertStringContainsString('<errorcode>-1</errorcode>', $result['output']);
+        self::assertSame(array(), $result['reads']);
+        self::assertSame(array(), $result['writes']);
+    }
+
+    public static function templateReaders(): array
+    {
+        return array(
+            'visible candidate' => array(0, ACCESS_LEVEL_READ, array(), true),
+            'candidate read denied' => array(0, ACCESS_LEVEL_EDIT, array('candidates.show' => 0), false),
+            'hidden candidate denied' => array(1, ACCESS_LEVEL_EDIT, array(), false),
+            'hidden candidate granted' => array(1, ACCESS_LEVEL_SA, array(), true),
+            'missing candidate' => array(null, ACCESS_LEVEL_READ, array(), false)
+        );
+    }
+
+    #[DataProvider('templateReaders')]
+    public function testTemplatePreviewRequiresCandidateAccess($hidden, $level, $acl, $allowed): void
+    {
+        $result = $this->request(array(
+            'endpoint' => 'replaceTemplateTags', 'level' => $level, 'acl' => $acl,
+            'request' => array('candidateID' => '7',
+                'templateText' => '%CANDFIRSTNAME% / %CANDFULLNAME% / %CANDOWNER% / %USERMAIL% / <em>Hi & bye</em>'),
+            'parent' => $hidden === null ? array() : array('isAdminHidden' => $hidden, 'firstName' => 'Sample',
+                'candidateFullName' => 'Sample Candidate', 'ownerFullName' => 'Record Owner')
+        ));
+        self::assertSame(array(), $result['writes']);
+        self::assertCount($acl ? 0 : 1, $result['reads']);
+        $xml = simplexml_load_string($result['output']);
+        self::assertSame($allowed ? '0' : '-2', (string) $xml->errorcode);
+        if ($allowed)
+        {
+            self::assertSame('Sample / Sample Candidate / Record Owner / <a href="mailto:"></a> / <em>Hi & bye</em>',
+                (string) $xml->text);
+            return;
+        }
+        self::assertFalse(isset($xml->text));
+        self::assertStringNotContainsString('Sample', $result['output']);
+        self::assertStringNotContainsString('Record Owner', $result['output']);
+    }
 }

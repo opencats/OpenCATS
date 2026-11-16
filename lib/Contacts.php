@@ -706,10 +706,14 @@ class Contacts
      * for the specified contact ID.
      *
      * @param integer contact ID
+     * @param boolean Whether to include administratively hidden job orders
      * @return array job orders data
      */
-    public function getJobOrdersArray($contactID)
+    public function getJobOrdersArray($contactID, $allowAdministrativeHidden = false)
     {
+        $adminHiddenCriterion = $allowAdministrativeHidden
+            ? ''
+            : 'AND (joborder.is_admin_hidden <> 1 OR joborder.is_admin_hidden IS NULL)';
         $sql = sprintf(
             "SELECT
                 joborder.joborder_id AS jobOrderID,
@@ -724,11 +728,13 @@ class Contacts
                 ON company.company_id = contact.company_id
             WHERE
                 contact.contact_id = %s
+                %s
             ORDER BY
                 isAssigned DESC,
                 title ASC",
             $this->_db->makeQueryInteger($contactID),
-            $this->_db->makeQueryInteger($contactID)
+            $this->_db->makeQueryInteger($contactID),
+            $adminHiddenCriterion
         );
 
         return $this->_db->getAllAssoc($sql);

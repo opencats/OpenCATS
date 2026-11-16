@@ -3,30 +3,25 @@
 
     include_once(LEGACY_ROOT . '/lib/EmailTemplates.php');
     include_once(LEGACY_ROOT . '/lib/DateUtility.php');
-    include_once(LEGACY_ROOT . '/lib/Candidates.php');
+    include_once(LEGACY_ROOT . '/lib/CandidateAuthorization.php');
     
     $interface = new SecureAJAXInterface();
 
-    if (!$interface->isRequiredIDValid('candidateID', false))
+    if (is_array($_REQUEST['candidateID'] ?? null) || !$interface->isRequiredIDValid('candidateID', false))
     {
         $interface->outputXMLErrorPage(-1, 'Invalid candidate ID.');
         die();
     }
 
-    $candidateID = $_REQUEST['candidateID'];
-    $templateText = $_REQUEST['templateText'];
-
-    /* Get an array of the company's location data. */
-    $candidates = new Candidates();
-    $candidateData = $candidates->get($candidateID);
-    $emailTemplates = new EmailTemplates();
-    $emailTemplateText = $emailTemplates->replaceVariables($templateText);
-
-    if (empty($candidateData))
+    if ($_SESSION['CATS']->getAccessLevel('candidates.show') < ACCESS_LEVEL_READ ||
+        !CandidateAuthorization::canAccessCandidate($_REQUEST['candidateID'], $candidateData))
     {
         $interface->outputXMLErrorPage(-2, 'No candidate data.');
         die();
     }
+
+    $emailTemplates = new EmailTemplates();
+    $emailTemplateText = $emailTemplates->replaceVariables($_REQUEST['templateText']);
 
     $stringsToFind = array(
             '%CANDOWNER%',

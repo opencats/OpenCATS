@@ -562,10 +562,14 @@ class Companies
      * for the specified company ID.
      *
      * @param integer Company ID
+     * @param boolean Whether to include administratively hidden job orders
      * @return array Job Orders data
      */
-    public function getJobOrdersArray($companyID)
+    public function getJobOrdersArray($companyID, $allowAdministrativeHidden = false)
     {
+        $adminHiddenCriterion = $allowAdministrativeHidden
+            ? ''
+            : 'AND (joborder.is_admin_hidden <> 1 OR joborder.is_admin_hidden IS NULL)';
         $sql = sprintf(
             "SELECT
                 joborder.joborder_id AS jobOrderID,
@@ -573,13 +577,15 @@ class Companies
                 company.name AS companyName
             FROM
                 joborder
-            LEFT JOIN company
+            INNER JOIN company
                 ON joborder.company_id = company.company_id
             WHERE
                 joborder.company_id = %s
+                %s
             ORDER BY
                 title ASC",
-            $this->_db->makeQueryInteger($companyID)
+            $this->_db->makeQueryInteger($companyID),
+            $adminHiddenCriterion
         );
 
         return $this->_db->getAllAssoc($sql);

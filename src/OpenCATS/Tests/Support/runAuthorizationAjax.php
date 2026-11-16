@@ -75,7 +75,12 @@ class AuthorizationFixtureDatabase extends DatabaseConnection
     public function getAllAssoc($sql = null)
     {
         $this->reads[] = $sql;
-        return $this->scenario['rows'] ?? array();
+        $rows = $this->scenario['rows'] ?? array();
+        if ($this->scenario['endpoint'] === 'getDataItemJobOrders' && str_contains($sql, 'joborder.is_admin_hidden <> 1'))
+        {
+            $rows = array_filter($rows, fn($row) => $row['isAdminHidden'] != 1);
+        }
+        return $rows;
     }
 }
 
@@ -148,7 +153,8 @@ if ($endpoint === 'processMassImportItem')
     require $script;
     return;
 }
-if (!in_array($endpoint, array('editActivity', 'deleteActivity', 'setCandidateJobOrderRating', 'getPipelineDetails', 'getPipelineJobOrder'), true))
+if (!in_array($endpoint, array('editActivity', 'deleteActivity', 'setCandidateJobOrderRating', 'getPipelineDetails', 'getPipelineJobOrder',
+    'getDataItemJobOrders', 'replaceTemplateTags'), true))
 {
     throw new InvalidArgumentException('Unsupported test endpoint.');
 }

@@ -919,11 +919,15 @@ class Candidates
      * for the specified candidate ID.
      *
      * @param integer Candidate ID,
+     * @param boolean Whether to include administratively hidden job orders
      * @return array Multi-dimensional associative result set array of
      *               job orders data, or array() if no records were returned.
      */
-    public function getJobOrdersArray($candidateID)
+    public function getJobOrdersArray($candidateID, $allowAdministrativeHidden = false)
     {
+        $adminHiddenCriterion = $allowAdministrativeHidden
+            ? ''
+            : 'AND (joborder.is_admin_hidden <> 1 OR joborder.is_admin_hidden IS NULL)';
         $sql = sprintf(
             "SELECT
                 joborder.joborder_id AS jobOrderID,
@@ -937,9 +941,11 @@ class Candidates
                 ON joborder.joborder_id = candidate_joborder.joborder_id
             WHERE
                 candidate_joborder.candidate_id = %s
+                %s
             ORDER BY
                 title ASC",
-            $this->_db->makeQueryInteger($candidateID)
+            $this->_db->makeQueryInteger($candidateID),
+            $adminHiddenCriterion
         );
 
         return $this->_db->getAllAssoc($sql);
